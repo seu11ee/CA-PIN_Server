@@ -1,9 +1,9 @@
 export interface IUser {
-    email: string;
-    password: string;
-    nickname: string;
-    cafeti: string;
-    profileImg: string;
+    email: String;
+    password: String;
+    nickname: String;
+    cafeti: String;
+    profileImg: String;
     created_at: Date;
     deleted_at: Date;
 }
