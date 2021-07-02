@@ -7,10 +7,12 @@ const CafeSchema = new mongoose.Schema({
       required: true
   },
   img:{
-      type: String
+      type: String,
+      required: true
   },
   address:{
-      type: String
+      type: String,
+      required: true
   },
   tags:{
       type: [mongoose.SchemaTypes.ObjectId],
