@@ -32,8 +32,14 @@ const CafeSchema = new mongoose.Schema({
   opentime:{
       type: String
   },
+  opentimeHoliday:{
+      type: String
+  },
   closetime:{
       type:String
+  },
+  closetimeHoliday:{
+      type: String
   },
   offday:{
       type:[Number]
