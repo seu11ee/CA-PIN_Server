@@ -1,5 +1,8 @@
 import mongoose from "mongoose";
 import config from "../config";
+import User from "../models/User"
+import Cafeti from "../models/Cafeti";
+import Category from "../models/Category";
 
 const connectDB = async () => {
   try {
@@ -10,6 +13,19 @@ const connectDB = async () => {
     });
 
     console.log("Mongoose Connected ...");
+
+    User.createCollection().then(function(collection){
+      console.log("Cafe Collection is created!");
+    });
+
+    Cafeti.createCollection().then(function(collection){
+      console.log("Review Collection is created!");
+    });
+
+    Category.createCollection().then(function(collection){
+      console.log("Tag Collection is created!");
+    });
+
   } catch (err) {
     console.error(err.message);
     process.exit(1);
