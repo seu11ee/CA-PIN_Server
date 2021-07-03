@@ -10,3 +10,13 @@ export interface IReview{
     recommend: [number];
     content: string;
 }
+
+export interface IReviewOutputDTO{
+    cafe: mongoose.Types.ObjectId;
+    user: mongoose.Types.ObjectId;
+    rating: number;
+    created_at: Date;
+    imgs: [string];
+    recommend: [number];
+    content: string;
+}

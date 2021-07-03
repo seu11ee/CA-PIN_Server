@@ -18,14 +18,21 @@ router.get(
             //     path:"tags",
             //     match:{ _id:tag}
             // });
-            var cafes = await Cafe.find({
-                tags:{"$all":[tag]}
-            }).populate("tags");
-
-            if (!cafes){
-                return res.status(204).send();
+            if (req.query.tags){
+                var cafes = await Cafe.find({
+                    tags:{"$all":[tag]}
+                }).populate("tags");
+    
+                if (!cafes){
+                    return res.status(204).send();
+                }
+                return res.json({cafes:cafes});
             }
-            return res.json({cafes:cafes});
+            else{
+                var cafes = await Cafe.find();
+                return res.json({cafes:cafes});
+            }
+            
             
         } catch (error){
             console.error(error.message);
