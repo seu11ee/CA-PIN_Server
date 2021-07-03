@@ -79,7 +79,7 @@
 <br>
 
 ###  Server Architecture
-
+<img width=100% src=https://user-images.githubusercontent.com/42789819/124343113-0d891680-dc04-11eb-9f21-d3ff8a772a35.png>
 
 <br>
 <br>
