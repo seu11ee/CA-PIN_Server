@@ -26,13 +26,13 @@ const connectDB = () => __awaiter(void 0, void 0, void 0, function* () {
         });
         console.log("Mongoose Connected ...");
         User_1.default.createCollection().then(function (collection) {
-            console.log("Cafe Collection is created!");
+            console.log("User Collection is created!");
         });
         Cafeti_1.default.createCollection().then(function (collection) {
-            console.log("Review Collection is created!");
+            console.log("Cafeti Collection is created!");
         });
         Category_1.default.createCollection().then(function (collection) {
-            console.log("Tag Collection is created!");
+            console.log("Category Collection is created!");
         });
     }
     catch (err) {
