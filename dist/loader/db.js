@@ -14,6 +14,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 const config_1 = __importDefault(require("../config"));
+const Cafe_1 = __importDefault(require("../models/Cafe"));
+const Review_1 = __importDefault(require("../models/Review"));
+const Tag_1 = __importDefault(require("../models/Tag"));
 const connectDB = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield mongoose_1.default.connect(config_1.default.mongoURI, {
@@ -22,6 +25,15 @@ const connectDB = () => __awaiter(void 0, void 0, void 0, function* () {
             useUnifiedTopology: true,
         });
         console.log("Mongoose Connected ...");
+        Cafe_1.default.createCollection().then(function (collection) {
+            console.log("Cafe Collection is created!");
+        });
+        Review_1.default.createCollection().then(function (collection) {
+            console.log("Review Collection is created!");
+        });
+        Tag_1.default.createCollection().then(function (collection) {
+            console.log("Tag Collection is created!");
+        });
     }
     catch (err) {
         console.error(err.message);
