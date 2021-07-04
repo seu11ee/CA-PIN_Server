@@ -5,18 +5,15 @@
 <p align="center">
 <img width="100%" alt="CAPIN2" src="https://user-images.githubusercontent.com/42789819/124277615-3071e700-db80-11eb-8626-d7e9e8659762.png">
 </p>
-<br>
+
 <br>
 
 # <img width=40px src=https://user-images.githubusercontent.com/42789819/124378687-b7909d80-dced-11eb-8395-dd88da969f35.png> Project
-**오늘도 '카페 어디가지?' 고민하는 분들을 위한 카페맵 앱 서비스**
-
+**오늘도 '카페 어디가지?' 고민하는 분들을 위한 카페맵 앱 서비스 / [Service OPR](https://www.notion.so/O-P-R-f521f789248347949bef26a1ef0d2354#2f8521e618114579b183cdcd99188d2f)**  
 > **Team-CA:PIN Server**  
 > SOPT 28th APPJAM  
 > 프로젝트 기간: 2021.06.26 ~ 2021.07.16
 
-
-<br>
 <br>
 
 ###  CA:PIN Server Developers
@@ -32,7 +29,6 @@
 </table>
 
 <br>
-<br>
 
 ### We used
 <p align="left">
@@ -40,7 +36,6 @@
 ![TypeScript](https://img.shields.io/badge/typescript-4.2.3-blue) ![ts-node](https://img.shields.io/badge/ts_node-9.1.1-deepgreen) ![aws](https://img.shields.io/badge/aws-ec2,s3-orange) ![mongoose](https://img.shields.io/badge/mongoose-5.10.4-green)
 </p>
 
-<br>
 <br>
 
 ### Dependencies module (package.json)
@@ -71,17 +66,15 @@
 ```
 
 <br>
-<br>
 
 ###  Server Architecture
 <img width=100% src=https://user-images.githubusercontent.com/42789819/124343113-0d891680-dc04-11eb-9f21-d3ff8a772a35.png>
 
 <br>
-<br>
 
 ###  API doc
 [CA:PIN API Documents](https://www.notion.so/793451f945b0494fa8c4117d5e3c34e8?v=c2b16a0f8c044bab80ff9ce509af21cd)
-<br>
+
 <br>
 
  ### Coding Convention
@@ -202,7 +195,6 @@ src
  </details>
 
 <br>
-<br>
 
 ### Commit Messge Rules
 <details>
@@ -235,7 +227,6 @@ src
 </div>
 </details>
  
-<br>
 <br>
 
 ### Github mangement
@@ -272,8 +263,6 @@ src
 </div>
 </details>
   
-
-<br>
 <br>
 
 ### Task 
@@ -281,6 +270,4 @@ src
 |:----------|:----------:|:----:|
 | - | - | - |
 
-
-<br>
 <br>
