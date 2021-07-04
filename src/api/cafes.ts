@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 const router = express.Router();
 const cafeService = require("../services/cafeService");
 const statusCode = require("../modules/statusCode");
+const responseMessage = require("../modules/responseMessage");
 
 /*
 테스트용 api
@@ -14,13 +15,14 @@ router.get(
             if (tagQuery){
                 var tags: number[] = (tagQuery).split(",").map(x=>+x);
                 console.log(tags);
-                const filtedCafeLocationList = await cafeService.getFilteredCafeLocationList(tags);
-                if (filtedCafeLocationList.length == 0){
-                    return res.status(statusCode.empty);
+                const filteredCafeLocationList = await cafeService.getFilteredCafeLocationList(tags);
+        
+                if (filteredCafeLocationList.length == 0){
+                    return res.status(statusCode.NO_CONTENT).send();
                 }
                 return res.status(statusCode.OK).json({
-                    message: "태그로 카페 위치 리스트 조회 성공",
-                    cafes: filtedCafeLocationList
+                    message: responseMessage.CAFE_LOCATION_SUCCESS,
+                    cafes: filteredCafeLocationList
                 });
             }
             else{
@@ -30,42 +32,16 @@ router.get(
                     return res.status(statusCode.empty);
                 }
                 return res.status(statusCode.OK).json({
-                    message: "카페 위치 리스트 조회 성공",
+                    message: responseMessage.CAFE_LOCATION_SUCCESS,
                     cafes: cafeLocationList
                 });
             }
         } catch (error) {
             console.error(error.message);
-            res.status(500).send({message:"Server Error"});
+            res.status(500).send({message: responseMessage.INTERNAL_SERVER_ERROR});
         }
-        // const tag = "60dc1623d2c7be7b98198014"
-        // const tag2 = "60dc17698a5e06c2a33645d2"
-        // console.log(req.query.tags);
-        // console.log(req.query.userid);
-        // try{
-            // var cafes = await Cafe.find().populate({
-            //     path:"tags",
-            //     match:{ _id:tag}
-            // });
-            // const cafeList
-        //     if (req.query.tags){
-        //         const cafeList = await 
+      
     
-        //         if (!cafes){
-        //             return res.status(204).send();
-        //         }
-        //         return res.json({cafes:cafes});
-        //     }
-        //     else{
-        //         var cafes = await Cafe.find();
-        //         return res.json({cafes:cafes});
-        //     }
-            
-            
-        // } catch (error){
-        //     console.error(error.message);
-        //     res.status(500).send({message:"Server Error"});
-        // }
     }
 )
 
