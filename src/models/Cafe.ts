@@ -16,7 +16,8 @@ const CafeSchema = new mongoose.Schema({
   },
   tags:{
       type: [mongoose.SchemaTypes.ObjectId],
-      ref: "Tag"
+      ref: "Tag",
+      required: true
   },
   latitude:{
       type: Number,

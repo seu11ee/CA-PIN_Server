@@ -5,9 +5,9 @@ export interface IReview{
     user: mongoose.Types.ObjectId;
     rating: number;
     created_at: Date;
-    updated_at: Date;
-    imgs: [string];
-    recommend: [number];
+    updated_at?: Date;
+    imgs?: [string];
+    recommend?: [number];
     content: string;
 }
 
@@ -16,7 +16,7 @@ export interface IReviewOutputDTO{
     user: mongoose.Types.ObjectId;
     rating: number;
     created_at: Date;
-    imgs: [string];
-    recommend: [number];
+    imgs?: [string];
+    recommend?: [number];
     content: string;
 }

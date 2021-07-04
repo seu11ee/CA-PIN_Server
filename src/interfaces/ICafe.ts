@@ -8,10 +8,10 @@ export interface ICafe{
     latitude: number;
     longitude: number;
     instagram: string;
-    opentime: string;
-    opentimeHoliday: string;
-    closetime: string;
-    closetimeHoliday: string;
-    offday: [number];
+    opentime?: string;
+    opentimeHoliday?: string;
+    closetime?: string;
+    closetimeHoliday?: string;
+    offday?: [number];
     rating: number;
 }
