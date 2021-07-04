@@ -39,4 +39,4 @@ const ReviewSchema = new mongoose.Schema({
     collection: "reviews"
 });
 
-export default mongoose.model<mongoose.Document>("Review",ReviewSchema);
+export default mongoose.model<IReview & mongoose.Document>("Review",ReviewSchema);

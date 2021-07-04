@@ -44,6 +44,9 @@ const CafeSchema = new mongoose.Schema({
   },
   offday:{
       type:[Number]
+  },
+  rating:{
+      type: Number
   }
 
 
@@ -52,4 +55,4 @@ const CafeSchema = new mongoose.Schema({
     collection: "cafes"
 });
 
-export default mongoose.model<mongoose.Document>("Cafe", CafeSchema);
+export default mongoose.model<ICafe & mongoose.Document>("Cafe", CafeSchema);
