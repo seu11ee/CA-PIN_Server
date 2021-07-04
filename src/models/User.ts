@@ -18,7 +18,6 @@ const UserSchema = new mongoose.Schema ({
     },
     cafeti: {
         type: String,
-        required: true,
     },
     profileImg: {
         type: String,
