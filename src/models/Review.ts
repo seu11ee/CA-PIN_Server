@@ -30,7 +30,8 @@ const ReviewSchema = new mongoose.Schema({
         type: [Number]
     },
     content:{
-        type: String
+        type: String,
+        required: true
     }
 
 },
