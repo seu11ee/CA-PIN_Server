@@ -8,8 +8,9 @@
 <br>
 <br>
 
-# Project
+# <img width=40px src=https://user-images.githubusercontent.com/42789819/124378687-b7909d80-dced-11eb-8395-dd88da969f35.png> Project
 **오늘도 '카페 어디가지?' 고민하는 분들을 위한 카페맵 앱 서비스**
+
 > **Team-CA:PIN Server**  
 > SOPT 28th APPJAM  
 > 프로젝트 기간: 2021.06.26 ~ 2021.07.16
@@ -18,7 +19,7 @@
 <br>
 <br>
 
-###  CA:PIN Server Dev 🚀
+###  CA:PIN Server Developers
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
@@ -35,20 +36,14 @@
 
 ### We used
 <p align="left">
-<img alt="NodeJS" src="https://img.shields.io/badge/node.js-%2343853D.svg?style=for-the-badge&logo=node-dot-js&logoColor=white"/>
-<img alt="JavaScript" src="https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E"/>
-<img alt="TypeScript" src="https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white"/>
-</p>
-<p align="left">
-<img alt="AWS" src="https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white"/>
-<img alt="MongoDB" src ="https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white"/>
-<img alt="Postman" src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=red" />
+
+![TypeScript](https://img.shields.io/badge/typescript-4.2.3-blue) ![ts-node](https://img.shields.io/badge/ts_node-9.1.1-deepgreen) ![aws](https://img.shields.io/badge/aws-ec2,s3-orange) ![mongoose](https://img.shields.io/badge/mongoose-5.10.4-green)
 </p>
 
 <br>
 <br>
 
-### dependencies module (package.json)
+### Dependencies module (package.json)
 #### <kbd>Dev module:</kbd> 
 ```json
   "devDependencies": {
@@ -85,7 +80,7 @@
 <br>
 
 ###  API doc
-
+[CA:PIN API Documents](https://www.notion.so/793451f945b0494fa8c4117d5e3c34e8?v=c2b16a0f8c044bab80ff9ce509af21cd)
 <br>
 <br>
 
@@ -282,8 +277,6 @@ src
 <br>
 
 ### Task 
-> [Notion 👨‍🏫 ]()
-
 | 기능 | 개발 여부 | 담당자 |
 |:----------|:----------:|:----:|
 | - | - | - |
