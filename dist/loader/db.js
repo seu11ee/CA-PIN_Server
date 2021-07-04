@@ -14,9 +14,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 const config_1 = __importDefault(require("../config"));
+const User_1 = __importDefault(require("../models/User"));
+const Cafeti_1 = __importDefault(require("../models/Cafeti"));
+const Category_1 = __importDefault(require("../models/Category"));
 const Cafe_1 = __importDefault(require("../models/Cafe"));
 const Review_1 = __importDefault(require("../models/Review"));
 const Tag_1 = __importDefault(require("../models/Tag"));
+
 const connectDB = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield mongoose_1.default.connect(config_1.default.mongoURI, {
@@ -25,6 +29,16 @@ const connectDB = () => __awaiter(void 0, void 0, void 0, function* () {
             useUnifiedTopology: true,
         });
         console.log("Mongoose Connected ...");
+      
+        User_1.default.createCollection().then(function (collection) {
+            console.log("User Collection is created!");
+        });
+        Cafeti_1.default.createCollection().then(function (collection) {
+            console.log("Cafeti Collection is created!");
+        });
+        Category_1.default.createCollection().then(function (collection) {
+            console.log("Category Collection is created!");
+        });
         Cafe_1.default.createCollection().then(function (collection) {
             console.log("Cafe Collection is created!");
         });
