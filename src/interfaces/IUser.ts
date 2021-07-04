@@ -7,3 +7,11 @@ export interface IUser {
     created_at: Date;
     deleted_at: Date;
 }
+
+export interface IUserOutputDTO {
+    email: String;
+    password: String;
+    nickname: String;
+    cafeti: String;
+    profileImg: String;
+}
