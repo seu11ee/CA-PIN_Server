@@ -15,15 +15,15 @@ const connectDB = async () => {
     console.log("Mongoose Connected ...");
 
     User.createCollection().then(function(collection){
-      console.log("Cafe Collection is created!");
+      console.log("User Collection is created!");
     });
 
     Cafeti.createCollection().then(function(collection){
-      console.log("Review Collection is created!");
+      console.log("Cafeti Collection is created!");
     });
 
     Category.createCollection().then(function(collection){
-      console.log("Tag Collection is created!");
+      console.log("Category Collection is created!");
     });
 
   } catch (err) {
