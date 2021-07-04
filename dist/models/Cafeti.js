@@ -7,11 +7,14 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const CafetiSchema = new mongoose_1.default.Schema({
     cafetiIdx: {
         type: Number,
-        required: true
+        required: true,
+        unique: true,
+        index: true
     },
     type: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     description: {
         type: String,

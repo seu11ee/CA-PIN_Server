@@ -8,6 +8,7 @@ const UserSchema = new mongoose_1.default.Schema({
     email: {
         type: String,
         required: true,
+        unique: true
     },
     password: {
         type: String,
@@ -16,10 +17,10 @@ const UserSchema = new mongoose_1.default.Schema({
     nickname: {
         type: String,
         required: true,
+        unique: true
     },
     cafeti: {
         type: String,
-        required: true,
     },
     profileImg: {
         type: String,
