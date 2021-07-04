@@ -4,11 +4,14 @@ import { ICafeti } from "../interfaces/ICafeti";
 const CafetiSchema = new mongoose.Schema ({
     cafetiIdx: {
         type: Number,
-        required: true
+        required: true,
+        unique: true,
+        index: true
     },
     type: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     description: {
         type: String,
