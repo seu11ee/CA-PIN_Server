@@ -10,7 +10,7 @@ const db_1 = __importDefault(require("./loader/db"));
 db_1.default();
 app.use(express_1.default.json()); // [3]
 // Define Routes
-app.use("/api", require("./api/")); // [4]
+app.use("/cafes", require("./api/cafes")); // [4]
 // error handler
 app.use(function (err, req, res, next) {
     // set locals, only providing error in development
