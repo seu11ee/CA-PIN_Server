@@ -22,12 +22,10 @@ const getFilteredCafeLocationList = async (tags) => {
         'tagIdx': { $in: tags
         }
     }).select('_id');
-    console.log(tag_ids);
     let tagList: mongoose.Types.ObjectId[]= []
     for (let tag of tag_ids){
         tagList.push(tag._id);
     } 
-    console.log(tag_ids);
     const cafes = await Cafe.find().where('tags').all(tagList).select("_id latitude longitude");
 
     let cafeLocationList: ICafeLocationDTO[] = []

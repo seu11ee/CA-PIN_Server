@@ -14,7 +14,6 @@ router.get(
         try {
             if (tagQuery){
                 var tags: number[] = (tagQuery).split(",").map(x=>+x);
-                console.log(tags);
                 const filteredCafeLocationList = await cafeService.getFilteredCafeLocationList(tags);
         
                 if (filteredCafeLocationList.length == 0){
