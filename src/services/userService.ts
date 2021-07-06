@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import config from "../config";
 import User from "../models/User";
 // import { IUser, IUserOutputDTO } from "../interfaces/IUser";
 const responseMessage = require("../modules/responseMessage");
@@ -51,11 +50,12 @@ const signupUser = async (nickname, email, password) => {
         throw Error(responseMessage.ALREADY_NICKNAME);
     }
 
-    // let now = Date.now();
+    let created_at = Date.now();
     const user = new User({
         email,
         password,
         nickname,
+        created_at
         // now
     });
 
