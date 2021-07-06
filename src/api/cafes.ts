@@ -5,9 +5,11 @@ const cafeService = require("../services/cafeService");
 const statusCode = require("../modules/statusCode");
 const responseMessage = require("../modules/responseMessage");
 
-/*
-테스트용 api
-**/
+/**
+ *  @route GET cafes?tags={tagIndex},..,{}
+ *  @desc get a cafe location list
+ *  @access Public
+ */
 router.get(
     "/",
     async(req: Request, res: Response) => {
@@ -18,22 +20,32 @@ router.get(
                 tags = (tagQuery).split(",").map(x=>+x);
             }
             const cafeLocationList = await cafeService.getCafeLocationList(tags);
-            if (cafeLocationList.length == 0){
-                return res.status(statusCode.NO_CONTENT).send();
-            }
+            
             return res.status(statusCode.OK).json({
                 message: responseMessage.CAFE_LOCATION_SUCCESS,
-                cafes: cafeLocationList
+                cafeLocations: cafeLocationList
             });
         } catch (error) {
-            console.error(error.message);
-            res.status(500).send({message: responseMessage.INTERNAL_SERVER_ERROR});
+            switch (error.message){
+                case responseMessage.NO_CONTENT:
+                    res.status(statusCode.NO_CONTENT).send();
+                case responseMessage.INVALID_IDENTIFIER:
+                    res.status(statusCode.BAD_REQUEST).send({message:responseMessage.INVALID_IDENTIFIER});
+                default:
+                    res.status(statusCode.INTERNAL_SERVER_ERROR).send({message:responseMessage.INTERNAL_SERVER_ERROR});
+            }
+            res.status(statusCode.INTERNAL_SERVER_ERROR).send({message: responseMessage.INTERNAL_SERVER_ERROR});
         }
       
     
     }
 )
 
+/**
+ *  @route GET cafes/:cafeId
+ *  @desc get a cafe detail
+ *  @access Private
+ */
 router.get(
     "/:cafeId",
     async(req: Request, res: Response) => {
@@ -41,7 +53,6 @@ router.get(
         
         try{
             if (!mongoose.isValidObjectId(cafeId)){
-                console.log("invalid");
                 throw(Error(responseMessage.INVALID_IDENTIFIER));
             }
             else{

@@ -9,6 +9,9 @@ const getCafeLocationList = async (tags) => {
         'tagIdx': { $in: tags
         }
     }).select('_id');
+    if (tags.length != tag_ids.length){
+        throw Error(responseMessage.INVALID_IDENTIFIER);
+    }
     let tagList: mongoose.Types.ObjectId[]= []
     for (let tag of tag_ids){
         tagList.push(tag._id);
@@ -31,6 +34,9 @@ const getCafeLocationList = async (tags) => {
             longitude: cafe.longitude
         }
         cafeLocationList.push(location)
+    }
+    if (cafeLocationList.length == 0){
+        throw Error(responseMessage.NO_CONTENT);
     }
     return cafeLocationList;
 }
