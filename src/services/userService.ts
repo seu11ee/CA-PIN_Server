@@ -56,7 +56,6 @@ const signupUser = async (nickname, email, password) => {
         password,
         nickname,
         created_at
-        // now
     });
 
     // Encrypt password

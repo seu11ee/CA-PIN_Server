@@ -29,11 +29,11 @@ router.post(
             const user = await userService.loginUser(email, password);
             const userToken = await userService.generateToken(user._id);
             return res.status(statusCode.OK).json({
-                user: {
+                message: responseMessage.SIGN_IN_SUCCESS,
+                loginData: {
                     nickname: user.nickname,
                     token: userToken
                 },
-                message: responseMessage.SIGN_IN_SUCCESS
             });
         } catch (error) {
             switch (error.message) {
@@ -72,7 +72,6 @@ router.post(
 
         try {
             const user = await userService.signupUser(nickname, email, password);
-            // const token
             return res.status(statusCode.OK).json({
                 message: responseMessage.SIGN_UP_SUCCESS
             });
