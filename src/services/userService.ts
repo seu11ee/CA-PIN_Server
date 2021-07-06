@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
-// import jwt from "jsonwebtoken";
-// import config from "../config";
+import jwt from "jsonwebtoken";
+import config from "../config";
 import User from "../models/User";
 // import { IUser, IUserOutputDTO } from "../interfaces/IUser";
 const responseMessage = require("../modules/responseMessage");
@@ -21,6 +21,19 @@ const loginUser = async(email, password) => {
     }
     
     return user
+};
+
+const generateToken = async(user_id) => {
+    const token = jwt.sign(
+        {sub: user_id},
+        'secret_key',
+        { expiresIn: 86400 },        
+    );
+
+    var decoded_data = jwt.verify(token, 'secret_key');
+    // console.log(user_id)
+    // console.log(decoded_data.sub)
+    return token
 };
 
 const signupUser = async (nickname, email, password) => {
@@ -51,21 +64,6 @@ const signupUser = async (nickname, email, password) => {
     user.password = await bcrypt.hash(password, salt);
     
     await user.save();
-    
-    // const payload = {
-    //     user: {
-    //         id: userId.Objectid,
-    //     }
-    // };
-    // jwt.sign(
-    //     payload,
-    //     config.jwtSecret,
-    //     { expiresIn: 36000 },
-    //     (err, token) => {
-    //         if (err) throw err;
-    //         responseMessage.json({token});
-    //     }
-    // );
 
     // 카테고리 1개 생성해줘야함
     // await createDefaultCategory(user.Objectid);
@@ -83,5 +81,6 @@ const getUserById = async (id) => {
 
 module.exports = {
     loginUser,
-    signupUser
+    signupUser,
+    generateToken
 }

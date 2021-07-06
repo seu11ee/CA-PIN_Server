@@ -27,12 +27,13 @@ router.post(
 
         try {
             const user = await userService.loginUser(email, password);
-
+            const userToken = await userService.generateToken(user._id);
             return res.status(statusCode.OK).json({
                 user: {
-                    nickname: user.nickname
+                    nickname: user.nickname,
+                    token: userToken
                 },
-                message: "로그인 성공"
+                message: responseMessage.SIGN_IN_SUCCESS
             });
         } catch (error) {
             switch (error.message) {
@@ -79,7 +80,7 @@ router.post(
                     password: user.password
                 },
                 // token: token,
-                message: '유저 생성 성공'
+                message: responseMessage.SIGN_UP_SUCCESS
             });
 
         } catch (error) {
