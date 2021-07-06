@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import config from "../config";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/User";
@@ -23,15 +24,13 @@ const loginUser = async(email, password) => {
 };
 
 const generateToken = async(user_id) => {
+    // Return jsonwebtoken
     const token = jwt.sign(
-        {sub: user_id},
-        'secret_key',
-        { expiresIn: 86400 },        
-    );
+        { sub: user_id }, 
+        config.jwtSecret, 
+        { expiresIn: 86400 });
 
-    var decoded_data = jwt.verify(token, 'secret_key');
-    // console.log(user_id)
-    // console.log(decoded_data.sub)
+    // console.log(token)
     return token
 };
 
