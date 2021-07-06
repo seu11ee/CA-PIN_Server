@@ -74,12 +74,6 @@ router.post(
             const user = await userService.signupUser(nickname, email, password);
             // const token
             return res.status(statusCode.OK).json({
-                user: {
-                    nickname: user.nickname,
-                    email: user.email,
-                    password: user.password
-                },
-                // token: token,
                 message: responseMessage.SIGN_UP_SUCCESS
             });
 
