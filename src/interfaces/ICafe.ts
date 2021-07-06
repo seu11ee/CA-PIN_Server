@@ -13,5 +13,11 @@ export interface ICafe{
     closetime?: string;
     closetimeHoliday?: string;
     offday?: [number];
-    rating: number;
+    rating?: number;
+}
+
+export interface ICafeLocationDTO{
+    _id: string;
+    latitude: number;
+    longitude: number;
 }

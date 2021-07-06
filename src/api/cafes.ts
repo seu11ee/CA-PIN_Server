@@ -1,43 +1,35 @@
 import express, { Request, Response } from "express";
 const router = express.Router();
+const cafeService = require("../services/cafeService");
+const statusCode = require("../modules/statusCode");
+const responseMessage = require("../modules/responseMessage");
 
-import Tag from "../models/Tag";
-import Cafe from "../models/Cafe";
 /*
 테스트용 api
 **/
 router.get(
     "/",
     async(req: Request, res: Response) => {
-        const tag = "60dc1623d2c7be7b98198014"
-        const tag2 = "60dc17698a5e06c2a33645d2"
-        console.log(req.query.tags);
-        console.log(req.query.userid);
-        try{
-            // var cafes = await Cafe.find().populate({
-            //     path:"tags",
-            //     match:{ _id:tag}
-            // });
-            if (req.query.tags){
-                var cafes = await Cafe.find({
-                    tags:{"$all":[tag]}
-                }).populate("tags");
-    
-                if (!cafes){
-                    return res.status(204).send();
-                }
-                return res.json({cafes:cafes});
+        const tagQuery = req.query.tags;
+        var tags: number[] = []
+        try {
+            if (tagQuery){
+                tags = (tagQuery).split(",").map(x=>+x);
             }
-            else{
-                var cafes = await Cafe.find();
-                return res.json({cafes:cafes});
+            const cafeLocationList = await cafeService.getCafeLocationList(tags);
+            if (cafeLocationList.length == 0){
+                return res.status(statusCode.NO_CONTENT).send();
             }
-            
-            
-        } catch (error){
+            return res.status(statusCode.OK).json({
+                message: responseMessage.CAFE_LOCATION_SUCCESS,
+                cafes: cafeLocationList
+            });
+        } catch (error) {
             console.error(error.message);
-            res.status(500).send({message:"Server Error"});
+            res.status(500).send({message: responseMessage.INTERNAL_SERVER_ERROR});
         }
+      
+    
     }
 )
 
