@@ -43,7 +43,7 @@ const signupUser = async (nickname, email, password) => {
     const alreadyNickname = await User.findOne({nickname});
     console.log(alreadyNickname);
 
-    if (alreadyEmail != null && alreadyNickname != null) {
+    if (alreadyEmail != null) {
         throw Error(responseMessage.ALREADY_EMAIL);
     } else if (alreadyNickname != null) {
         throw Error(responseMessage.ALREADY_NICKNAME);
