@@ -1,17 +1,17 @@
 export interface IUser {
-    email: String;
-    password: String;
-    nickname: String;
-    cafeti?: String;
-    profileImg?: String;
-    created_at: Date;
+    email: string;
+    password: string; 
+    nickname: string;
+    cafeti?: string;
+    profileImg?: string;
+    created_at?: Date;
     deleted_at?: Date;
 }
 
 export interface IUserOutputDTO {
-    email: String;
-    password: String;
-    nickname: String;
-    cafeti?: String;
-    profileImg?: String;
+    email: string;
+    password: string;
+    nickname: string;
+    cafeti?: string;
+    profileImg?: string;
 }
