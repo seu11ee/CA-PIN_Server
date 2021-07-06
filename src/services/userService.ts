@@ -68,15 +68,6 @@ const signupUser = async (nickname, email, password) => {
     return user;
 }
 
-const getUserById = async (id) => {
-    const user = await User.findOne({id});
-    if (user == null) {
-        throw Error(responseMessage.READ_USER_FAIL)
-    } else {
-        return user;
-    }
-};
-
 module.exports = {
     loginUser,
     signupUser,
