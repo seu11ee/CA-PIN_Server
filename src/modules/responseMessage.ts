@@ -4,6 +4,8 @@ module.exports = {
     OUT_OF_VALUE: "파라미터 값이 잘못 되었습니다.",
     NEED_LOGIN: '로그인이 필요합니다.',
     CANT_ACCESS: '접근할 수 없습니다.',
+    INVALID_IDENTIFIER: '유효하지 않은 식별자',
+    NO_CONTENT:"데이터가 없습니다.",
   
     // TOKEN
     EXPIRED_TOKEN: '만료된 토큰',
@@ -49,7 +51,6 @@ module.exports = {
     CAFE_LOCATION_SUCCESS: "카페 위치 목록 조회 성공",
     CAFE_LOCATION_FAIL: "카페 위치 목록 조회 실패",
     CAFE_DETAIL_SUCCESS: "카페 상세 정보 조회 성공",
-    CAFE_DETAIL_FAIL: "카페 상세 정보 조회 실패",
 
     // CATEGORY
     CREATE_CATEGORY_SUCCESS: "카테고리 생성 성공",
