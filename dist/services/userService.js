@@ -13,7 +13,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const User_1 = __importDefault(require("../models/User"));
+// import { IUser, IUserOutputDTO } from "../interfaces/IUser";
 const responseMessage = require("../modules/responseMessage");
 const loginUser = (email, password) => __awaiter(void 0, void 0, void 0, function* () {
     let user = yield User_1.default.findOne({ email });
@@ -28,51 +30,38 @@ const loginUser = (email, password) => __awaiter(void 0, void 0, void 0, functio
     }
     return user;
 });
+const generateToken = (user_id) => __awaiter(void 0, void 0, void 0, function* () {
+    const token = jsonwebtoken_1.default.sign({ sub: user_id }, 'secret_key', { expiresIn: 86400 });
+    var decoded_data = jsonwebtoken_1.default.verify(token, 'secret_key');
+    // console.log(user_id)
+    // console.log(decoded_data.sub)
+    return token;
+});
 const signupUser = (nickname, email, password) => __awaiter(void 0, void 0, void 0, function* () {
     // email, password, nickname으로 유저 생성
     // 이메일 중복 확인
-    const alreadyEmail = yield User_1.default.findOne({
-        where: {
-            email
-        }
-    });
+    const alreadyEmail = yield User_1.default.findOne({ email });
+    console.log(alreadyEmail);
     // 닉네임 중복 확인
-    const alreadyNickname = yield User_1.default.findOne({
-        where: {
-            nickname
-        }
-    });
-    if (alreadyEmail != null) {
+    const alreadyNickname = yield User_1.default.findOne({ nickname });
+    console.log(alreadyNickname);
+    if (alreadyEmail != null && alreadyNickname != null) {
         throw Error(responseMessage.ALREADY_EMAIL);
     }
     else if (alreadyNickname != null) {
         throw Error(responseMessage.ALREADY_NICKNAME);
     }
-    // let now = Date.now();
+    let created_at = Date.now();
     const user = new User_1.default({
         email,
         password,
         nickname,
-        // now
+        created_at
     });
     // Encrypt password
     const salt = yield bcryptjs_1.default.genSalt(10);
     user.password = yield bcryptjs_1.default.hash(password, salt);
     yield user.save();
-    // const payload = {
-    //     user: {
-    //         id: userId.Objectid,
-    //     }
-    // };
-    // jwt.sign(
-    //     payload,
-    //     config.jwtSecret,
-    //     { expiresIn: 36000 },
-    //     (err, token) => {
-    //         if (err) throw err;
-    //         responseMessage.json({token});
-    //     }
-    // );
     // 카테고리 1개 생성해줘야함
     // await createDefaultCategory(user.Objectid);
     return user;
@@ -88,6 +77,7 @@ const getUserById = (id) => __awaiter(void 0, void 0, void 0, function* () {
 });
 module.exports = {
     loginUser,
-    signupUser
+    signupUser,
+    generateToken
 };
 //# sourceMappingURL=userService.js.map

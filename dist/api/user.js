@@ -23,7 +23,38 @@ const responseMessage = require("../modules/responseMessage");
  *  @desc Authenticate user & get token(로그인)
  *  @access Public
  */
-router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post("/login", [
+    express_validator_1.check("email", "Please include a valid email").not().isEmpty(),
+    express_validator_1.check("password", "password is required").not().isEmpty(),
+], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const errors = express_validator_1.validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+    const { email, password } = req.body;
+    try {
+        const user = yield userService.loginUser(email, password);
+        const userToken = yield userService.generateToken(user._id);
+        return res.status(statusCode.OK).json({
+            message: responseMessage.SIGN_IN_SUCCESS,
+            loginData: {
+                nickname: user.nickname,
+                token: userToken
+            },
+        });
+    }
+    catch (error) {
+        switch (error.message) {
+            case responseMessage.NO_EMAIL:
+                res.status(400).send({ message: error.message });
+                break;
+            case responseMessage.MISS_MATCH_PW:
+                res.status(400).send({ message: error.message });
+                break;
+            default:
+                res.status(500).send({ message: responseMessage.INTERNAL_SERVER_ERROR });
+        }
+    }
 }));
 /**
  *  @route Post api/user/signup
@@ -42,15 +73,8 @@ router.post("/signup", [
     const { nickname, email, password } = req.body;
     try {
         const user = yield userService.signupUser(nickname, email, password);
-        // const token
         return res.status(statusCode.OK).json({
-            user: {
-                nickname: user.nickname,
-                email: user.email,
-                password: user.password
-            },
-            // token: token,
-            message: '유저 생성 성공'
+            message: responseMessage.SIGN_UP_SUCCESS
         });
     }
     catch (error) {
