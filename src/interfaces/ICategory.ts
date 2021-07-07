@@ -4,4 +4,5 @@ export interface ICategory {
     user: mongoose.Types.ObjectId;
     color: string;
     name: string;
+    isDefault: boolean;
 }
