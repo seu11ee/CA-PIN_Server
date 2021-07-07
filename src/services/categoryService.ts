@@ -6,7 +6,7 @@ import User from "../models/User";
 import Cafe from "../models/Cafe";
 const responseMessage = require("../modules/responseMessage");
 
-const createCategory = async(user_id, colorIdx, categoryName) => {
+const createCategory = async(user_id, colorIdx, categoryName, isDefault) => {
     const hexacode = await CategoryColor.findOne({color_id: colorIdx},{_id:false}).select("color_code");
     const user = await User.findOne({_id: user_id}).select("_id");
     const cafeList: mongoose.Types.ObjectId[]= [] 
@@ -23,7 +23,8 @@ const createCategory = async(user_id, colorIdx, categoryName) => {
         cafes: cafeList,
         user: user_id,
         color: hexacode.color_code,
-        name: categoryName
+        name: categoryName,
+        isDefault: isDefault
     });
 
     await category.save();
@@ -60,7 +61,23 @@ const addCafe = async(cafe_ids, category_id) => {
       });
 };
 
+const deleteCategory = async(category_id) => {
+    const category = await Category.findOne({_id: category_id});
+    if (category == null) {
+        throw Error(responseMessage.INVALID_IDENTIFIER);
+    } else if (category.isDefault) {
+        throw Error(responseMessage.DELETE_DEFAULT_FAIL);
+    }
+
+    await Category.remove({_id: category._id}, function(err) {
+        if (err) {
+            throw err;
+        }
+    });
+}
+
 module.exports = {
     createCategory,
     addCafe,
+    deleteCategory
 }

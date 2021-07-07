@@ -66,7 +66,7 @@ const signupUser = async (nickname, email, password) => {
 
     // 기본 카테고리 생성
     const newbi = await User.findOne({ email });
-    categoryService.createCategory(newbi._id, 0, "기본 카테고리");
+    categoryService.createCategory(newbi._id, 0, "기본 카테고리", true);
     return user;
 }
 
