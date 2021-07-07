@@ -27,12 +27,12 @@ router.post(
             return res.status(statusCode.BAD_REQUEST).json({errors: errors.array()});
         }
 
-        const {color_id, category_name} = req.body;
+        const {colorIdx, categoryName} = req.body;
 
         try {
             console.log(res.locals.tokenValue);
             console.log(res.locals.userId);
-            const category = await categoryService.createCategory(res.locals.userId, color_id, category_name);  
+            const category = await categoryService.createCategory(res.locals.userId, colorIdx, categoryName);  
             res.status(statusCode.CREATED).json({
                 message: responseMessage.CREATE_CATEGORY_SUCCESS
             });
