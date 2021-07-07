@@ -72,7 +72,7 @@ router.post(
         const {nickname, email, password} = req.body;
 
         try {
-            userService.signupUser(nickname, email, password);
+            await userService.signupUser(nickname, email, password);
 
             return res.status(statusCode.CREATED).json({
                 message: responseMessage.SIGN_UP_SUCCESS

@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import express, { Request, Response } from "express";
 import { check, validationResult } from "express-validator"
 import authChecker from "../middleware/auth"
@@ -57,8 +58,8 @@ router.post(
  router.post(
     "/pin",
     [
-        check("cafe_ids", "cafe_ids is required").not().isEmpty(),
-        check("category_id", "category_id is required").not().isEmpty(),
+        check("cafeIds", "cafe_ids is required").not().isEmpty(),
+        check("categoryId", "category_id is required").not().isEmpty(),
     ],
     authChecker,
     async(req: Request, res: Response, next) => {
@@ -67,12 +68,12 @@ router.post(
             return res.status(statusCode.BAD_REQUEST).json({errors: errors.array()});
         }
 
-        const {cafe_ids, category_id} = req.body;
+        const {cafeIds, categoryId} = req.body;
 
         try {
             console.log(res.locals.tokenValue);
             console.log(res.locals.userId);
-            await categoryService.addCafe(cafe_ids, category_id);  
+            await categoryService.addCafe(cafeIds, categoryId);  
             res.status(statusCode.OK).json({
                 message: responseMessage.ADD_PIN_SUCCESS
             });
@@ -99,28 +100,26 @@ router.post(
  *  @access Private
  */
  router.delete(
-    "/",
+    "/:categoryId",
     [
-        check("category_id", "category_id is required").not().isEmpty(),
+        check("categoryId", "categoryId is required").not().isEmpty(),
     ],
     authChecker,
     async(req: Request, res: Response, next) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()){
-            return res.status(statusCode.BAD_REQUEST).json({errors: errors.array()});
-        }
-
-        const {category_id} = req.body;
-
+        const categoryId = req.params.categoryId;
         try {
-            console.log(res.locals.tokenValue);
-            console.log(res.locals.userId);
-            await categoryService.deleteCategory(category_id);
-            res.status(statusCode.OK).json({
-                message: responseMessage.DELETE_CATEGORY_SUCCESS
-            });
-            next();
-
+            if (!mongoose.isValidObjectId(categoryId)){
+                throw(Error(responseMessage.INVALID_IDENTIFIER));
+            }
+            else{
+                console.log(res.locals.tokenValue);
+                console.log(res.locals.userId);
+                await categoryService.deleteCategory(categoryId);
+                res.status(statusCode.OK).json({
+                    message: responseMessage.DELETE_CATEGORY_SUCCESS
+                });
+                next();
+            }
         } catch (error) {
             switch (error.message) {
                 case responseMessage.DELETE_DEFAULT_FAIL:
