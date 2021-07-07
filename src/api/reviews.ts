@@ -29,6 +29,7 @@ router.get(
                 case responseMessage.NO_CONTENT:
                     res.status(statusCode.NO_CONTENT).send();
                 default:
+                    console.log(error.message);
                     res.status(statusCode.INTERNAL_SERVER_ERROR).send({message:responseMessage.INTERNAL_SERVER_ERROR});
             }
         }

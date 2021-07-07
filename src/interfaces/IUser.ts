@@ -19,5 +19,5 @@ export interface IUserOutputDTO {
 export interface IUserReviewDTO {
     _id: string;
     nickname: string;
-    progileImg?: string;
+    profileImg?: string;
 }

@@ -1,18 +1,26 @@
 import Review from "../models/Review";
+import User from "../models/User";
 import { IReviewOutputDTO } from "../interfaces/IReview";
+import { IUserReviewDTO, IUser } from "../interfaces/IUser";
 import mongoose from "mongoose";
+import Cafeti from "../models/Cafeti";
 const responseMessage = require("../modules/responseMessage");
 
 const getCafeReviewList = async(cafeId) => {
-    if (!cafeId){
-        console.log(cafeId);
+    if (!cafeId || !mongoose.isValidObjectId(cafeId)){
         throw Error(responseMessage.INVALID_IDENTIFIER);
     }
-    const reviews = await Review.find().where("cafe").equals(cafeId).populate("user");
 
+    const reviews = await Review.find().where("cafe").equals(cafeId).populate("user","_id nickname profileImg cafeti");
     let reviewDTOList: IReviewOutputDTO[] = []
 
     for (let review of reviews){
+        if (!review.user.profileImg){
+            console.log("here")
+            const cafeti_img= await Cafeti.findOne().where('type').equals(review.user.cafeti).select("img");
+            review.user.profileImg = cafeti_img.img;
+        }
+
         let reviewDTO: IReviewOutputDTO = {
             _id: review._id,
             cafe: review.cafe,
