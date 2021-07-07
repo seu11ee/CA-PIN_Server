@@ -12,6 +12,7 @@ export interface IReview{
 }
 
 export interface IReviewOutputDTO{
+    _id: string;
     cafe: mongoose.Types.ObjectId;
     user: mongoose.Types.ObjectId;
     rating: number;
