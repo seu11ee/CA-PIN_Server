@@ -2,9 +2,10 @@ import mongoose from "mongoose";
 import { ICategory } from "../interfaces/ICategory";
 
 const CategorySchema = new mongoose.Schema ({
-    cafe:{
-        type: mongoose.SchemaTypes.ObjectId,
+    cafes:{
+        type: [mongoose.SchemaTypes.ObjectId],
         ref: "Cafe",
+        required: true
     },
     user:{
         type: mongoose.SchemaTypes.ObjectId,
