@@ -35,4 +35,11 @@ router.get(
     }
 )
 
+router.post(
+    "/:reviewId",
+    async(req: Request, res: Response) => {
+        const reviewId = req.params.reviewId;
+    }
+)
+
 module.exports = router;
