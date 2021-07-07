@@ -20,7 +20,6 @@ const Category_1 = __importDefault(require("../models/Category"));
 const Cafe_1 = __importDefault(require("../models/Cafe"));
 const Review_1 = __importDefault(require("../models/Review"));
 const Tag_1 = __importDefault(require("../models/Tag"));
-
 const connectDB = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield mongoose_1.default.connect(config_1.default.mongoURI, {
@@ -29,7 +28,6 @@ const connectDB = () => __awaiter(void 0, void 0, void 0, function* () {
             useUnifiedTopology: true,
         });
         console.log("Mongoose Connected ...");
-      
         User_1.default.createCollection().then(function (collection) {
             console.log("User Collection is created!");
         });

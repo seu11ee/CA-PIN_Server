@@ -11,6 +11,7 @@ db_1.default();
 app.use(express_1.default.json()); // [3]
 // Define Routes
 app.use("/cafes", require("./api/cafes")); // [4]
+app.use("/user", require("./api/user"));
 // error handler
 app.use(function (err, req, res, next) {
     // set locals, only providing error in development

@@ -33,7 +33,8 @@ const ReviewSchema = new mongoose_1.default.Schema({
         type: [Number]
     },
     content: {
-        type: String
+        type: String,
+        required: true
     }
 }, {
     collection: "reviews"

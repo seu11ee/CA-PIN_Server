@@ -24,11 +24,9 @@ const UserSchema = new mongoose.Schema ({
     },
     created_at: {
         type: Date,
-        required: true,
     },
     deleted_at: {
         type: Date,
-        required: true,
     }
 },
 {
