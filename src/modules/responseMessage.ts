@@ -13,7 +13,7 @@ module.exports = {
     SUCCESS_TOKEN: '토큰 발급 성공',
 
     // SIGNUP, LOGIN
-    SIGN_UP_SUCCESS: "회원 가입 성공.",
+    SIGN_UP_SUCCESS: "회원 가입 및 기본카테고리 생성 성공.",
     SIGN_UP_FAIL: "회원 가입 실패.",
     SIGN_IN_SUCCESS: "로그인 성공.",
     SIGN_IN_FAIL: "로그인 실패.",

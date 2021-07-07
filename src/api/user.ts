@@ -17,7 +17,7 @@ router.post(
         check("email", "Please include a valid email").not().isEmpty(),
         check("password", "password is required").not().isEmpty(),
     ],
-    async(req: Request, res: Response) => {
+    async(req: Request, res: Response, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()){
             return res.status(statusCode.BAD_REQUEST).json({errors: errors.array()});
@@ -28,13 +28,14 @@ router.post(
         try {
             const user = await userService.loginUser(email, password);
             const userToken = await userService.generateToken(user._id);
-            return res.status(statusCode.OK).json({
+            res.status(statusCode.OK).json({
                 message: responseMessage.SIGN_IN_SUCCESS,
                 loginData: {
                     nickname: user.nickname,
                     token: userToken
                 },
             });
+            next();
         } catch (error) {
             switch (error.message) {
                 case responseMessage.NO_EMAIL:
@@ -71,7 +72,8 @@ router.post(
         const {nickname, email, password} = req.body;
 
         try {
-            const user = await userService.signupUser(nickname, email, password);
+            userService.signupUser(nickname, email, password);
+
             return res.status(statusCode.CREATED).json({
                 message: responseMessage.SIGN_UP_SUCCESS
             });

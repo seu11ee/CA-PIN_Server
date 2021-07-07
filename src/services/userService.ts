@@ -3,6 +3,7 @@ import config from "../config";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/User";
+const categoryService = require("../services/categoryService");
 // import { IUser, IUserOutputDTO } from "../interfaces/IUser";
 const responseMessage = require("../modules/responseMessage");
 
@@ -63,8 +64,9 @@ const signupUser = async (nickname, email, password) => {
     
     await user.save();
 
-    // 카테고리 1개 생성해줘야함
-    // await createDefaultCategory(user.Objectid);
+    // 기본 카테고리 생성
+    const newbi = await User.findOne({ email });
+    categoryService.createCategory(newbi._id, 0, "기본 카테고리");
     return user;
 }
 
