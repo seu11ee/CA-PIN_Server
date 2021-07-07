@@ -4,6 +4,10 @@ import mongoose from "mongoose";
 const responseMessage = require("../modules/responseMessage");
 
 const getCafeReviewList = async(cafeId) => {
+    if (!cafeId){
+        console.log(cafeId);
+        throw Error(responseMessage.INVALID_IDENTIFIER);
+    }
     const reviews = await Review.find().where("cafe").equals(cafeId).populate("user");
 
     let reviewDTOList: IReviewOutputDTO[] = []

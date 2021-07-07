@@ -12,11 +12,11 @@ const responseMessage = require("../modules/responseMessage");
  */
 
 router.get(
-    "/:cafeId",
+    "/",
     async(req: Request, res: Response) => {
-        const cafeId = req.params.cafeId;
+        const cafeId = req.query.cafe;
         try{
-            const reviews = await reviewService(cafeId);
+            const reviews = await reviewService.getCafeReviewList(cafeId);
     
             return res.status(statusCode.OK).json({
                 message:responseMessage.REVIEW_SUCCESS,
@@ -24,6 +24,8 @@ router.get(
             });
         } catch (error) {
             switch (error.message){
+                case responseMessage.INVALID_IDENTIFIER:
+                    res.status(statusCode.BAD_REQUEST).send({message:error.message});
                 case responseMessage.NO_CONTENT:
                     res.status(statusCode.NO_CONTENT).send();
                 default:
@@ -32,3 +34,5 @@ router.get(
         }
     }
 )
+
+module.exports = router;
