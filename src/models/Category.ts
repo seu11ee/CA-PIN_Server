@@ -5,7 +5,6 @@ const CategorySchema = new mongoose.Schema ({
     cafe:{
         type: mongoose.SchemaTypes.ObjectId,
         ref: "Cafe",
-        required: true
     },
     user:{
         type: mongoose.SchemaTypes.ObjectId,
@@ -13,7 +12,7 @@ const CategorySchema = new mongoose.Schema ({
         required: true
     },
     color: {
-        type: Number,
+        type: String,
         required: true
     },
     name: {
