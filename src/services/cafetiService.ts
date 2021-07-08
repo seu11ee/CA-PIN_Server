@@ -11,7 +11,7 @@ const fetchCafetiResult = async(userId, answers) => {
     } else if (answers.length != 4) {
         throw createError(statusCode.BAD_REQUEST, responseMessage.INVALID_IDENTIFIER);
     }
-    let result: String = ""
+    let result: string = ""
     switch (answers[0]) {
         case 0:
             result += "C"
