@@ -6,6 +6,7 @@ const createError = require('http-errors');
 const statusCode = require("../modules/statusCode");
 const categoryService = require("../services/categoryService");
 const responseMessage = require("../modules/responseMessage");
+const nd = require("../modules/dateCalculate");
 
 const loginUser = async(email, password) => {
     let user = await User.findOne({ email });
@@ -48,7 +49,7 @@ const signupUser = async (nickname, email, password) => {
         throw createError(statusCode.BAD_REQUEST,responseMessage.ALREADY_NICKNAME);
     }
 
-    let created_at = Date.now();
+    let created_at = nd.getDate();
     const user = new User({
         email,
         password,
