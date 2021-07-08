@@ -17,7 +17,18 @@ const UserSchema = new mongoose.Schema ({
         unique: true
     },
     cafeti: {
-        type: String,
+        cafetiIdx: {
+            type: Number
+        },
+        type: {
+            type: String
+        },
+        description: {
+            type: String
+        },
+        img: {
+            type: String
+        } 
     },
     profileImg: {
         type: String,

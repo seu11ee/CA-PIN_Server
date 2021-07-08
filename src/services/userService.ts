@@ -1,23 +1,25 @@
-import mongoose from "mongoose";
 import config from "../config";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/User";
+const createError = require('http-errors');
+const statusCode = require("../modules/statusCode");
 const categoryService = require("../services/categoryService");
 const responseMessage = require("../modules/responseMessage");
+const nd = require("../modules/dateCalculate");
 
 const loginUser = async(email, password) => {
     let user = await User.findOne({ email });
 
     // 없는 유저
     if (!user) {
-        throw Error(responseMessage.NO_EMAIL);
+        throw createError(statusCode.NOT_FOUND,responseMessage.NO_EMAIL);
     }
 
     // 비밀번호 불일치
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-        throw Error(responseMessage.MISS_MATCH_PW);
+        throw createError(statusCode.BAD_REQUEST,responseMessage.MISS_MATCH_PW);
     }
     
     return user
@@ -42,12 +44,12 @@ const signupUser = async (nickname, email, password) => {
     const alreadyNickname = await User.findOne({nickname});
 
     if (alreadyEmail != null) {
-        throw Error(responseMessage.ALREADY_EMAIL);
+        throw createError(statusCode.BAD_REQUEST,responseMessage.ALREADY_EMAIL);
     } else if (alreadyNickname != null) {
-        throw Error(responseMessage.ALREADY_NICKNAME);
+        throw createError(statusCode.BAD_REQUEST,responseMessage.ALREADY_NICKNAME);
     }
 
-    let created_at = Date.now();
+    let created_at = nd.getDate();
     const user = new User({
         email,
         password,
