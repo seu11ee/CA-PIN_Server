@@ -44,7 +44,33 @@ const checkIfReviewed = async (cafeId,userId) => {
     return true;
 }
 
+const createReview = async(cafeId,userId,content,rating,recommend?,imgs?) => {
+    try {
+        const review = new Review({
+            user: userId,
+            cafe: cafeId,
+            content: content,
+            recommend: recommend,
+            rating: rating,
+            imgs:imgs,
+            created_at: Date.now()
+        });
+
+        console.log(Date());
+        console.log(review);
+        await review.save();
+
+        return review;
+     
+        
+    } catch (error) {
+        console.log(error.message);
+        throw createError(responseMessage.INTERNAL_SERVER_ERROR);
+    }
+}
+
 module.exports = {
     getCafeReviewList,
-    checkIfReviewed
+    checkIfReviewed,
+    createReview
 }
