@@ -21,3 +21,10 @@ export interface ICafeLocationDTO{
     latitude: number;
     longitude: number;
 }
+
+export interface ICafeCategoryDTO{
+    name: string;
+    tags: mongoose.Types.ObjectId;
+    address: string;
+    rating?: number;
+}

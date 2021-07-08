@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { ICafe } from "../interfaces/ICafe";
+import { ICafeCategoryDTO } from "../interfaces/ICafe";
 import Category from "../models/Category";
 import CategoryColor from "../models/CategoryColor";
 import User from "../models/User";
@@ -84,9 +84,23 @@ const fetchMyCategory = async(userId) => {
     return categoryList
 }
 
+const fetchCafesInCategory = async(categoryId, userId) => {
+    const whatCategory = await Category.findOne({_id: categoryId, user: userId}).select("cafes")
+    if (whatCategory == null) {
+        throw Error(responseMessage.INVALID_IDENTIFIER)
+    }
+    const cafes: ICafeCategoryDTO[] = []
+    for (let cafe of whatCategory.cafes) {
+        cafes.push(await Cafe.findOne({_id: cafe}).select("_id name tags address rating"));
+    }
+
+    return cafes
+}
+
 module.exports = {
     createCategory,
     addCafe,
     deleteCategory,
     fetchMyCategory,
+    fetchCafesInCategory
 }

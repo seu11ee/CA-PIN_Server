@@ -135,6 +135,42 @@ router.post(
     }
 );
 
+/**
+ *  @route Get api/category/
+ *  @desc fetch cafes in category(카테고리에 핀된 카페들 모아보기)
+ *  @access Private
+ */
+ router.get(
+    "/:categoryId/cafes",
+    authChecker
+    ,
+    async(req: Request, res: Response, next) => {
+        const categoryId = req.params.categoryId;
+        try {
+            if (!mongoose.isValidObjectId(categoryId)){
+                throw(Error(responseMessage.INVALID_IDENTIFIER));
+            }
+            else{
+                console.log(res.locals.tokenValue);
+                console.log(res.locals.userId);
+                const cafeList = await categoryService.fetchCafesInCategory(categoryId, res.locals.userId);
+                res.status(statusCode.OK).json({
+                    message: responseMessage.READ_CATEGORY_CAFE_SUCCESS,
+                    cafeDetail: cafeList
+                });
+                next();
+            }
+        } catch (error) {
+            switch (error.message) {
+                case responseMessage.INVALID_IDENTIFIER:
+                    res.status(statusCode.BAD_REQUEST).send({message: error.message});
+                    break;
+                default:
+                    res.status(statusCode.INTERNAL_SERVER_ERROR).send({message: error.message});
+            }
+        }
+    }
+);
 
 
 module.exports = router;
