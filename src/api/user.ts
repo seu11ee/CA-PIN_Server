@@ -19,7 +19,7 @@ router.post(
         check("email", "Please include a valid email").not().isEmpty(),
         check("password", "password is required").not().isEmpty(),
     ],
-    async(req: Request, res: Response, next) => {
+    async(req: Request, res: Response) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()){
             return res.status(statusCode.BAD_REQUEST).json({errors: errors.array()});
@@ -37,7 +37,6 @@ router.post(
                     token: userToken
                 },
             });
-            next();
         } catch (error) {
             switch (error.message) {
                 case responseMessage.NO_EMAIL:
@@ -47,7 +46,7 @@ router.post(
                     res.status(statusCode.BAD_REQUEST).send({message: error.message});
                     break;
                 default:
-                    res.status(statusCode.INTERNAL_SERVER_ERROR).send({message: error.message});
+                    res.status(statusCode.INTERNAL_SERVER_ERROR).send({message: responseMessage.INTERNAL_SERVER_ERROR});
             }
         }
     }
@@ -89,7 +88,7 @@ router.post(
                     res.status(statusCode.BAD_REQUEST).send({message: error.message});
                     break;
                 default:
-                    res.status(statusCode.INTERNAL_SERVER_ERROR).send({message: error.message});
+                    res.status(statusCode.INTERNAL_SERVER_ERROR).send({message: responseMessage.INTERNAL_SERVER_ERROR});
             }
         }
     }
@@ -118,7 +117,7 @@ router.post(
                     res.status(statusCode.BAD_REQUEST).send({message: error.message});
                     break;
                 default:
-                    res.status(statusCode.INTERNAL_SERVER_ERROR).send({message: error.message});
+                    res.status(statusCode.INTERNAL_SERVER_ERROR).send({message: responseMessage.INTERNAL_SERVER_ERROR});
             }
         }
     }
