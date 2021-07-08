@@ -2,8 +2,8 @@ import mongoose from "mongoose";
 import { ICategory } from "../interfaces/ICategory";
 
 const CategorySchema = new mongoose.Schema ({
-    cafe:{
-        type: mongoose.SchemaTypes.ObjectId,
+    cafes:{
+        type: [mongoose.SchemaTypes.ObjectId],
         ref: "Cafe",
         required: true
     },
@@ -13,11 +13,15 @@ const CategorySchema = new mongoose.Schema ({
         required: true
     },
     color: {
-        type: Number,
+        type: String,
         required: true
     },
     name: {
         type: String,
+        required: true
+    },
+    isDefault: {
+        type: Boolean,
         required: true
     }
 },

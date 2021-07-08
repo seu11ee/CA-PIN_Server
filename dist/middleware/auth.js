@@ -7,7 +7,7 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const config_1 = __importDefault(require("../config"));
 exports.default = (req, res, next) => {
     // Get token from header
-    const token = req.header("x-auth-token");
+    const token = req.header("token");
     // Check if not token
     if (!token) {
         return res.status(401).json({ msg: "No token, authorization denied" });
@@ -15,7 +15,9 @@ exports.default = (req, res, next) => {
     // Verify token
     try {
         const decoded = jsonwebtoken_1.default.verify(token, config_1.default.jwtSecret);
-        req.body.user = decoded.user;
+        res.locals.tokenValue = token;
+        res.locals.userId = decoded.sub;
+        // req.body.user = decoded.user;
         next();
     }
     catch (err) {

@@ -1,8 +1,10 @@
 import express, { Request, Response } from "express";
 import { check, validationResult } from "express-validator"
+import authChecker from "../middleware/auth"
 const router = express.Router();
 
 const userService = require("../services/userService");
+const categoryService = require("../services/categoryService");
 const statusCode = require("../modules/statusCode");
 const responseMessage = require("../modules/responseMessage");
 
@@ -28,7 +30,7 @@ router.post(
         try {
             const user = await userService.loginUser(email, password);
             const userToken = await userService.generateToken(user._id);
-            return res.status(statusCode.OK).json({
+            res.status(statusCode.OK).json({
                 message: responseMessage.SIGN_IN_SUCCESS,
                 loginData: {
                     nickname: user.nickname,
@@ -71,7 +73,8 @@ router.post(
         const {nickname, email, password} = req.body;
 
         try {
-            const user = await userService.signupUser(nickname, email, password);
+            await userService.signupUser(nickname, email, password);
+
             return res.status(statusCode.CREATED).json({
                 message: responseMessage.SIGN_UP_SUCCESS
             });
@@ -90,5 +93,36 @@ router.post(
         }
     }
 );
+
+/**
+ *  @route Get api/user/categoryList
+ *  @desc fetch my category list(내 카테고리-마이페이지)
+ *  @access Private
+ */
+ router.get(
+    "/categoryList",
+    authChecker
+    ,
+    async(req: Request, res: Response) => {
+        try {
+            const myCategoryList = await categoryService.fetchMyCategory(res.locals.userId);
+            return res.status(statusCode.OK).json({
+                message: responseMessage.READ_MY_CATEGORY_SUCCESS,
+                myCategoryList: myCategoryList
+            });
+
+        } catch (error) {
+            switch (error.message) {
+                case responseMessage.INVALID_IDENTIFIER:
+                    res.status(statusCode.BAD_REQUEST).send({message: error.message});
+                    break;
+                default:
+                    res.status(statusCode.INTERNAL_SERVER_ERROR).send({message: responseMessage.INTERNAL_SERVER_ERROR});
+            }
+        }
+    }
+);
+
+
 
 module.exports = router;

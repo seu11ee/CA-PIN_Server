@@ -3,7 +3,7 @@ import config from "../config";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/User";
-// import { IUser, IUserOutputDTO } from "../interfaces/IUser";
+const categoryService = require("../services/categoryService");
 const responseMessage = require("../modules/responseMessage");
 
 const loginUser = async(email, password) => {
@@ -23,10 +23,10 @@ const loginUser = async(email, password) => {
     return user
 };
 
-const generateToken = async(user_id) => {
+const generateToken = async(userId) => {
     // Return jsonwebtoken
     const token = jwt.sign(
-        { sub: user_id }, 
+        { sub: userId }, 
         config.jwtSecret, 
         { expiresIn: 86400 });
 
@@ -38,10 +38,8 @@ const signupUser = async (nickname, email, password) => {
     // email, password, nickname으로 유저 생성
     // 이메일 중복 확인
     const alreadyEmail = await User.findOne({ email });
-    console.log(alreadyEmail);
     // 닉네임 중복 확인
     const alreadyNickname = await User.findOne({nickname});
-    console.log(alreadyNickname);
 
     if (alreadyEmail != null) {
         throw Error(responseMessage.ALREADY_EMAIL);
@@ -63,8 +61,9 @@ const signupUser = async (nickname, email, password) => {
     
     await user.save();
 
-    // 카테고리 1개 생성해줘야함
-    // await createDefaultCategory(user.Objectid);
+    // 기본 카테고리 생성
+    const newbi = await User.findOne({ email });
+    categoryService.createCategory(newbi._id, 0, "기본 카테고리", true);
     return user;
 }
 
