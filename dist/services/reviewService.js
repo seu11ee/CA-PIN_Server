@@ -20,11 +20,10 @@ const getCafeReviewList = (cafeId) => __awaiter(void 0, void 0, void 0, function
     if (!cafeId || !mongoose_1.default.isValidObjectId(cafeId)) {
         throw Error(responseMessage.INVALID_IDENTIFIER);
     }
-    const reviews = yield Review_1.default.find().where("cafe").equals(cafeId).populate("user", "_id nickname profileImg cafeti");
+    const reviews = yield Review_1.default.find().where("cafe").equals(cafeId).populate("user", ["_id", "nickname", "profileImg", "cafeti"]);
     let reviewDTOList = [];
     for (let review of reviews) {
         if (!review.user.profileImg) {
-            console.log("here");
             const cafeti_img = yield Cafeti_1.default.findOne().where('type').equals(review.user.cafeti).select("img");
             review.user.profileImg = cafeti_img.img;
         }
