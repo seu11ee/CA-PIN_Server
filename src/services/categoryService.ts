@@ -4,19 +4,19 @@ import Category from "../models/Category";
 import CategoryColor from "../models/CategoryColor";
 import User from "../models/User";
 import Cafe from "../models/Cafe";
+const createError = require('http-errors');
+const statusCode = require("../modules/statusCode");
 const responseMessage = require("../modules/responseMessage");
 
 const createCategory = async(userId, colorIdx, categoryName, isDefault) => {
     const hexacode = await CategoryColor.findOne({color_id: colorIdx},{_id:false}).select("color_code");
     const user = await User.findOne({_id: userId}).select("_id");
     const cafeList: mongoose.Types.ObjectId[]= [] 
-    console.log(hexacode.color_code);
-    console.log(userId);
     
-    if (user == null) {
-        throw Error(responseMessage.READ_USER_FAIL);
-    } else if (hexacode == null) {
-        throw Error(responseMessage.OUT_OF_VALUE);
+    if (!user) {
+        throw createError(statusCode.NOT_FOUND,responseMessage.READ_USER_FAIL);
+    } else if (!hexacode) {
+        throw createError(statusCode.NOT_FOUND,responseMessage.INVALID_IDENTIFIER);
     }
 
     const category = new Category({
@@ -37,10 +37,10 @@ const addCafe = async(cafeIds, categoryId) => {
  
     if (cafeIds.length == 0) {
         // 추가하려는 카페가 없이 넘어온 경우
-        throw Error(responseMessage.BAD_REQUEST);
+        throw createError(statusCode.BAD_REQUEST, responseMessage.OUT_OF_VALUE);
     } else if (category == null) {
         // id가 일치하는 카테고리가 없는 경우
-        throw Error(responseMessage.INVALID_IDENTIFIER);
+        throw createError(statusCode.NOT_FOUND,responseMessage.INVALID_IDENTIFIER);
     }
 
     const cafeList: mongoose.Types.ObjectId[]= []
@@ -48,7 +48,7 @@ const addCafe = async(cafeIds, categoryId) => {
         const cafe = await Cafe.findOne({_id: id});
         if (cafe == null) {
             // id가 일치하는 카페가 없는 경우
-            throw Error(responseMessage.INVALID_IDENTIFIER);
+            throw createError(statusCode.NOT_FOUND,responseMessage.INVALID_IDENTIFIER);
         }
         cafeList.push(cafe._id);
     }
@@ -63,10 +63,10 @@ const addCafe = async(cafeIds, categoryId) => {
 
 const deleteCategory = async(categoryId) => {
     const category = await Category.findOne({_id: categoryId});
-    if (category == null) {
-        throw Error(responseMessage.INVALID_IDENTIFIER);
+    if (!category) {
+        throw createError(statusCode.NOT_FOUND,responseMessage.INVALID_IDENTIFIER);
     } else if (category.isDefault) {
-        throw Error(responseMessage.DELETE_DEFAULT_FAIL);
+        throw createError(statusCode.BAD_REQUEST,responseMessage.DELETE_DEFAULT_FAIL);
     }
 
     await Category.remove({_id: category._id}, function(err) {
@@ -78,16 +78,16 @@ const deleteCategory = async(categoryId) => {
 
 const fetchMyCategory = async(userId) => {
     const categoryList = await Category.find({user: userId}).select("_id cafes color name");
-    if (categoryList == null) {
-        throw Error(responseMessage.INVALID_IDENTIFIER);
+    if (!categoryList) {
+        throw createError(statusCode.NOT_FOUND,responseMessage.INVALID_IDENTIFIER);
     }
     return categoryList
 }
 
 const fetchCafesInCategory = async(categoryId, userId) => {
     const whatCategory = await Category.findOne({_id: categoryId, user: userId}).select("cafes")
-    if (whatCategory == null) {
-        throw Error(responseMessage.INVALID_IDENTIFIER)
+    if (!whatCategory) {
+        throw createError(statusCode.NOT_FOUND,responseMessage.INVALID_IDENTIFIER);
     }
     const cafes: ICafeCategoryDTO[] = []
     for (let cafe of whatCategory.cafes) {
