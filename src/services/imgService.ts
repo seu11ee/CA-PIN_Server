@@ -5,17 +5,17 @@ import config from '../config';
 
 const s3 = new aws.S3({
     accessKeyId: config.awsS3AccessKey,
-    secretAccessKey: config.awsS3SecretAccessKey
+    secretAccessKey: config.awsS3SecretKey
 });
 
 
 export const upload = multer({
     storage: multerS3({
         s3: s3,
-        bucket: config.awsBucket,
+        bucket: config.awsS3Bucket,
         acl: 'public-read',
         key: function(req, file, cb){
-            cb(null, 'images/origin/'+Date.now()+'.'+file.originalname.split('.').pop());
+            cb(null, 'images'+Date.now()+'.'+file.originalname.split('.').pop());
         }
     })
 });
