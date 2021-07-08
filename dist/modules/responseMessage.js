@@ -6,6 +6,7 @@ module.exports = {
     CANT_ACCESS: '접근할 수 없습니다.',
     INVALID_IDENTIFIER: '유효하지 않은 식별자',
     NO_CONTENT: "데이터가 없습니다.",
+    REPEATED_VALUE: "중복된 데이터입니다.",
     // TOKEN
     EXPIRED_TOKEN: '만료된 토큰',
     INVALID_TOKEN: '유효하지 않은 토큰',

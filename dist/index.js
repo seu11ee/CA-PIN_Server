@@ -15,6 +15,7 @@ app.use("/cafes", require("./api/cafes")); // [4]
 app.use("/user", require("./api/user"));
 app.use("/reviews", require("./api/reviews"));
 app.use("/category", require("./api/category"));
+app.use("/cafeti", require("./api/cafeti"));
 // error handler
 app.use(function (err, req, res, next) {
     // set locals, only providing error in development

@@ -2,10 +2,12 @@ import express, { Request, Response } from "express";
 import mongoose from "mongoose";
 const router = express.Router();
 const reviewService = require("../services/reviewService");
+const imgService = require("../services/imgService");
 const statusCode = require("../modules/statusCode");
 const responseMessage = require("../modules/responseMessage");
 import auth from "../middleware/auth";
 import createError from "http-errors";
+const { upload } = require ("../middleware/upload");
 
 /**
  *  @route GET reviews/:cafeId
@@ -64,10 +66,18 @@ router.post(
             next(createError(statusCode.BAD_REQUEST,responseMessage.INVALID_IDENTIFIER));
         }
         try{
+            var imgs = [img0,img1,img2,img3,img4];
+            var urls = [];
+            console.log(imgs);
+            for (let i=0;i<imgs.length;i++){
+                if (imgs[i]){
+                    const url = imgs[i];
+                }
+            }
             const isReviewed = await reviewService.checkIfReviewed(cafeId,userId);
             console.log(isReviewed);
             if(isReviewed) next(createError(createError(statusCode.BAD_REQUEST,responseMessage.REPEATED_VALUE)));
-            var imgs = [];
+            
             const review = await reviewService.createReview(cafeId,userId,content,rating,recommend,imgs);
             console.log(review);
             res.status(statusCode.CREATED).json();
@@ -76,7 +86,23 @@ router.post(
         }
 
 
-    }
+    },
+    router.post(
+        "/image",auth,upload.array("img",5),
+        async(req: Request, res: Response, next) => {
+            const reviewParams = JSON.parse(req.body.review);
+            var urls = [];
+            for ( let i=0;i<req.files.length;i++){
+                console.log(req.files[i].location);
+                const file = req.files[i].location;
+                urls.push(file);
+            }
+            res.json({image:urls,
+            file:req.files,
+            review:reviewParams});
+            next();
+        }
+    )
 )
 
 module.exports = router;

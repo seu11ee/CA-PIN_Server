@@ -13,19 +13,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const Review_1 = __importDefault(require("../models/Review"));
-const mongoose_1 = __importDefault(require("mongoose"));
-const Cafeti_1 = __importDefault(require("../models/Cafeti"));
 const responseMessage = require("../modules/responseMessage");
+const statusCode = require("../modules/statusCode");
+const http_errors_1 = __importDefault(require("http-errors"));
 const getCafeReviewList = (cafeId) => __awaiter(void 0, void 0, void 0, function* () {
-    if (!cafeId || !mongoose_1.default.isValidObjectId(cafeId)) {
-        throw Error(responseMessage.INVALID_IDENTIFIER);
-    }
     const reviews = yield Review_1.default.find().where("cafe").equals(cafeId).populate("user", ["_id", "nickname", "profileImg", "cafeti"]);
     let reviewDTOList = [];
     for (let review of reviews) {
         if (!review.user.profileImg) {
-            const cafeti_img = yield Cafeti_1.default.findOne().where('type').equals(review.user.cafeti).select("img");
-            review.user.profileImg = cafeti_img.img;
+            review.user.profileImg = review.user.cafeti.img;
         }
         let reviewDTO = {
             _id: review._id,
@@ -43,9 +39,6 @@ const getCafeReviewList = (cafeId) => __awaiter(void 0, void 0, void 0, function
         }
         reviewDTOList.push(reviewDTO);
     }
-    if (reviewDTOList.length == 0) {
-        throw Error(responseMessage.NO_CONTENT);
-    }
     return reviewDTOList;
 });
 const checkIfReviewed = (cafeId, userId) => __awaiter(void 0, void 0, void 0, function* () {
@@ -54,8 +47,30 @@ const checkIfReviewed = (cafeId, userId) => __awaiter(void 0, void 0, void 0, fu
         return false;
     return true;
 });
+const createReview = (cafeId, userId, content, rating, recommend, imgs) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const review = new Review_1.default({
+            user: userId,
+            cafe: cafeId,
+            content: content,
+            recommend: recommend,
+            rating: rating,
+            imgs: imgs,
+            created_at: Date.now()
+        });
+        console.log(Date());
+        console.log(review);
+        yield review.save();
+        return review;
+    }
+    catch (error) {
+        console.log(error.message);
+        throw http_errors_1.default(responseMessage.INTERNAL_SERVER_ERROR);
+    }
+});
 module.exports = {
     getCafeReviewList,
-    checkIfReviewed
+    checkIfReviewed,
+    createReview
 };
 //# sourceMappingURL=reviewService.js.map
