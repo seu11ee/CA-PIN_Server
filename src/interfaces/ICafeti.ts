@@ -1,6 +1,6 @@
 export interface ICafeti {
-    cafetiIdx: Number;
-    type: String;
-    description: String;
+    cafetiIdx: number;
+    type: string;
+    description: string;
     img: string;
 }
