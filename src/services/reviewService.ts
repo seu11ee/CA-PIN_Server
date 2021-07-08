@@ -99,6 +99,9 @@ const deleteReview = async (reviewId,userId) => {
     try{
         const review = await Review.findById(reviewId);
         if (!review) return null;
+        if (review.user != userId){
+            throw createError(statusCode.UNAUTHORIZED,responseMessage.UNAUTHORIZED);
+        }
         const deletedReview = await Review.remove({_id: reviewId}, function(err) {
             if (err) {
                 throw err;
