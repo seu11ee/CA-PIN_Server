@@ -11,7 +11,7 @@ module.exports = {
     INVALID_TOKEN: '유효하지 않은 토큰',
     SUCCESS_TOKEN: '토큰 발급 성공',
     // SIGNUP, LOGIN
-    SIGN_UP_SUCCESS: "회원 가입 성공.",
+    SIGN_UP_SUCCESS: "회원 가입 및 기본카테고리 생성 성공.",
     SIGN_UP_FAIL: "회원 가입 실패.",
     SIGN_IN_SUCCESS: "로그인 성공.",
     SIGN_IN_FAIL: "로그인 실패.",
@@ -52,6 +52,7 @@ module.exports = {
     ADD_PIN_FAIL: "카테고리에 핀 추가 실패",
     DELETE_CATEGORY_SUCCESS: "카테고리 삭제 성공",
     DELETE_CATEGORY_FAIL: "카테고리 삭제 실패",
+    DELETE_DEFAULT_FAIL: "기본 카테고리는 삭제할 수 없습니다. 삭제 실패.",
     READ_CATEGORY_CAFE_SUCCESS: "카테고리에 포함된 카페 리스트 조회 성공",
     READ_CATEGORY_CAFE_FAIL: "카테고리에 포함된 카페 리스트 조회 성공",
     READ_MY_CATEGORY_SUCCESS: "내 카테고리 목록 조회 성공",

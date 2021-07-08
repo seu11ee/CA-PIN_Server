@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
 export interface ICategory {
-    cafe: mongoose.Types.ObjectId;
+    cafes: [mongoose.Types.ObjectId];
     user: mongoose.Types.ObjectId;
-    color: number;
+    color: string;
     name: string;
+    isDefault: boolean;
 }

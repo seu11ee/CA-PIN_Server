@@ -5,8 +5,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 const CategorySchema = new mongoose_1.default.Schema({
-    cafe: {
-        type: mongoose_1.default.SchemaTypes.ObjectId,
+    cafes: {
+        type: [mongoose_1.default.SchemaTypes.ObjectId],
         ref: "Cafe",
         required: true
     },
@@ -16,11 +16,15 @@ const CategorySchema = new mongoose_1.default.Schema({
         required: true
     },
     color: {
-        type: Number,
+        type: String,
         required: true
     },
     name: {
         type: String,
+        required: true
+    },
+    isDefault: {
+        type: Boolean,
         required: true
     }
 }, {

@@ -14,8 +14,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const express_validator_1 = require("express-validator");
+const auth_1 = __importDefault(require("../middleware/auth"));
 const router = express_1.default.Router();
 const userService = require("../services/userService");
+const categoryService = require("../services/categoryService");
 const statusCode = require("../modules/statusCode");
 const responseMessage = require("../modules/responseMessage");
 /**
@@ -26,7 +28,7 @@ const responseMessage = require("../modules/responseMessage");
 router.post("/login", [
     express_validator_1.check("email", "Please include a valid email").not().isEmpty(),
     express_validator_1.check("password", "password is required").not().isEmpty(),
-], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+], (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const errors = express_validator_1.validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(statusCode.BAD_REQUEST).json({ errors: errors.array() });
@@ -35,13 +37,14 @@ router.post("/login", [
     try {
         const user = yield userService.loginUser(email, password);
         const userToken = yield userService.generateToken(user._id);
-        return res.status(statusCode.OK).json({
+        res.status(statusCode.OK).json({
             message: responseMessage.SIGN_IN_SUCCESS,
             loginData: {
                 nickname: user.nickname,
                 token: userToken
             },
         });
+        next();
     }
     catch (error) {
         switch (error.message) {
@@ -52,7 +55,11 @@ router.post("/login", [
                 res.status(statusCode.BAD_REQUEST).send({ message: error.message });
                 break;
             default:
+<<<<<<< HEAD
                 res.status(statusCode.INTERNAL_SERVER_ERROR).send({ message: responseMessage.INTERNAL_SERVER_ERROR });
+=======
+                res.status(statusCode.INTERNAL_SERVER_ERROR).send({ message: error.message });
+>>>>>>> cfdabb241a4e8e187d55d026af1c5a5bd84a16bc
         }
     }
 }));
@@ -72,7 +79,11 @@ router.post("/signup", [
     }
     const { nickname, email, password } = req.body;
     try {
+<<<<<<< HEAD
         const user = yield userService.signupUser(nickname, email, password);
+=======
+        yield userService.signupUser(nickname, email, password);
+>>>>>>> cfdabb241a4e8e187d55d026af1c5a5bd84a16bc
         return res.status(statusCode.CREATED).json({
             message: responseMessage.SIGN_UP_SUCCESS
         });
@@ -84,9 +95,38 @@ router.post("/signup", [
                 break;
             case responseMessage.ALREADY_NICKNAME:
                 res.status(statusCode.BAD_REQUEST).send({ message: error.message });
+<<<<<<< HEAD
                 break;
             default:
                 res.status(statusCode.INTERNAL_SERVER_ERROR).send({ message: responseMessage.INTERNAL_SERVER_ERROR });
+=======
+                break;
+            default:
+                res.status(statusCode.INTERNAL_SERVER_ERROR).send({ message: error.message });
+        }
+    }
+}));
+/**
+ *  @route Get api/user/categoryList
+ *  @desc fetch my category list(내 카테고리-마이페이지)
+ *  @access Private
+ */
+router.get("/categoryList", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const myCategoryList = yield categoryService.fetchMyCategory(res.locals.userId);
+        return res.status(statusCode.OK).json({
+            message: responseMessage.READ_MY_CATEGORY_SUCCESS,
+            myCategoryList: myCategoryList
+        });
+    }
+    catch (error) {
+        switch (error.message) {
+            case responseMessage.INVALID_IDENTIFIER:
+                res.status(statusCode.BAD_REQUEST).send({ message: error.message });
+                break;
+            default:
+                res.status(statusCode.INTERNAL_SERVER_ERROR).send({ message: error.message });
+>>>>>>> cfdabb241a4e8e187d55d026af1c5a5bd84a16bc
         }
     }
 }));
