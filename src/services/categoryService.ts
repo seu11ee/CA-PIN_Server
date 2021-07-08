@@ -77,7 +77,7 @@ const deleteCategory = async(categoryId) => {
 }
 
 const fetchMyCategory = async(userId) => {
-    const categoryList = await Category.find({user: userId}).select("_id color name");
+    const categoryList = await Category.find({user: userId}).select("_id cafes color name");
     if (categoryList == null) {
         throw Error(responseMessage.INVALID_IDENTIFIER);
     }
