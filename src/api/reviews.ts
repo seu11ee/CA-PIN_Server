@@ -18,14 +18,13 @@ router.get(
         const cafeId = req.query.cafe;
         const userId = res.locals.userId;
 
-        console.log(userId);
         try{
             const reviews = await reviewService.getCafeReviewList(cafeId);
-            const isReviewed = await reviewService.checkIfReview(cafeId,userId);
-            console.log(isReviewed);
+            const isReviewed = await reviewService.checkIfReviewed(cafeId,userId);
             return res.status(statusCode.OK).json({
                 message:responseMessage.READ_CAFE_REVIEW_SUCCESS,
-                reviews: reviews
+                reviews: reviews,
+                isReviewed:isReviewed
             });
         } catch (error) {
             switch (error.message){

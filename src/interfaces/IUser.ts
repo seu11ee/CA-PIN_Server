@@ -21,5 +21,5 @@ export interface IUserReviewDTO {
     _id: string;
     nickname: string;
     profileImg?: string;
-    cafeti?: string;
+    cafeti?: ICafeti;
 }

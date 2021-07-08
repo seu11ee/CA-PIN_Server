@@ -16,8 +16,7 @@ const getCafeReviewList = async(cafeId) => {
 
     for (let review of reviews){
         if (!review.user.profileImg){
-            const cafeti_img= await Cafeti.findOne().where('type').equals(review.user.cafeti).select("img");
-            review.user.profileImg = cafeti_img.img;
+            review.user.profileImg = review.user.cafeti.img;
         }
 
         let reviewDTO: IReviewOutputDTO = {
