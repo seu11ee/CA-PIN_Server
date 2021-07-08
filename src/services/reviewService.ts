@@ -91,11 +91,30 @@ const modifyReview = async (reviewId,userId,content,rating,isAllDeleted,recommen
         console.log(error.message);
         throw error;
     }
+
+    
+}
+
+const deleteReview = async (reviewId,userId) => {
+    try{
+        const review = await Review.findById(reviewId);
+        if (!review) {
+            throw createError(statusCode.BAD_REQUEST,responseMessage.INVALID_IDENTIFIER);
+        } 
+        await Review.remove({_id: reviewId}, function(err) {
+            if (err) {
+                throw err;
+            }
+        });
+    } catch (error) {
+        throw(error);
+    }
 }
 
 module.exports = {
     getCafeReviewList,
     checkIfReviewed,
     createReview,
-    modifyReview
+    modifyReview,
+    deleteReview
 }

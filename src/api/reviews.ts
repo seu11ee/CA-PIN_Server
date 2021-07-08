@@ -108,7 +108,7 @@ router.put(
             }
            
             const review = await reviewService.modifyReview(reviewId,userId,content,rating,isAllDeleted,recommend,urls);
-            if (!review) res.status(statusCode.NO_CONTENT).json();
+            if (!review) next(createError(statusCode.BAD_REQUEST,responseMessage.INVALID_IDENTIFIER));
 
             res.status(statusCode.OK).json();
         } catch (error) {
