@@ -44,6 +44,14 @@ const getCafeReviewList = async(cafeId) => {
     return reviewDTOList;
 }
 
+const createReview = async () => {
+
+    
+    // const userId = res.locals.userId;
+
+    
+}
+
 module.exports = {
     getCafeReviewList
 }
