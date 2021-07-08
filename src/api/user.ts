@@ -47,7 +47,7 @@ router.post(
                     res.status(statusCode.BAD_REQUEST).send({message: error.message});
                     break;
                 default:
-                    res.status(statusCode.INTERNAL_SERVER_ERROR).send({message: responseMessage.INTERNAL_SERVER_ERROR});
+                    res.status(statusCode.INTERNAL_SERVER_ERROR).send({message: error.message});
             }
         }
     }
@@ -89,7 +89,7 @@ router.post(
                     res.status(statusCode.BAD_REQUEST).send({message: error.message});
                     break;
                 default:
-                    res.status(statusCode.INTERNAL_SERVER_ERROR).send({message: responseMessage.INTERNAL_SERVER_ERROR});
+                    res.status(statusCode.INTERNAL_SERVER_ERROR).send({message: error.message});
             }
         }
     }
