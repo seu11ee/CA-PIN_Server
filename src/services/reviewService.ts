@@ -11,12 +11,11 @@ const getCafeReviewList = async(cafeId) => {
         throw Error(responseMessage.INVALID_IDENTIFIER);
     }
 
-    const reviews = await Review.find().where("cafe").equals(cafeId).populate("user","_id nickname profileImg cafeti");
+    const reviews = await Review.find().where("cafe").equals(cafeId).populate("user",["_id", "nickname", "profileImg" ,"cafeti"]);
     let reviewDTOList: IReviewOutputDTO[] = []
 
     for (let review of reviews){
         if (!review.user.profileImg){
-            console.log("here")
             const cafeti_img= await Cafeti.findOne().where('type').equals(review.user.cafeti).select("img");
             review.user.profileImg = cafeti_img.img;
         }

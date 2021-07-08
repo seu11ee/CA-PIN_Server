@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
-import { IUserReviewDTO } from "./IUser";
+import { IUserReviewDTO, IUser } from "./IUser";
 
 export interface IReview{
     cafe: mongoose.Types.ObjectId;
-    user: mongoose.Types.ObjectId;
+    user: IUserReviewDTO & mongoose.Document<any,any>;
     rating: number;
     created_at: Date;
     updated_at?: Date;
@@ -15,7 +15,7 @@ export interface IReview{
 export interface IReviewOutputDTO{
     _id: string;
     cafe: mongoose.Types.ObjectId;
-    user: IUserReviewDTO;
+    user: IUserReviewDTO & mongoose.Document<any,any>;
     rating: number;
     created_at: Date;
     imgs?: [string];

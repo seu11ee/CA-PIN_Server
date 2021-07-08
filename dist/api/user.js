@@ -29,7 +29,7 @@ router.post("/login", [
 ], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const errors = express_validator_1.validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
+        return res.status(statusCode.BAD_REQUEST).json({ errors: errors.array() });
     }
     const { email, password } = req.body;
     try {
@@ -46,13 +46,13 @@ router.post("/login", [
     catch (error) {
         switch (error.message) {
             case responseMessage.NO_EMAIL:
-                res.status(400).send({ message: error.message });
+                res.status(statusCode.BAD_REQUEST).send({ message: error.message });
                 break;
             case responseMessage.MISS_MATCH_PW:
-                res.status(400).send({ message: error.message });
+                res.status(statusCode.BAD_REQUEST).send({ message: error.message });
                 break;
             default:
-                res.status(500).send({ message: responseMessage.INTERNAL_SERVER_ERROR });
+                res.status(statusCode.INTERNAL_SERVER_ERROR).send({ message: responseMessage.INTERNAL_SERVER_ERROR });
         }
     }
 }));
@@ -68,25 +68,25 @@ router.post("/signup", [
 ], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const errors = express_validator_1.validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
+        return res.status(statusCode.BAD_REQUEST).json({ errors: errors.array() });
     }
     const { nickname, email, password } = req.body;
     try {
         const user = yield userService.signupUser(nickname, email, password);
-        return res.status(statusCode.OK).json({
+        return res.status(statusCode.CREATED).json({
             message: responseMessage.SIGN_UP_SUCCESS
         });
     }
     catch (error) {
         switch (error.message) {
             case responseMessage.ALREADY_EMAIL:
-                res.status(400).send({ message: error.message });
+                res.status(statusCode.BAD_REQUEST).send({ message: error.message });
                 break;
             case responseMessage.ALREADY_NICKNAME:
-                res.status(400).send({ message: error.message });
+                res.status(statusCode.BAD_REQUEST).send({ message: error.message });
                 break;
             default:
-                res.status(500).send({ message: responseMessage.INTERNAL_SERVER_ERROR });
+                res.status(statusCode.INTERNAL_SERVER_ERROR).send({ message: responseMessage.INTERNAL_SERVER_ERROR });
         }
     }
 }));

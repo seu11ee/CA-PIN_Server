@@ -19,7 +19,7 @@ router.get(
             const reviews = await reviewService.getCafeReviewList(cafeId);
     
             return res.status(statusCode.OK).json({
-                message:responseMessage.REVIEW_SUCCESS,
+                message:responseMessage.READ_CAFE_REVIEW_SUCCESS,
                 reviews: reviews
             });
         } catch (error) {

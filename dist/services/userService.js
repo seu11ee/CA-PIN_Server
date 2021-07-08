@@ -12,6 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const config_1 = __importDefault(require("../config"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const User_1 = __importDefault(require("../models/User"));
@@ -31,10 +32,9 @@ const loginUser = (email, password) => __awaiter(void 0, void 0, void 0, functio
     return user;
 });
 const generateToken = (user_id) => __awaiter(void 0, void 0, void 0, function* () {
-    const token = jsonwebtoken_1.default.sign({ sub: user_id }, 'secret_key', { expiresIn: 86400 });
-    var decoded_data = jsonwebtoken_1.default.verify(token, 'secret_key');
-    // console.log(user_id)
-    // console.log(decoded_data.sub)
+    // Return jsonwebtoken
+    const token = jsonwebtoken_1.default.sign({ sub: user_id }, config_1.default.jwtSecret, { expiresIn: 86400 });
+    // console.log(token)
     return token;
 });
 const signupUser = (nickname, email, password) => __awaiter(void 0, void 0, void 0, function* () {
@@ -45,7 +45,7 @@ const signupUser = (nickname, email, password) => __awaiter(void 0, void 0, void
     // 닉네임 중복 확인
     const alreadyNickname = yield User_1.default.findOne({ nickname });
     console.log(alreadyNickname);
-    if (alreadyEmail != null && alreadyNickname != null) {
+    if (alreadyEmail != null) {
         throw Error(responseMessage.ALREADY_EMAIL);
     }
     else if (alreadyNickname != null) {
@@ -65,15 +65,6 @@ const signupUser = (nickname, email, password) => __awaiter(void 0, void 0, void
     // 카테고리 1개 생성해줘야함
     // await createDefaultCategory(user.Objectid);
     return user;
-});
-const getUserById = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield User_1.default.findOne({ id });
-    if (user == null) {
-        throw Error(responseMessage.READ_USER_FAIL);
-    }
-    else {
-        return user;
-    }
 });
 module.exports = {
     loginUser,
