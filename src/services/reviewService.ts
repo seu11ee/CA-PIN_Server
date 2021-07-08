@@ -5,6 +5,8 @@ import { IUserReviewDTO, IUser } from "../interfaces/IUser";
 import mongoose from "mongoose";
 import Cafeti from "../models/Cafeti";
 const responseMessage = require("../modules/responseMessage");
+const statusCode = require("../modules/statusCode");
+import createError from "http-errors";
 
 const getCafeReviewList = async(cafeId) => {
 
@@ -31,10 +33,6 @@ const getCafeReviewList = async(cafeId) => {
             reviewDTO.recommend = review.recommend
         }
         reviewDTOList.push(reviewDTO);
-    }
-    
-    if (reviewDTOList.length == 0){
-        throw Error(responseMessage.NO_CONTENT);
     }
 
     return reviewDTOList;

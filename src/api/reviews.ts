@@ -25,6 +25,10 @@ router.get(
 
         try{
             const reviews = await reviewService.getCafeReviewList(cafeId);
+            if (reviews.length == 0){
+                res.status(statusCode.NO_CONTENT).json();
+                next();
+            }
             const isReviewed = await reviewService.checkIfReviewed(cafeId,userId);
             return res.status(statusCode.OK).json({
                 message:responseMessage.READ_CAFE_REVIEW_SUCCESS,
@@ -32,15 +36,7 @@ router.get(
                 isReviewed:isReviewed
             });
         } catch (error) {
-            switch (error.message){
-                case responseMessage.INVALID_IDENTIFIER:
-                    res.status(statusCode.BAD_REQUEST).send({message:error.message});
-                case responseMessage.NO_CONTENT:
-                    res.status(statusCode.NO_CONTENT).send();
-                default:
-                    console.log(error.message);
-                    res.status(statusCode.INTERNAL_SERVER_ERROR).send({message:responseMessage.INTERNAL_SERVER_ERROR});
-            }
+            next(error);
         }
     }
 )
