@@ -112,6 +112,7 @@ router.put(
 
             res.status(statusCode.OK).json();
         } catch (error) {
+            console.log(error.statusCode,error.message);
             next(error);
         }
 

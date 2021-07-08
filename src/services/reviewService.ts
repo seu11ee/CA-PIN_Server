@@ -68,7 +68,8 @@ const createReview = async (cafeId,userId,content,rating,recommend?,imgs?) => {
 const modifyReview = async (reviewId,userId,content,rating,isAllDeleted,recommend?,imgs?) => {
     try {
         const review = await Review.findById(reviewId);
-
+        console.log(statusCode.UNAUTHORIZED);
+        if (!review) return null;
         if (review.user != userId){
             throw createError(statusCode.UNAUTHORIZED,responseMessage.UNAUTHORIZED);
         }
@@ -83,12 +84,12 @@ const modifyReview = async (reviewId,userId,content,rating,isAllDeleted,recommen
             review.imgs = [];
         }
         await review.save();
-
+ 
         return review;
 
     } catch (error) {
         console.log(error.message);
-        throw createError(responseMessage.INTERNAL_SERVER_ERROR);
+        throw error;
     }
 }
 
