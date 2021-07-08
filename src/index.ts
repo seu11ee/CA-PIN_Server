@@ -1,6 +1,7 @@
 import express from "express"; // [1]
 const app = express(); // [2]
 import connectDB from "./loader/db";
+import config from "./config";
 
 // Connect Database
 connectDB();
@@ -24,7 +25,7 @@ app.use(function (err, req, res, next) {
 });
 
 app // [5]
-  .listen(5000, () => {
+  .listen(config.port, () => {
     console.log(`
     ################################################
     🛡️  Server listening on port: 5000 🛡️
