@@ -12,6 +12,7 @@ app.use(express.json()); // [3]
 app.use("/cafes", require("./api/cafes")); // [4]
 app.use("/user", require("./api/user"));
 app.use("/category", require("./api/category"));
+app.use("/cafeti", require("./api/cafeti"));
 
 // error handler
 app.use(function (err, req, res, next) {
