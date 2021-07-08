@@ -5,6 +5,7 @@ const reviewService = require("../services/reviewService");
 const statusCode = require("../modules/statusCode");
 const responseMessage = require("../modules/responseMessage");
 import auth from "../middleware/auth";
+import createError from "http-errors";
 
 /**
  *  @route GET reviews/:cafeId
@@ -14,9 +15,13 @@ import auth from "../middleware/auth";
 
 router.get(
     "/",auth,
-    async(req: Request, res: Response) => {
+    async(req: Request, res: Response,next) => {
         const cafeId = req.query.cafe;
         const userId = res.locals.userId;
+
+        if (!cafeId || !mongoose.isValidObjectId(cafeId)){
+            next(createError(statusCode.BAD_REQUEST,responseMessage.INVALID_IDENTIFIER));
+        }
 
         try{
             const reviews = await reviewService.getCafeReviewList(cafeId);

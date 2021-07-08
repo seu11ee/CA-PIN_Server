@@ -7,9 +7,6 @@ import Cafeti from "../models/Cafeti";
 const responseMessage = require("../modules/responseMessage");
 
 const getCafeReviewList = async(cafeId) => {
-    if (!cafeId || !mongoose.isValidObjectId(cafeId)){
-        throw Error(responseMessage.INVALID_IDENTIFIER);
-    }
 
     const reviews = await Review.find().where("cafe").equals(cafeId).populate("user",["_id", "nickname", "profileImg" ,"cafeti"]);
     let reviewDTOList: IReviewOutputDTO[] = []
