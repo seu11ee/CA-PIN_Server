@@ -8,7 +8,6 @@ const s3 = new aws.S3({
     secretAccessKey: config.awsS3SecretKey
 });
 
-
 const storage = multerS3({ 
     s3: s3,
     bucket: config.awsS3Bucket,
