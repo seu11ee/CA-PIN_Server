@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/teamCA-PIN/CA-PIN_Server#readme",
   "dependencies": {
+    "@types/http-errors": "^1.8.1",
     "bcryptjs": "^2.4.3",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
