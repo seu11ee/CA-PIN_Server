@@ -98,14 +98,13 @@ const modifyReview = async (reviewId,userId,content,rating,isAllDeleted,recommen
 const deleteReview = async (reviewId,userId) => {
     try{
         const review = await Review.findById(reviewId);
-        if (!review) {
-            throw createError(statusCode.BAD_REQUEST,responseMessage.INVALID_IDENTIFIER);
-        } 
-        await Review.remove({_id: reviewId}, function(err) {
+        if (!review) return null;
+        const deletedReview = await Review.remove({_id: reviewId}, function(err) {
             if (err) {
                 throw err;
             }
         });
+        return deletedReview;
     } catch (error) {
         throw(error);
     }

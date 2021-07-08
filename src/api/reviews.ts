@@ -108,9 +108,10 @@ router.put(
             }
            
             const review = await reviewService.modifyReview(reviewId,userId,content,rating,isAllDeleted,recommend,urls);
-            if (!review) next(createError(statusCode.BAD_REQUEST,responseMessage.INVALID_IDENTIFIER));
+            if (!review) res.status(statusCode.NO_CONTENT).send();
 
-            res.status(statusCode.OK).json();
+            res.status(statusCode.OK).json({message:responseMessage.EDIT_REVIEW_SUCCESS});
+            next();
         } catch (error) {
             console.log(error.statusCode,error.message);
             next(error);
@@ -119,5 +120,21 @@ router.put(
 
     }
 )
+
+router.delete("/:reviewId",auth,
+async(req: Request, res: Response, next) => {
+    const reviewId = req.params.reviewId
+    const userId = res.locals.userId
+    if (!reviewId) next(createError(statusCode.BAD_REQUEST,responseMessage.NULL_VALUE));
+    try{
+        const review = await reviewService.deleteReview(reviewId,userId);
+        if (!review) res.status(statusCode.NO_CONTENT).send();
+        res.status(statusCode.OK).json({message:responseMessage.DELETE_REVIEW_SUCCESS});
+        next()
+
+    } catch (error){
+        next(error);
+    }
+})
 
 module.exports = router;
