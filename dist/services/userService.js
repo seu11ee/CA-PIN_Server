@@ -31,15 +31,9 @@ const loginUser = (email, password) => __awaiter(void 0, void 0, void 0, functio
     }
     return user;
 });
-<<<<<<< HEAD
-const generateToken = (user_id) => __awaiter(void 0, void 0, void 0, function* () {
-    // Return jsonwebtoken
-    const token = jsonwebtoken_1.default.sign({ sub: user_id }, config_1.default.jwtSecret, { expiresIn: 86400 });
-=======
 const generateToken = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     // Return jsonwebtoken
     const token = jsonwebtoken_1.default.sign({ sub: userId }, config_1.default.jwtSecret, { expiresIn: 86400 });
->>>>>>> cfdabb241a4e8e187d55d026af1c5a5bd84a16bc
     // console.log(token)
     return token;
 });
@@ -49,10 +43,6 @@ const signupUser = (nickname, email, password) => __awaiter(void 0, void 0, void
     const alreadyEmail = yield User_1.default.findOne({ email });
     // 닉네임 중복 확인
     const alreadyNickname = yield User_1.default.findOne({ nickname });
-<<<<<<< HEAD
-    console.log(alreadyNickname);
-=======
->>>>>>> cfdabb241a4e8e187d55d026af1c5a5bd84a16bc
     if (alreadyEmail != null) {
         throw Error(responseMessage.ALREADY_EMAIL);
     }

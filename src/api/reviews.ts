@@ -4,6 +4,7 @@ const router = express.Router();
 const reviewService = require("../services/reviewService");
 const statusCode = require("../modules/statusCode");
 const responseMessage = require("../modules/responseMessage");
+import auth from "../middleware/auth";
 
 /**
  *  @route GET reviews/:cafeId
@@ -12,12 +13,16 @@ const responseMessage = require("../modules/responseMessage");
  */
 
 router.get(
-    "/",
+    "/",auth,
     async(req: Request, res: Response) => {
         const cafeId = req.query.cafe;
+        const userId = res.locals.userId;
+
+        console.log(userId);
         try{
             const reviews = await reviewService.getCafeReviewList(cafeId);
-    
+            const isReviewed = await reviewService.checkIfReview(cafeId,userId);
+            console.log(isReviewed);
             return res.status(statusCode.OK).json({
                 message:responseMessage.READ_CAFE_REVIEW_SUCCESS,
                 reviews: reviews

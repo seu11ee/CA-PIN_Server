@@ -48,7 +48,14 @@ const getCafeReviewList = (cafeId) => __awaiter(void 0, void 0, void 0, function
     }
     return reviewDTOList;
 });
+const checkIfReviewed = (cafeId, userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const review = yield Review_1.default.findOne({ cafe: cafeId, user: userId });
+    if (!review)
+        return false;
+    return true;
+});
 module.exports = {
-    getCafeReviewList
+    getCafeReviewList,
+    checkIfReviewed
 };
 //# sourceMappingURL=reviewService.js.map

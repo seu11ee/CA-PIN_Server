@@ -17,15 +17,19 @@ const router = express_1.default.Router();
 const reviewService = require("../services/reviewService");
 const statusCode = require("../modules/statusCode");
 const responseMessage = require("../modules/responseMessage");
+const auth = require("../middleware/auth");
 /**
  *  @route GET reviews/:cafeId
  *  @desc get a cafe review list
  *  @access Public
  */
-router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/", auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const cafeId = req.query.cafe;
+    const userId = res.locals.userId;
     try {
         const reviews = yield reviewService.getCafeReviewList(cafeId);
+        const isReviewed = yield reviewService.checkIfReview(cafeId, userId);
+        console.log(isReviewed);
         return res.status(statusCode.OK).json({
             message: responseMessage.READ_CAFE_REVIEW_SUCCESS,
             reviews: reviews

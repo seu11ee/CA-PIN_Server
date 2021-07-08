@@ -44,14 +44,13 @@ const getCafeReviewList = async(cafeId) => {
     return reviewDTOList;
 }
 
-const createReview = async () => {
-
-    
-    // const userId = res.locals.userId;
-
-    
+const checkIfReviewed = async (cafeId,userId) => {
+    const review = await Review.findOne({cafe:cafeId,user:userId})
+    if (!review) return false;
+    return true;
 }
 
 module.exports = {
-    getCafeReviewList
+    getCafeReviewList,
+    checkIfReviewed
 }
