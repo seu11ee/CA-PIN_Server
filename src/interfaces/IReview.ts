@@ -7,8 +7,8 @@ export interface IReview{
     rating: number;
     created_at: Date;
     updated_at?: Date;
-    imgs?: [string];
-    recommend?: [number];
+    imgs?: string[];
+    recommend?: number[];
     content: string;
 }
 
@@ -18,7 +18,7 @@ export interface IReviewOutputDTO{
     user: IUserReviewDTO & mongoose.Document<any,any>;
     rating: number;
     created_at: Date;
-    imgs?: [string];
-    recommend?: [number];
+    imgs?: string[];
+    recommend?: number[];
     content: string;
 }

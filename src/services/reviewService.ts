@@ -1,12 +1,10 @@
 import Review from "../models/Review";
-import User from "../models/User";
 import { IReviewOutputDTO } from "../interfaces/IReview";
-import { IUserReviewDTO, IUser } from "../interfaces/IUser";
 import mongoose from "mongoose";
-import Cafeti from "../models/Cafeti";
 const responseMessage = require("../modules/responseMessage");
 const statusCode = require("../modules/statusCode");
 import createError from "http-errors";
+const koreanDate = require("../modules/dateCalculate");
 
 const getCafeReviewList = async(cafeId) => {
 
@@ -44,7 +42,7 @@ const checkIfReviewed = async (cafeId,userId) => {
     return true;
 }
 
-const createReview = async(cafeId,userId,content,rating,recommend?,imgs?) => {
+const createReview = async (cafeId,userId,content,rating,recommend?,imgs?) => {
     try {
         const review = new Review({
             user: userId,
@@ -53,11 +51,9 @@ const createReview = async(cafeId,userId,content,rating,recommend?,imgs?) => {
             recommend: recommend,
             rating: rating,
             imgs:imgs,
-            created_at: Date.now()
+            created_at: koreanDate.getDate()
         });
 
-        console.log(Date());
-        console.log(review);
         await review.save();
 
         return review;
@@ -69,8 +65,36 @@ const createReview = async(cafeId,userId,content,rating,recommend?,imgs?) => {
     }
 }
 
+const modifyReview = async (reviewId,userId,content,rating,isAllDeleted,recommend?,imgs?) => {
+    try {
+        const review = await Review.findById(reviewId);
+
+        if (review.user != userId){
+            throw createError(statusCode.UNAUTHORIZED,responseMessage.UNAUTHORIZED);
+        }
+        review.content = content;
+        review.rating = rating;
+        review.recommend = recommend;
+        review.updated_at = koreanDate.getDate();
+        if (!isAllDeleted && imgs.length != 0){
+            review.imgs = imgs
+        }
+        else if (isAllDeleted){
+            review.imgs = [];
+        }
+        await review.save();
+
+        return review;
+
+    } catch (error) {
+        console.log(error.message);
+        throw createError(responseMessage.INTERNAL_SERVER_ERROR);
+    }
+}
+
 module.exports = {
     getCafeReviewList,
     checkIfReviewed,
-    createReview
+    createReview,
+    modifyReview
 }

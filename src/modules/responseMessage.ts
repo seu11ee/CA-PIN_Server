@@ -7,6 +7,7 @@ module.exports = {
     INVALID_IDENTIFIER: '유효하지 않은 식별자',
     NO_CONTENT:"데이터가 없습니다.",
     REPEATED_VALUE: "중복된 데이터입니다.",
+    UNAUTHORIZED: "권한이 없습니다",
   
     // TOKEN
     EXPIRED_TOKEN: '만료된 토큰',

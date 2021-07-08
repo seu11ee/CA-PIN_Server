@@ -82,4 +82,41 @@ router.post(
     }
 )
 
+router.put(
+    "/:reviewId",auth,upload.array("imgs",5),
+    async(req: Request, res: Response, next) => {
+        const reviewParams = JSON.parse(req.body.review);
+        const reviewId = req.params.reviewId;
+        const userId = res.locals.userId;
+        const {
+            content,
+            recommend,
+            rating,
+            isAllDeleted
+        } = reviewParams;
+        if (recommend && !recommend.isArray(Number)) next(createError(createError(statusCode.BAD_REQUEST,responseMessage.OUT_OF_VALUE)));
+        if (isAllDeleted === undefined || !content || !rating) next(createError(createError(statusCode.BAD_REQUEST,responseMessage.NULL_VALUE)));
+        if (!reviewId || !mongoose.isValidObjectId(reviewId)){
+            next(createError(statusCode.BAD_REQUEST,responseMessage.INVALID_IDENTIFIER));
+        }
+        try{
+            var urls = [];
+            
+            for (let i=0;i<req.files.length;i++){
+                const url = req.files[i].location;
+                urls.push(url);
+            }
+           
+            const review = await reviewService.modifyReview(reviewId,userId,content,rating,isAllDeleted,recommend,urls);
+            if (!review) res.status(statusCode.NO_CONTENT).json();
+
+            res.status(statusCode.OK).json();
+        } catch (error) {
+            next(error);
+        }
+
+
+    }
+)
+
 module.exports = router;
