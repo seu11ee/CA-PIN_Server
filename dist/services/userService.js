@@ -12,10 +12,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const config_1 = __importDefault(require("../config"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const User_1 = __importDefault(require("../models/User"));
-// import { IUser, IUserOutputDTO } from "../interfaces/IUser";
+const categoryService = require("../services/categoryService");
 const responseMessage = require("../modules/responseMessage");
 const loginUser = (email, password) => __awaiter(void 0, void 0, void 0, function* () {
     let user = yield User_1.default.findOne({ email });
@@ -30,22 +31,19 @@ const loginUser = (email, password) => __awaiter(void 0, void 0, void 0, functio
     }
     return user;
 });
-const generateToken = (user_id) => __awaiter(void 0, void 0, void 0, function* () {
-    const token = jsonwebtoken_1.default.sign({ sub: user_id }, 'secret_key', { expiresIn: 86400 });
-    var decoded_data = jsonwebtoken_1.default.verify(token, 'secret_key');
-    // console.log(user_id)
-    // console.log(decoded_data.sub)
+const generateToken = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    // Return jsonwebtoken
+    const token = jsonwebtoken_1.default.sign({ sub: userId }, config_1.default.jwtSecret, { expiresIn: 86400 });
+    // console.log(token)
     return token;
 });
 const signupUser = (nickname, email, password) => __awaiter(void 0, void 0, void 0, function* () {
     // email, password, nickname으로 유저 생성
     // 이메일 중복 확인
     const alreadyEmail = yield User_1.default.findOne({ email });
-    console.log(alreadyEmail);
     // 닉네임 중복 확인
     const alreadyNickname = yield User_1.default.findOne({ nickname });
-    console.log(alreadyNickname);
-    if (alreadyEmail != null && alreadyNickname != null) {
+    if (alreadyEmail != null) {
         throw Error(responseMessage.ALREADY_EMAIL);
     }
     else if (alreadyNickname != null) {
@@ -62,18 +60,10 @@ const signupUser = (nickname, email, password) => __awaiter(void 0, void 0, void
     const salt = yield bcryptjs_1.default.genSalt(10);
     user.password = yield bcryptjs_1.default.hash(password, salt);
     yield user.save();
-    // 카테고리 1개 생성해줘야함
-    // await createDefaultCategory(user.Objectid);
+    // 기본 카테고리 생성
+    const newbi = yield User_1.default.findOne({ email });
+    categoryService.createCategory(newbi._id, 0, "기본 카테고리", true);
     return user;
-});
-const getUserById = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield User_1.default.findOne({ id });
-    if (user == null) {
-        throw Error(responseMessage.READ_USER_FAIL);
-    }
-    else {
-        return user;
-    }
 });
 module.exports = {
     loginUser,
