@@ -8,7 +8,7 @@ const koreanDate = require("../modules/dateCalculate");
 
 const getCafeReviewList = async(cafeId) => {
 
-    const reviews = await Review.find().where("cafe").equals(cafeId).populate("user",["_id", "nickname", "profileImg" ,"cafeti"]);
+    const reviews = await Review.find().where("cafe").equals(cafeId).populate("user",["_id", "nickname", "profileImg" ,"cafeti"]).sort({created_at:-1});
     let reviewDTOList: IReviewOutputDTO[] = []
 
     for (let review of reviews){
