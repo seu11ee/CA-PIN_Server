@@ -132,7 +132,7 @@ const getCafeAverageRating = async(cafeId) => {
         }
         
     ]);
-
+    if (reviews.length == 0) return null;
     return reviews[0].average;
 }
 

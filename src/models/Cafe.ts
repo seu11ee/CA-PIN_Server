@@ -43,10 +43,8 @@ const CafeSchema = new mongoose.Schema({
       type: String
   },
   offday:{
-      type:[Number]
-  },
-  rating:{
-      type: Number
+      type:[Number],
+      default: undefined
   }
 
 

@@ -59,8 +59,9 @@ router.get(
                 if (!cafeDetail) res.status(statusCode.NO_CONTENT).send();
                 const isSaved = await categoryService.checkCafeInCategory(cafeId,userId);
                 var average: Number = await reviewService.getCafeAverageRating(cafeId);
+                if (!average) return res.status(statusCode.OK).send({message:responseMessage.CAFE_DETAIL_SUCCESS,cafeDetail,isSaved})
                 average = Number(average.toFixed(1))
-                res.status(statusCode.OK).send({message:responseMessage.CAFE_DETAIL_SUCCESS,cafeDetail,isSaved,average})
+                return res.status(statusCode.OK).send({message:responseMessage.CAFE_DETAIL_SUCCESS,cafeDetail,isSaved,average})
             }
         } catch (error) {
             next(error);
