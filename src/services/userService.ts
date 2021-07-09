@@ -2,6 +2,7 @@ import config from "../config";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/User";
+import Category from "../models/Category";
 import Review from "../models/Review";
 const createError = require('http-errors');
 const statusCode = require("../modules/statusCode");
@@ -78,14 +79,13 @@ const fetchUserInfo = async(userId) => {
     }
 
     // User's Review number
-    const reviews = await (await Review.find({_id: userId})).length;
+    const reviews = (await Review.find({_id: userId})).length;
 
     // User's Pin number
-    const categories = await categoryService.fetchMyCategory(userId);
     let pins: number = 0;
-    for (let category of categories) {
+    const categories = (await Category.find({user: userId})).forEach(category => {
         pins += category.cafes.length;
-    }
+    });
 
     return {user, reviews, pins};
 }
