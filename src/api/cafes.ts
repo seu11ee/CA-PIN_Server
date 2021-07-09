@@ -1,9 +1,10 @@
+import createError from "http-errors";
 import express, { Request, Response } from "express";
 import mongoose from "mongoose";
-const router = express.Router();
 const cafeService = require("../services/cafeService");
-const statusCode = require("../modules/statusCode");
 const responseMessage = require("../modules/responseMessage");
+const router = express.Router();
+const statusCode = require("../modules/statusCode");
 
 /**
  *  @route GET cafes?tags={tagIndex},..,{}
@@ -52,7 +53,7 @@ router.get(
         
         try{
             if (!mongoose.isValidObjectId(cafeId)){
-                throw(Error(responseMessage.INVALID_IDENTIFIER));
+                createError
             }
             else{
                 const cafeDetail = await cafeService.getCafeDetail(cafeId);
