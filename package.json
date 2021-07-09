@@ -21,6 +21,7 @@
   "dependencies": {
     "@types/aws-sdk": "^2.7.0",
     "@types/http-errors": "^1.8.1",
+    "@types/multer": "^1.4.7",
     "bcryptjs": "^2.4.3",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
