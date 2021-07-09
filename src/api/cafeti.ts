@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 import { check, validationResult } from "express-validator"
 import authChecker from "../middleware/auth"
 const router = express.Router();
-
+const createError = require('http-errors');
 const cafetiService = require("../services/cafetiService");
 const statusCode = require("../modules/statusCode");
 const responseMessage = require("../modules/responseMessage");
@@ -19,10 +19,10 @@ const responseMessage = require("../modules/responseMessage");
     ],
     authChecker
     ,
-    async(req: Request, res: Response) => {
+    async(req: Request, res: Response, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()){
-            return res.status(statusCode.BAD_REQUEST).json({errors: errors.array()});
+            next(createError(statusCode.BAD_REQUEST, responseMessage.OUT_OF_VALUE));
         }
 
         const {answers} = req.body;
@@ -33,10 +33,7 @@ const responseMessage = require("../modules/responseMessage");
                 message: responseMessage.CAFETI_TEST_SUCCESS,
             });
         } catch (error) {
-            switch (error.message) {
-                default:
-                    res.status(statusCode.INTERNAL_SERVER_ERROR).send({message: error.message});
-            }
+            next(error);
         }
     }
 );

@@ -1,15 +1,16 @@
 import User from "../models/User";
 import Cafeti from "../models/Cafeti";
+const createError = require('http-errors');
+const statusCode = require("../modules/statusCode");
 const responseMessage = require("../modules/responseMessage");
-
 const fetchCafetiResult = async(userId, answers) => {
     const user = await User.findOne({_id: userId});
     if (user == null) {
-        throw Error(responseMessage.READ_USER_FAIL);
+        throw createError(statusCode.BAD_REQUEST, responseMessage.READ_USER_FAIL);
     } else if (answers.length != 4) {
-        throw Error(responseMessage.INVALID_IDENTIFIER);
+        throw createError(statusCode.BAD_REQUEST, responseMessage.INVALID_IDENTIFIER);
     }
-    let result: String = ""
+    let result: string = ""
     switch (answers[0]) {
         case 0:
             result += "C"
