@@ -91,7 +91,7 @@ const fetchCafesInCategory = async(categoryId, userId) => {
     }
     const cafes: ICafeCategoryDTO[] = []
     for (let cafe of whatCategory.cafes) {
-        cafes.push(await Cafe.findOne({_id: cafe}).select("_id name tags address rating"));
+        cafes.push(await Cafe.findById(cafe).populate('tags','name').select("tags _id name address rating"));
     }
 
     return cafes
