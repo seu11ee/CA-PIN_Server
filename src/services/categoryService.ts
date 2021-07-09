@@ -97,6 +97,12 @@ const fetchCafesInCategory = async(categoryId, userId) => {
     return cafes
 }
 
+const checkCafeInCategory = async(cafeId,userId) => {
+    const category = await Category.findOne({cafe: cafeId, user: userId})
+    if (category) return true
+    return false
+}
+
 module.exports = {
     createCategory,
     addCafe,
