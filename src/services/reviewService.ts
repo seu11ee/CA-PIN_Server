@@ -114,7 +114,6 @@ const deleteReview = async (reviewId,userId) => {
 }
 
 const getCafeAverageRating = async(cafeId) => {
-    console.log(cafeId);
     const reviews = await Review.aggregate([
         
         {

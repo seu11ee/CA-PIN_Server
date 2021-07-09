@@ -58,7 +58,8 @@ router.get(
                 const cafeDetail = await cafeService.getCafeDetail(cafeId);
                 if (!cafeDetail) res.status(statusCode.NO_CONTENT).send();
                 const isSaved = await categoryService.checkCafeInCategory(cafeId,userId);
-                const average = await reviewService.getCafeAverageRating(cafeId);
+                var average: Number = await reviewService.getCafeAverageRating(cafeId);
+                average = Number(average.toFixed(1))
                 res.status(statusCode.OK).send({message:responseMessage.CAFE_DETAIL_SUCCESS,cafeDetail,isSaved,average})
             }
         } catch (error) {
