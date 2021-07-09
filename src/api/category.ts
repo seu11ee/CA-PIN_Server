@@ -3,6 +3,7 @@ import express, { Request, Response } from "express";
 import { check, validationResult } from "express-validator"
 import authChecker from "../middleware/auth"
 const router = express.Router();
+const createError = require('http-errors');
 const categoryService = require("../services/categoryService");
 const statusCode = require("../modules/statusCode");
 const responseMessage = require("../modules/responseMessage");
@@ -21,10 +22,10 @@ router.post(
         check("categoryName", "color_name is required").not().isEmpty(),
     ],
     authChecker,
-    async(req: Request, res: Response) => {
+    async(req: Request, res: Response, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()){
-            return res.status(statusCode.BAD_REQUEST).json({errors: errors.array()});
+            next(createError(statusCode.BAD_REQUEST, responseMessage.OUT_OF_VALUE));
         }
 
         const {colorIdx, categoryName} = req.body;
@@ -37,13 +38,7 @@ router.post(
                 message: responseMessage.CREATE_CATEGORY_SUCCESS
             });
         } catch (error) {
-            switch (error.message) {
-                case responseMessage.OUT_OF_VALUE:
-                    res.status(statusCode.BAD_REQUEST).send({message: error.message});
-                    break;
-                default:
-                    res.status(statusCode.INTERNAL_SERVER_ERROR).send({message: responseMessage.INTERNAL_SERVER_ERROR});
-            }
+            next(error);
         }
     }
 );
@@ -60,10 +55,10 @@ router.post(
         check("categoryId", "category_id is required").not().isEmpty(),
     ],
     authChecker,
-    async(req: Request, res: Response) => {
+    async(req: Request, res: Response, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()){
-            return res.status(statusCode.BAD_REQUEST).json({errors: errors.array()});
+            next(createError(statusCode.BAD_REQUEST, responseMessage.OUT_OF_VALUE));
         }
         const {cafeIds, categoryId} = req.body;
 
@@ -75,16 +70,7 @@ router.post(
                 message: responseMessage.ADD_PIN_SUCCESS
             });
         } catch (error) {
-            switch (error.message) {
-                case responseMessage.BAD_REQUEST:
-                    res.status(statusCode.BAD_REQUEST).send({message: error.message});
-                    break;
-                case responseMessage.INVALID_IDENTIFIER:
-                    res.status(statusCode.BAD_REQUEST).send({message: error.message});
-                    break;
-                default:
-                    res.status(statusCode.INTERNAL_SERVER_ERROR).send({message: responseMessage.INTERNAL_SERVER_ERROR});
-            }
+            next(error);
         }
     }
 );
@@ -100,31 +86,20 @@ router.post(
         check("categoryId", "categoryId is required").not().isEmpty(),
     ],
     authChecker,
-    async(req: Request, res: Response) => {
+    async(req: Request, res: Response, next) => {
         const categoryId = req.params.categoryId;
         try {
             if (!mongoose.isValidObjectId(categoryId)){
-                throw(Error(responseMessage.INVALID_IDENTIFIER));
+                next(createError(statusCode.BAD_REQUEST, responseMessage.INVALID_IDENTIFIER));
             }
-            else{
-                console.log(res.locals.tokenValue);
-                console.log(res.locals.userId);
-                await categoryService.deleteCategory(categoryId);
-                res.status(statusCode.OK).json({
-                    message: responseMessage.DELETE_CATEGORY_SUCCESS
-                });
-            }
+            console.log(res.locals.tokenValue);
+            console.log(res.locals.userId);
+            await categoryService.deleteCategory(categoryId);
+            res.status(statusCode.OK).json({
+                message: responseMessage.DELETE_CATEGORY_SUCCESS
+            });
         } catch (error) {
-            switch (error.message) {
-                case responseMessage.DELETE_DEFAULT_FAIL:
-                    res.status(statusCode.BAD_REQUEST).send({message: error.message});
-                    break;
-                case responseMessage.INVALID_IDENTIFIER:
-                    res.status(statusCode.BAD_REQUEST).send({message: error.message});
-                    break;
-                default:
-                    res.status(statusCode.INTERNAL_SERVER_ERROR).send({message: responseMessage.INTERNAL_SERVER_ERROR});
-            }
+            next(error);
         }
     }
 );
@@ -138,29 +113,21 @@ router.post(
     "/:categoryId/cafes",
     authChecker
     ,
-    async(req: Request, res: Response) => {
+    async(req: Request, res: Response, next) => {
         const categoryId = req.params.categoryId;
         try {
             if (!mongoose.isValidObjectId(categoryId)){
-                throw(Error(responseMessage.INVALID_IDENTIFIER));
+                next(createError(statusCode.BAD_REQUEST, responseMessage.INVALID_IDENTIFIER));
             }
-            else{
-                console.log(res.locals.tokenValue);
-                console.log(res.locals.userId);
-                const cafeList = await categoryService.fetchCafesInCategory(categoryId, res.locals.userId);
-                res.status(statusCode.OK).json({
-                    message: responseMessage.READ_CATEGORY_CAFE_SUCCESS,
-                    cafeDetail: cafeList
-                });
-            }
+            console.log(res.locals.tokenValue);
+            console.log(res.locals.userId);
+            const cafeList = await categoryService.fetchCafesInCategory(categoryId, res.locals.userId);
+            res.status(statusCode.OK).json({
+                message: responseMessage.READ_CATEGORY_CAFE_SUCCESS,
+                cafeDetail: cafeList
+            });
         } catch (error) {
-            switch (error.message) {
-                case responseMessage.INVALID_IDENTIFIER:
-                    res.status(statusCode.BAD_REQUEST).send({message: error.message});
-                    break;
-                default:
-                    res.status(statusCode.INTERNAL_SERVER_ERROR).send({message: responseMessage.INTERNAL_SERVER_ERROR});
-            }
+            next(error);
         }
     }
 );
