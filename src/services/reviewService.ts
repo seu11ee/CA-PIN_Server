@@ -8,7 +8,7 @@ const koreanDate = require("../modules/dateCalculate");
 
 const getCafeReviewList = async(cafeId) => {
 
-    const reviews = await Review.find().where("cafe").equals(cafeId).populate("user",["_id", "nickname", "profileImg" ,"cafeti"]);
+    const reviews = await Review.find().where("cafe").equals(cafeId).populate("user",["_id", "nickname", "profileImg" ,"cafeti"]).sort({created_at:-1});
     let reviewDTOList: IReviewOutputDTO[] = []
 
     for (let review of reviews){
@@ -113,10 +113,35 @@ const deleteReview = async (reviewId,userId) => {
     }
 }
 
+const getCafeAverageRating = async(cafeId) => {
+    const reviews = await Review.aggregate([
+        
+        {
+            $match: 
+            {
+                cafe : mongoose.Types.ObjectId(cafeId)
+            }
+        },
+
+        {
+            $group:
+            {
+                _id : "$cafe",
+                average: { $avg: "$rating" }
+
+            }
+        }
+        
+    ]);
+
+    return reviews[0].average;
+}
+
 module.exports = {
     getCafeReviewList,
     checkIfReviewed,
     createReview,
     modifyReview,
-    deleteReview
+    deleteReview,
+    getCafeAverageRating
 }

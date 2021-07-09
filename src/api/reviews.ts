@@ -1,12 +1,11 @@
+import auth from "../middleware/auth";
+import createError from "http-errors";
 import express, { Request, Response } from "express";
 import mongoose from "mongoose";
 const router = express.Router();
 const reviewService = require("../services/reviewService");
 const statusCode = require("../modules/statusCode");
 const responseMessage = require("../modules/responseMessage");
-import auth from "../middleware/auth";
-import createError from "http-errors";
-import { FileSystemCredentials } from "aws-sdk";
 const { upload } = require ("../middleware/upload");
 
 /**
@@ -111,7 +110,6 @@ router.put(
             if (!review) res.status(statusCode.NO_CONTENT).send();
 
             res.status(statusCode.OK).json({message:responseMessage.EDIT_REVIEW_SUCCESS});
-            next();
         } catch (error) {
             console.log(error.statusCode,error.message);
             next(error);
