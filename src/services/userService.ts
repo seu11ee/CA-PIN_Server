@@ -2,6 +2,7 @@ import config from "../config";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/User";
+import Review from "../models/Review";
 const createError = require('http-errors');
 const statusCode = require("../modules/statusCode");
 const categoryService = require("../services/categoryService");
@@ -69,8 +70,29 @@ const signupUser = async (nickname, email, password) => {
     return user;
 }
 
+const fetchUserInfo = async(userId) => {
+    // userInfo
+    const user = await User.findOne({_id: userId}).select("_id nickname email cafeti profileImg");
+    if (!user) {
+        throw createError(statusCode.BAD_REQUEST, responseMessage.READ_USER_FAIL);
+    }
+
+    // User's Review number
+    const reviews = await (await Review.find({_id: userId})).length;
+
+    // User's Pin number
+    const categories = await categoryService.fetchMyCategory(userId);
+    let pins: number = 0;
+    for (let category of categories) {
+        pins += category.cafes.length;
+    }
+
+    return {user, reviews, pins};
+}
+
 module.exports = {
     loginUser,
     signupUser,
-    generateToken
+    generateToken,
+    fetchUserInfo
 }
