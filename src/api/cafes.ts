@@ -1,6 +1,6 @@
 import auth from "../middleware/auth";
 import createError from "http-errors";
-import express, { Request, response, Response } from "express";
+import express, { Request, Response } from "express";
 import mongoose from "mongoose";
 const cafeService = require("../services/cafeService");
 const categoryService = require("../services/categoryService");
