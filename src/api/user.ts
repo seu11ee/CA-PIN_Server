@@ -102,6 +102,35 @@ router.post(
 );
 
 /**
+ *  @route Get /user/myInfo
+ *  @desc fetch my category list(내 카테고리-마이페이지)
+ *  @access Private
+ */
+ router.get(
+    "/myInfo",
+    authChecker
+    ,
+    async(req: Request, res: Response, next) => {
+        try {
+            const userInfo = await userService.fetchUserInfo(res.locals.userId);
+            return res.status(statusCode.OK).json({
+                message: responseMessage.READ_USERINFO_SUCCESS,
+                myInfo: {
+                    cafeti: userInfo.user.cafeti,
+                    nickname: userInfo.user.nickname,
+                    email: userInfo.user.email,
+                    profileImg: userInfo.user.profileImg,
+                    reviewNum: userInfo.reviews,
+                    pinNum: userInfo.pins
+                }
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+);
+
+/**
  *  @route Get api/user/reviews
  *  @desc get my review list
  *  @access Private
@@ -116,7 +145,6 @@ router.get("/reviews",
                 message: responseMessage.READ_MY_REVIEW_SUCCESS,
                 reviews: myReviewList
             });
-
         } catch (error) {
             next(error);
         }
