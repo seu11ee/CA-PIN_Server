@@ -48,7 +48,6 @@ router.post(
         const reviewParams = JSON.parse(req.body.review);
         const cafeId = req.query.cafe;
         const userId = res.locals.userId;
-        console.log(userId);
         const {
             content,
             recommend,
@@ -67,11 +66,9 @@ router.post(
                 urls.push(url);
             }
             const isReviewed = await reviewService.checkIfReviewed(cafeId,userId);
-            console.log(isReviewed);
             if(isReviewed) next(createError(createError(statusCode.BAD_REQUEST,responseMessage.REPEATED_VALUE)));
             
             const review = await reviewService.createReview(cafeId,userId,content,rating,recommend,urls);
-            console.log(review);
             res.status(statusCode.CREATED).json();
         } catch (error) {
             next(error);

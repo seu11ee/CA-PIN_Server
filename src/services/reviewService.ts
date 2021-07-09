@@ -68,7 +68,6 @@ const createReview = async (cafeId,userId,content,rating,recommend?,imgs?) => {
 const modifyReview = async (reviewId,userId,content,rating,isAllDeleted,recommend?,imgs?) => {
     try {
         const review = await Review.findById(reviewId);
-        console.log(statusCode.UNAUTHORIZED);
         if (!review) return null;
         if (review.user != userId){
             throw createError(statusCode.UNAUTHORIZED,responseMessage.UNAUTHORIZED);
@@ -137,11 +136,17 @@ const getCafeAverageRating = async(cafeId) => {
     return reviews[0].average;
 }
 
+const getMyReviews = async (userId) => {
+    const myReviews = Review.find({user:userId}).sort({created_at:-1})
+    return myReviews
+}
+
 module.exports = {
     getCafeReviewList,
     checkIfReviewed,
     createReview,
     modifyReview,
     deleteReview,
-    getCafeAverageRating
+    getCafeAverageRating,
+    getMyReviews
 }

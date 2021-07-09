@@ -8,6 +8,7 @@ const userService = require("../services/userService");
 const categoryService = require("../services/categoryService");
 const statusCode = require("../modules/statusCode");
 const responseMessage = require("../modules/responseMessage");
+const reviewService = require("../services/reviewService");
 
 /**
  *  @route Post api/user/login
@@ -92,6 +93,28 @@ router.post(
             return res.status(statusCode.OK).json({
                 message: responseMessage.READ_MY_CATEGORY_SUCCESS,
                 myCategoryList: myCategoryList
+            });
+
+        } catch (error) {
+            next(error);
+        }
+    }
+);
+
+/**
+ *  @route Get api/user/reviews
+ *  @desc get my review list
+ *  @access Private
+ */
+router.get("/reviews",
+    authChecker,
+    async(req: Request, res: Response, next) => {
+        try {
+            const myReviewList = await reviewService.getMyReviews(res.locals.userId);
+            if (!myReviewList) return res.status(statusCode.NO_CONTENT).send();
+            return res.status(statusCode.OK).json({
+                message: responseMessage.READ_MY_REVIEW_SUCCESS,
+                reviews: myReviewList
             });
 
         } catch (error) {
