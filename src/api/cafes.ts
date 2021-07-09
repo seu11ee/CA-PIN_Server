@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 const cafeService = require("../services/cafeService");
 const categoryService = require("../services/categoryService");
 const responseMessage = require("../modules/responseMessage");
+const reviewService = require("../services/reviewService");
 const router = express.Router();
 const statusCode = require("../modules/statusCode");
 
@@ -57,7 +58,8 @@ router.get(
                 const cafeDetail = await cafeService.getCafeDetail(cafeId);
                 if (!cafeDetail) res.status(statusCode.NO_CONTENT).send();
                 const isSaved = await categoryService.checkCafeInCategory(cafeId,userId);
-                res.status(statusCode.OK).send({message:responseMessage.CAFE_DETAIL_SUCCESS,cafeDetail,isSaved})
+                const average = await reviewService.getCafeAverageRating(cafeId);
+                res.status(statusCode.OK).send({message:responseMessage.CAFE_DETAIL_SUCCESS,cafeDetail,isSaved,average})
             }
         } catch (error) {
             next(error);

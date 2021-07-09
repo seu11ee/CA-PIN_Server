@@ -113,10 +113,36 @@ const deleteReview = async (reviewId,userId) => {
     }
 }
 
+const getCafeAverageRating = async(cafeId) => {
+    console.log(cafeId);
+    const reviews = await Review.aggregate([
+        
+        {
+            $match: 
+            {
+                cafe : mongoose.Types.ObjectId(cafeId)
+            }
+        },
+
+        {
+            $group:
+            {
+                _id : "$cafe",
+                average: { $avg: "$rating" }
+
+            }
+        }
+        
+    ]);
+
+    return reviews[0].average;
+}
+
 module.exports = {
     getCafeReviewList,
     checkIfReviewed,
     createReview,
     modifyReview,
-    deleteReview
+    deleteReview,
+    getCafeAverageRating
 }
