@@ -8,7 +8,7 @@ const koreanDate = require("../modules/dateCalculate");
 
 const getCafeReviewList = async(cafeId) => {
 
-    const reviews = await Review.find().where("cafe").equals(cafeId).populate("user",["_id", "nickname", "profileImg" ,"cafeti"]);
+    const reviews = await Review.find().where("cafe").equals(cafeId).populate("user",["_id", "nickname", "profileImg" ,"cafeti"]).sort({created_at:-1});
     let reviewDTOList: IReviewOutputDTO[] = []
 
     for (let review of reviews){
@@ -68,7 +68,6 @@ const createReview = async (cafeId,userId,content,rating,recommend?,imgs?) => {
 const modifyReview = async (reviewId,userId,content,rating,isAllDeleted,recommend?,imgs?) => {
     try {
         const review = await Review.findById(reviewId);
-        console.log(statusCode.UNAUTHORIZED);
         if (!review) return null;
         if (review.user != userId){
             throw createError(statusCode.UNAUTHORIZED,responseMessage.UNAUTHORIZED);
@@ -113,10 +112,41 @@ const deleteReview = async (reviewId,userId) => {
     }
 }
 
+const getCafeAverageRating = async(cafeId) => {
+    const reviews = await Review.aggregate([
+        
+        {
+            $match: 
+            {
+                cafe : mongoose.Types.ObjectId(cafeId)
+            }
+        },
+
+        {
+            $group:
+            {
+                _id : "$cafe",
+                average: { $avg: "$rating" }
+
+            }
+        }
+        
+    ]);
+    if (reviews.length == 0) return null;
+    return reviews[0].average;
+}
+
+const getMyReviews = async (userId) => {
+    const myReviews = Review.find({user:userId}).sort({created_at:-1})
+    return myReviews
+}
+
 module.exports = {
     getCafeReviewList,
     checkIfReviewed,
     createReview,
     modifyReview,
-    deleteReview
+    deleteReview,
+    getCafeAverageRating,
+    getMyReviews
 }

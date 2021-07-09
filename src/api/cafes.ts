@@ -1,9 +1,13 @@
+import auth from "../middleware/auth";
+import createError from "http-errors";
 import express, { Request, Response } from "express";
 import mongoose from "mongoose";
-const router = express.Router();
 const cafeService = require("../services/cafeService");
-const statusCode = require("../modules/statusCode");
+const categoryService = require("../services/categoryService");
 const responseMessage = require("../modules/responseMessage");
+const reviewService = require("../services/reviewService");
+const router = express.Router();
+const statusCode = require("../modules/statusCode");
 
 /**
  *  @route GET cafes?tags={tagIndex},..,{}
@@ -12,7 +16,7 @@ const responseMessage = require("../modules/responseMessage");
  */
 router.get(
     "/",
-    async(req: Request, res: Response) => {
+    async(req: Request, res: Response, next) => {
         const tagQuery = req.query.tags;
         var tags: number[] = []
         try {
@@ -20,20 +24,15 @@ router.get(
                 tags = (tagQuery as string).split(",").map(x=>+x);
             }
             const cafeLocationList = await cafeService.getCafeLocationList(tags);
+
+            if (!cafeLocationList) res.status(statusCode.NO_CONTENT).send();
             
             return res.status(statusCode.OK).json({
                 message: responseMessage.CAFE_LOCATION_SUCCESS,
                 cafeLocations: cafeLocationList
             });
         } catch (error) {
-            switch (error.message){
-                case responseMessage.NO_CONTENT:
-                    res.status(statusCode.NO_CONTENT).send();
-                case responseMessage.INVALID_IDENTIFIER:
-                    res.status(statusCode.BAD_REQUEST).send({message:error.message});
-                default:
-                    res.status(statusCode.INTERNAL_SERVER_ERROR).send({message:responseMessage.INTERNAL_SERVER_ERROR});
-            }
+            next(error);
         }
       
     
@@ -46,27 +45,26 @@ router.get(
  *  @access Private
  */
 router.get(
-    "/:cafeId",
-    async(req: Request, res: Response) => {
+    "/:cafeId", auth,
+    async(req: Request, res: Response, next) => {
         const cafeId = req.params.cafeId;
-        
+        const userId = res.locals.userId;
+
         try{
             if (!mongoose.isValidObjectId(cafeId)){
-                throw(Error(responseMessage.INVALID_IDENTIFIER));
+                next(createError(statusCode.BAD_REQUEST,responseMessage.INVALID_IDENTIFIER));
             }
             else{
                 const cafeDetail = await cafeService.getCafeDetail(cafeId);
-                res.status(statusCode.OK).send({message:responseMessage.CAFE_DETAIL_SUCCESS,cafeDetail})
+                if (!cafeDetail) res.status(statusCode.NO_CONTENT).send();
+                const isSaved = await categoryService.checkCafeInCategory(cafeId,userId);
+                var average: Number = await reviewService.getCafeAverageRating(cafeId);
+                if (!average) return res.status(statusCode.OK).send({message:responseMessage.CAFE_DETAIL_SUCCESS,cafeDetail,isSaved})
+                average = Number(average.toFixed(1))
+                return res.status(statusCode.OK).send({message:responseMessage.CAFE_DETAIL_SUCCESS,cafeDetail,isSaved,average})
             }
         } catch (error) {
-            switch (error.message){
-                case responseMessage.INVALID_IDENTIFIER:
-                    res.status(statusCode.BAD_REQUEST).send({message:error.message});
-                case responseMessage.NO_CONTENT:
-                    res.status(statusCode.NO_CONTENT).send();
-                default:
-                    res.status(statusCode.INTERNAL_SERVER_ERROR).send({message:responseMessage.INTERNAL_SERVER_ERROR});
-            }
+            next(error);
         }
     })
 

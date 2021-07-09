@@ -1,8 +1,10 @@
 import Cafe from "../models/Cafe";
-import Tag from "../models/Tag";
+import createError from "http-errors";
 import { ICafe, ICafeLocationDTO } from "../interfaces/ICafe";
 import mongoose from "mongoose";
+import Tag from "../models/Tag";
 const responseMessage = require("../modules/responseMessage");
+const statusCode = require("../modules/statusCode");
 
 const getCafeLocationList = async (tags) => {
     const tag_ids = await Tag.find({
@@ -10,7 +12,7 @@ const getCafeLocationList = async (tags) => {
         }
     }).select('_id');
     if (tags.length != tag_ids.length){
-        throw Error(responseMessage.INVALID_IDENTIFIER);
+        throw createError(statusCode.BAD_REQUEST,responseMessage.INVALID_IDENTIFIER);
     }
     let tagList: mongoose.Types.ObjectId[]= []
     for (let tag of tag_ids){
@@ -36,7 +38,7 @@ const getCafeLocationList = async (tags) => {
         cafeLocationList.push(location)
     }
     if (cafeLocationList.length == 0){
-        throw Error(responseMessage.NO_CONTENT);
+        return null;
     }
     return cafeLocationList;
 }
@@ -44,7 +46,7 @@ const getCafeDetail = async(cafeId) => {
     const detail = await Cafe.findById(cafeId).populate('tags');
 
     if (!detail){
-        throw Error(responseMessage.NO_CONTENT);
+        return null;
     }
     return detail;
 

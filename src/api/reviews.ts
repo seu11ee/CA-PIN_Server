@@ -1,12 +1,11 @@
+import auth from "../middleware/auth";
+import createError from "http-errors";
 import express, { Request, Response } from "express";
 import mongoose from "mongoose";
 const router = express.Router();
 const reviewService = require("../services/reviewService");
 const statusCode = require("../modules/statusCode");
 const responseMessage = require("../modules/responseMessage");
-import auth from "../middleware/auth";
-import createError from "http-errors";
-import { FileSystemCredentials } from "aws-sdk";
 const { upload } = require ("../middleware/upload");
 
 /**
@@ -49,7 +48,6 @@ router.post(
         const reviewParams = JSON.parse(req.body.review);
         const cafeId = req.query.cafe;
         const userId = res.locals.userId;
-        console.log(userId);
         const {
             content,
             recommend,
@@ -68,11 +66,9 @@ router.post(
                 urls.push(url);
             }
             const isReviewed = await reviewService.checkIfReviewed(cafeId,userId);
-            console.log(isReviewed);
             if(isReviewed) next(createError(createError(statusCode.BAD_REQUEST,responseMessage.REPEATED_VALUE)));
             
             const review = await reviewService.createReview(cafeId,userId,content,rating,recommend,urls);
-            console.log(review);
             res.status(statusCode.CREATED).json();
         } catch (error) {
             next(error);
@@ -111,7 +107,6 @@ router.put(
             if (!review) res.status(statusCode.NO_CONTENT).send();
 
             res.status(statusCode.OK).json({message:responseMessage.EDIT_REVIEW_SUCCESS});
-            next();
         } catch (error) {
             console.log(error.statusCode,error.message);
             next(error);
