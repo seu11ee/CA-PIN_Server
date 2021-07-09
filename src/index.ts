@@ -11,6 +11,7 @@ app.use(express.json()); // [3]
 // Define Routes
 app.use("/cafes", require("./api/cafes")); // [4]
 app.use("/user", require("./api/user"));
+app.use("/reviews", require("./api/reviews"));
 app.use("/category", require("./api/category"));
 app.use("/cafeti", require("./api/cafeti"));
 

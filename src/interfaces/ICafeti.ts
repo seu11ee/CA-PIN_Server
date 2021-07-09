@@ -1,5 +1,5 @@
 export interface ICafeti {
-    cafetiIdx: Number;
+    cafetiIdx: number;
     type: string;
     description: string;
     img: string;

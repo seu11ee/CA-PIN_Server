@@ -28,7 +28,7 @@ const responseMessage = require("../modules/responseMessage");
 router.post("/", [
     express_validator_1.check("colorIdx", "color_id is required").not().isEmpty(),
     express_validator_1.check("categoryName", "color_name is required").not().isEmpty(),
-], auth_1.default, (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+], auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const errors = express_validator_1.validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(statusCode.BAD_REQUEST).json({ errors: errors.array() });
@@ -41,7 +41,6 @@ router.post("/", [
         res.status(statusCode.CREATED).json({
             message: responseMessage.CREATE_CATEGORY_SUCCESS
         });
-        next();
     }
     catch (error) {
         switch (error.message) {
@@ -49,7 +48,7 @@ router.post("/", [
                 res.status(statusCode.BAD_REQUEST).send({ message: error.message });
                 break;
             default:
-                res.status(statusCode.INTERNAL_SERVER_ERROR).send({ message: error.message });
+                res.status(statusCode.INTERNAL_SERVER_ERROR).send({ message: responseMessage.INTERNAL_SERVER_ERROR });
         }
     }
 }));
@@ -61,7 +60,7 @@ router.post("/", [
 router.post("/pin", [
     express_validator_1.check("cafeIds", "cafe_ids is required").not().isEmpty(),
     express_validator_1.check("categoryId", "category_id is required").not().isEmpty(),
-], auth_1.default, (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+], auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const errors = express_validator_1.validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(statusCode.BAD_REQUEST).json({ errors: errors.array() });
@@ -74,7 +73,6 @@ router.post("/pin", [
         res.status(statusCode.OK).json({
             message: responseMessage.ADD_PIN_SUCCESS
         });
-        next();
     }
     catch (error) {
         switch (error.message) {
@@ -85,7 +83,7 @@ router.post("/pin", [
                 res.status(statusCode.BAD_REQUEST).send({ message: error.message });
                 break;
             default:
-                res.status(statusCode.INTERNAL_SERVER_ERROR).send({ message: error.message });
+                res.status(statusCode.INTERNAL_SERVER_ERROR).send({ message: responseMessage.INTERNAL_SERVER_ERROR });
         }
     }
 }));
@@ -96,7 +94,7 @@ router.post("/pin", [
  */
 router.delete("/:categoryId", [
     express_validator_1.check("categoryId", "categoryId is required").not().isEmpty(),
-], auth_1.default, (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+], auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const categoryId = req.params.categoryId;
     try {
         if (!mongoose_1.default.isValidObjectId(categoryId)) {
@@ -109,7 +107,6 @@ router.delete("/:categoryId", [
             res.status(statusCode.OK).json({
                 message: responseMessage.DELETE_CATEGORY_SUCCESS
             });
-            next();
         }
     }
     catch (error) {
@@ -121,7 +118,7 @@ router.delete("/:categoryId", [
                 res.status(statusCode.BAD_REQUEST).send({ message: error.message });
                 break;
             default:
-                res.status(statusCode.INTERNAL_SERVER_ERROR).send({ message: error.message });
+                res.status(statusCode.INTERNAL_SERVER_ERROR).send({ message: responseMessage.INTERNAL_SERVER_ERROR });
         }
     }
 }));
@@ -130,7 +127,7 @@ router.delete("/:categoryId", [
  *  @desc fetch cafes in category(카테고리에 핀된 카페들 모아보기)
  *  @access Private
  */
-router.get("/:categoryId/cafes", auth_1.default, (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/:categoryId/cafes", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const categoryId = req.params.categoryId;
     try {
         if (!mongoose_1.default.isValidObjectId(categoryId)) {
@@ -144,7 +141,6 @@ router.get("/:categoryId/cafes", auth_1.default, (req, res, next) => __awaiter(v
                 message: responseMessage.READ_CATEGORY_CAFE_SUCCESS,
                 cafeDetail: cafeList
             });
-            next();
         }
     }
     catch (error) {
@@ -153,7 +149,7 @@ router.get("/:categoryId/cafes", auth_1.default, (req, res, next) => __awaiter(v
                 res.status(statusCode.BAD_REQUEST).send({ message: error.message });
                 break;
             default:
-                res.status(statusCode.INTERNAL_SERVER_ERROR).send({ message: error.message });
+                res.status(statusCode.INTERNAL_SERVER_ERROR).send({ message: responseMessage.INTERNAL_SERVER_ERROR });
         }
     }
 }));

@@ -3,7 +3,6 @@ import Cafeti from "../models/Cafeti";
 const createError = require('http-errors');
 const statusCode = require("../modules/statusCode");
 const responseMessage = require("../modules/responseMessage");
-
 const fetchCafetiResult = async(userId, answers) => {
     const user = await User.findOne({_id: userId});
     if (user == null) {
