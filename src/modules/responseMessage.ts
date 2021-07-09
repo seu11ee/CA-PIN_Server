@@ -32,6 +32,8 @@ module.exports = {
     UPDATE_USER_FAIL: "사용자 정보 업데이트 실패",
     DELETE_USER_SUCCESS: "회원 탈퇴 성공",
     DELETE_USER_FAIL: "회원 탈퇴 실패",
+    READ_USERINFO_SUCCESS: "사용자 정보 조회 성공",
+    READ_USERINFO_FAIL: "사용자 정보 조회 실패",
     
     // CAFETI
     CAFETI_TEST_SUCCESS: "CAFETI 검사 완료",

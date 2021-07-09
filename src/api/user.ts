@@ -113,7 +113,7 @@ router.post(
         try {
             const userInfo = await userService.fetchUserInfo(res.locals.userId);
             return res.status(statusCode.OK).json({
-                message: responseMessage.READ_MY_CATEGORY_SUCCESS,
+                message: responseMessage.READ_USERINFO_SUCCESS,
                 myInfo: {
                     cafeti: userInfo.user.cafeti,
                     nickname: userInfo.user.nickname,
@@ -123,7 +123,6 @@ router.post(
                     pinNum: userInfo.pins
                 }
             });
-
         } catch (error) {
             next(error);
         }
