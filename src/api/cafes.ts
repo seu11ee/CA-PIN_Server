@@ -1,7 +1,9 @@
+import auth from "../middleware/auth";
 import createError from "http-errors";
 import express, { Request, response, Response } from "express";
 import mongoose from "mongoose";
 const cafeService = require("../services/cafeService");
+const categoryService = require("../services/categoryService");
 const responseMessage = require("../modules/responseMessage");
 const router = express.Router();
 const statusCode = require("../modules/statusCode");
@@ -42,10 +44,11 @@ router.get(
  *  @access Private
  */
 router.get(
-    "/:cafeId",
+    "/:cafeId", auth,
     async(req: Request, res: Response, next) => {
         const cafeId = req.params.cafeId;
-        
+        const userId = res.locals.userId;
+
         try{
             if (!mongoose.isValidObjectId(cafeId)){
                 next(createError(statusCode.BAD_REQUEST,responseMessage.INVALID_IDENTIFIER));
@@ -53,7 +56,8 @@ router.get(
             else{
                 const cafeDetail = await cafeService.getCafeDetail(cafeId);
                 if (!cafeDetail) res.status(statusCode.NO_CONTENT).send();
-                res.status(statusCode.OK).send({message:responseMessage.CAFE_DETAIL_SUCCESS,cafeDetail})
+                const isSaved = await categoryService.checkCafeInCategory(cafeId,userId);
+                res.status(statusCode.OK).send({message:responseMessage.CAFE_DETAIL_SUCCESS,cafeDetail,isSaved})
             }
         } catch (error) {
             next(error);

@@ -108,5 +108,6 @@ module.exports = {
     addCafe,
     deleteCategory,
     fetchMyCategory,
-    fetchCafesInCategory
+    fetchCafesInCategory,
+    checkCafeInCategory
 }
