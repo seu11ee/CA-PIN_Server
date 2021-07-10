@@ -24,6 +24,8 @@ const fetchCafetiResult = async(userId, answers) => {
                 case 2:
                     result += "X"
                     break;
+                default:
+                    result += "U"
             }
             break;
         case 1:
@@ -38,8 +40,12 @@ const fetchCafetiResult = async(userId, answers) => {
                 case 2:
                     result += "J"
                     break;
+                default:
+                    result += "U"
             }
             break;
+        default:
+            result += "N"
     }
     
     switch (answers[2]) {
@@ -58,6 +64,8 @@ const fetchCafetiResult = async(userId, answers) => {
         case 4:
             result += "C"
             break;
+        default:
+            result += "L"
     }
 
     switch (answers[3]) {
@@ -73,6 +81,8 @@ const fetchCafetiResult = async(userId, answers) => {
         case 3:
             result += "W"
             break;
+        default:
+            result += "L"
     }
 
     const cafeti = await Cafeti.findOne({type: result});
