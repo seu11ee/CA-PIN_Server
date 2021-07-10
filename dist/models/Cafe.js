@@ -46,13 +46,12 @@ const CafeSchema = new mongoose_1.default.Schema({
         type: String
     },
     offday: {
-        type: [Number]
-    },
-    rating: {
-        type: Number
+        type: [Number],
+        default: undefined
     }
 }, {
-    collection: "cafes"
+    collection: "cafes",
+    versionKey: false
 });
 exports.default = mongoose_1.default.model("Cafe", CafeSchema);
 //# sourceMappingURL=Cafe.js.map

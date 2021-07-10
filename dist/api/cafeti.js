@@ -16,6 +16,7 @@ const express_1 = __importDefault(require("express"));
 const express_validator_1 = require("express-validator");
 const auth_1 = __importDefault(require("../middleware/auth"));
 const router = express_1.default.Router();
+const createError = require('http-errors');
 const cafetiService = require("../services/cafetiService");
 const statusCode = require("../modules/statusCode");
 const responseMessage = require("../modules/responseMessage");
@@ -26,23 +27,20 @@ const responseMessage = require("../modules/responseMessage");
  */
 router.post("/", [
     express_validator_1.check("answers", "answers is required").not().isEmpty(),
-], auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+], auth_1.default, (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const errors = express_validator_1.validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(statusCode.BAD_REQUEST).json({ errors: errors.array() });
+        return next(createError(statusCode.BAD_REQUEST, responseMessage.OUT_OF_VALUE));
     }
     const { answers } = req.body;
     try {
         const result = yield cafetiService.fetchCafetiResult(res.locals.userId, answers);
-        res.status(statusCode.OK).json({
+        return res.status(statusCode.OK).json({
             message: responseMessage.CAFETI_TEST_SUCCESS,
         });
     }
     catch (error) {
-        switch (error.message) {
-            default:
-                res.status(statusCode.INTERNAL_SERVER_ERROR).send({ message: error.message });
-        }
+        next(error);
     }
 }));
 module.exports = router;

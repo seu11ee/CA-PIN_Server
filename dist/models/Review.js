@@ -37,7 +37,8 @@ const ReviewSchema = new mongoose_1.default.Schema({
         required: true
     }
 }, {
-    collection: "reviews"
+    collection: "reviews",
+    versionKey: false
 });
 exports.default = mongoose_1.default.model("Review", ReviewSchema);
 //# sourceMappingURL=Review.js.map
