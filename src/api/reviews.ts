@@ -3,6 +3,7 @@ import createError from "http-errors";
 import express, { Request, Response } from "express";
 import mongoose from "mongoose";
 const router = express.Router();
+const cafeService = require("../services/cafeService");
 const reviewService = require("../services/reviewService");
 const statusCode = require("../modules/statusCode");
 const responseMessage = require("../modules/responseMessage");
@@ -62,7 +63,6 @@ router.post(
         try{
             var urls = undefined;
             if (req.files.length!=0){
-                console.log("ex");
                 urls = []
                 for (let i=0;i<req.files.length;i++){
                     const url = req.files[i].location;
@@ -70,6 +70,8 @@ router.post(
                 }
 
             }
+            const isCafeExists = await cafeService.isCafeExists(cafeId);
+            if (!isCafeExists) return res.status(statusCode.NO_CONTENT).send();
             const isReviewed = await reviewService.checkIfReviewed(cafeId,userId);
             if(isReviewed) return next(createError(createError(statusCode.BAD_REQUEST,responseMessage.REPEATED_VALUE)));
             
