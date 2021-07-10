@@ -14,11 +14,17 @@ export interface IReview{
 
 export interface IReviewOutputDTO{
     _id: string;
-    cafe: mongoose.Types.ObjectId;
-    user: IUserReviewDTO & mongoose.Document<any,any>;
+    cafeId: mongoose.Types.ObjectId;
+    writer: IWriterDTO;
     rating: number;
     created_at: Date;
     imgs?: string[];
     recommend?: number[];
     content: string;
+}
+
+export interface IWriterDTO{
+    _id: string;
+    nickname: string;
+    profileImg: string;
 }
