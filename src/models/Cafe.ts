@@ -8,7 +8,7 @@ const CafeSchema = new mongoose.Schema({
   },
   img:{
       type: String,
-      required: true
+      required: false
   },
   address:{
       type: String,
@@ -21,11 +21,11 @@ const CafeSchema = new mongoose.Schema({
   },
   latitude:{
       type: Number,
-      required: true
+      required: false
   },
   longitude:{
       type: Number,
-      required: true
+      required: false
   },
   instagram:{
       type: String
@@ -43,7 +43,7 @@ const CafeSchema = new mongoose.Schema({
       type: String
   },
   offday:{
-      type:[Number],
+      type: [String],
       default: undefined
   }
 

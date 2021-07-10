@@ -52,8 +52,20 @@ const getCafeDetail = async(cafeId) => {
 
 }
 
+const getNoCoordCafes = async() => {
+    const cafes = await Cafe.find().or([{latitude: {$exists : false}},{longitude: {$exists : false}}]);
+    if (cafes.length == 0) return null;
+    return cafes;
+}
+
+const saveCoord = async(cafe) => {
+    await cafe.save();
+    return;
+}
 module.exports = {
     getCafeLocationList,
-    getCafeDetail
+    getCafeDetail,
+    getNoCoordCafes,
+    saveCoord
 }
    

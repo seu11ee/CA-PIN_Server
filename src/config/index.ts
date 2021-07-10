@@ -28,5 +28,7 @@ export default {
   jwtAlgorithm: process.env.JWT_ALGO,
   awsS3AccessKey: process.env.S3_ACCESS_KEY,
   awsS3SecretKey: process.env.S3_SECRET_KEY,
-  awsS3Bucket: process.env.S3_BUCKET
+  awsS3Bucket: process.env.S3_BUCKET,
+  mapClientId: process.env.X_NCP_APIGW_API_KEY_ID,
+  mapSecretKey: process.env.X_NCP_APIGW_API_KEY
 };
