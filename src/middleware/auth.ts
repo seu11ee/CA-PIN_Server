@@ -1,12 +1,15 @@
 import jwt from "jsonwebtoken";
 import config from "../config";
+import createError from "http-errors";
+const responseMessage = require("../modules/responseMessage");
+const statusCode = require("../modules/statusCode");
 
 export default (req, res, next) => {
   // Get token from header
   const token = req.header("token");
   // Check if not token
   if (!token) {
-    return res.status(401).json({ msg: "No token, authorization denied" });
+    next(createError(statusCode.BAD_REQUEST,responseMessage.NO_TOKEN))
   }
 
   // Verify token
@@ -18,6 +21,6 @@ export default (req, res, next) => {
     // req.body.user = decoded.user;
     next();
   } catch (err) {
-    res.status(401).json({ msg: "Token is not valid" });
+    next(createError(statusCode.UNAUTHORIZED,responseMessage.EXPIRED_TOKEN));
   }
 };
