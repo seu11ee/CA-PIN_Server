@@ -52,11 +52,11 @@ router.get(
 
         try{
             if (!mongoose.isValidObjectId(cafeId)){
-                next(createError(statusCode.BAD_REQUEST,responseMessage.INVALID_IDENTIFIER));
+                return next(createError(statusCode.BAD_REQUEST,responseMessage.INVALID_IDENTIFIER));
             }
             else{
                 const cafeDetail = await cafeService.getCafeDetail(cafeId);
-                if (!cafeDetail) res.status(statusCode.NO_CONTENT).send();
+                if (!cafeDetail) return res.status(statusCode.NO_CONTENT).send();
                 const isSaved = await categoryService.checkCafeInCategory(cafeId,userId);
                 var average: Number = await reviewService.getCafeAverageRating(cafeId);
                 if (!average) return res.status(statusCode.OK).send({message:responseMessage.CAFE_DETAIL_SUCCESS,cafeDetail,isSaved})
@@ -64,7 +64,7 @@ router.get(
                 return res.status(statusCode.OK).send({message:responseMessage.CAFE_DETAIL_SUCCESS,cafeDetail,isSaved,average})
             }
         } catch (error) {
-            next(error);
+            return next(error);
         }
     })
 

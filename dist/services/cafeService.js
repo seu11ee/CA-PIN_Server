@@ -13,15 +13,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const Cafe_1 = __importDefault(require("../models/Cafe"));
+const http_errors_1 = __importDefault(require("http-errors"));
 const Tag_1 = __importDefault(require("../models/Tag"));
 const responseMessage = require("../modules/responseMessage");
+const statusCode = require("../modules/statusCode");
 const getCafeLocationList = (tags) => __awaiter(void 0, void 0, void 0, function* () {
     const tag_ids = yield Tag_1.default.find({
         'tagIdx': { $in: tags
         }
     }).select('_id');
     if (tags.length != tag_ids.length) {
-        throw Error(responseMessage.INVALID_IDENTIFIER);
+        throw http_errors_1.default(statusCode.BAD_REQUEST, responseMessage.INVALID_IDENTIFIER);
     }
     let tagList = [];
     for (let tag of tag_ids) {
@@ -46,14 +48,14 @@ const getCafeLocationList = (tags) => __awaiter(void 0, void 0, void 0, function
         cafeLocationList.push(location);
     }
     if (cafeLocationList.length == 0) {
-        throw Error(responseMessage.NO_CONTENT);
+        return null;
     }
     return cafeLocationList;
 });
 const getCafeDetail = (cafeId) => __awaiter(void 0, void 0, void 0, function* () {
     const detail = yield Cafe_1.default.findById(cafeId).populate('tags');
     if (!detail) {
-        throw Error(responseMessage.NO_CONTENT);
+        return null;
     }
     return detail;
 });

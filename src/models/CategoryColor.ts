@@ -14,7 +14,8 @@ const CategoryColorSchema = new mongoose.Schema ({
     },
 },
 {
-    collection: "category_colors"
+    collection: "category_colors",
+    versionKey: false
 });
 
 

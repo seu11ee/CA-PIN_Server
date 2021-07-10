@@ -17,7 +17,8 @@ const TagSchema = new mongoose_1.default.Schema({
         index: true
     }
 }, {
-    collection: "tags"
+    collection: "tags",
+    versionKey: false
 });
 exports.default = mongoose_1.default.model("Tag", TagSchema);
 //# sourceMappingURL=Tag.js.map

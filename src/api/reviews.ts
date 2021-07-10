@@ -57,7 +57,7 @@ router.post(
         if (recommend && !recommend.isArray(Number)) next(createError(createError(statusCode.BAD_REQUEST,responseMessage.OUT_OF_VALUE)));
         if (!content || !rating) next(createError(createError(statusCode.BAD_REQUEST,responseMessage.NULL_VALUE)));
         if (!cafeId || !mongoose.isValidObjectId(cafeId)){
-            next(createError(statusCode.BAD_REQUEST,responseMessage.INVALID_IDENTIFIER));
+            return next(createError(statusCode.BAD_REQUEST,responseMessage.INVALID_IDENTIFIER));
         }
         try{
             var urls = [];
@@ -66,12 +66,12 @@ router.post(
                 urls.push(url);
             }
             const isReviewed = await reviewService.checkIfReviewed(cafeId,userId);
-            if(isReviewed) next(createError(createError(statusCode.BAD_REQUEST,responseMessage.REPEATED_VALUE)));
+            if(isReviewed) return next(createError(createError(statusCode.BAD_REQUEST,responseMessage.REPEATED_VALUE)));
             
             const review = await reviewService.createReview(cafeId,userId,content,rating,recommend,urls);
-            res.status(statusCode.CREATED).json();
+            return res.status(statusCode.CREATED).json();
         } catch (error) {
-            next(error);
+            return next(error);
         }
 
 
