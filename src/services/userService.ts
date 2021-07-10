@@ -75,7 +75,7 @@ const fetchUserInfo = async(userId) => {
     // userInfo
     const user = await User.findOne({_id: userId}).select("_id nickname email cafeti profileImg");
     if (!user) {
-        throw createError(statusCode.BAD_REQUEST, responseMessage.READ_USER_FAIL);
+        throw createError(statusCode.NOT_FOUND, responseMessage.READ_USER_FAIL);
     }
     
     // User's Profile Img

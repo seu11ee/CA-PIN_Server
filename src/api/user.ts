@@ -24,7 +24,7 @@ router.post(
     async(req: Request, res: Response, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()){
-            next(createError(statusCode.BAD_REQUEST, responseMessage.OUT_OF_VALUE));
+            next(createError(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE));
         }
 
         const {email, password} = req.body;
@@ -60,7 +60,7 @@ router.post(
     async(req: Request, res: Response, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()){
-            next(createError(statusCode.BAD_REQUEST, responseMessage.OUT_OF_VALUE));
+            next(createError(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE));
         }
 
         const {nickname, email, password} = req.body;

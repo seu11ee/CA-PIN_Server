@@ -25,7 +25,7 @@ router.post(
     async(req: Request, res: Response, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()){
-            next(createError(statusCode.BAD_REQUEST, responseMessage.OUT_OF_VALUE));
+            next(createError(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE));
         }
 
         const {colorIdx, categoryName} = req.body;
@@ -58,7 +58,7 @@ router.post(
     async(req: Request, res: Response, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()){
-            next(createError(statusCode.BAD_REQUEST, responseMessage.OUT_OF_VALUE));
+            next(createError(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE));
         }
         const {cafeIds, categoryId} = req.body;
 
@@ -90,7 +90,7 @@ router.post(
         const categoryId = req.params.categoryId;
         try {
             if (!mongoose.isValidObjectId(categoryId)){
-                next(createError(statusCode.BAD_REQUEST, responseMessage.INVALID_IDENTIFIER));
+                next(createError(statusCode.NOT_FOUND, responseMessage.INVALID_IDENTIFIER));
             }
             console.log(res.locals.tokenValue);
             console.log(res.locals.userId);
@@ -117,7 +117,7 @@ router.post(
         const categoryId = req.params.categoryId;
         try {
             if (!mongoose.isValidObjectId(categoryId)){
-                next(createError(statusCode.BAD_REQUEST, responseMessage.INVALID_IDENTIFIER));
+                next(createError(statusCode.NOT_FOUND, responseMessage.INVALID_IDENTIFIER));
             }
             console.log(res.locals.tokenValue);
             console.log(res.locals.userId);

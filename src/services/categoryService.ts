@@ -35,10 +35,7 @@ const createCategory = async(userId, colorIdx, categoryName, isDefault) => {
 const addCafe = async(cafeIds, categoryId) => {
     const category = await Category.findOne({_id: categoryId});
  
-    if (cafeIds.length == 0) {
-        // 추가하려는 카페가 없이 넘어온 경우
-        throw createError(statusCode.BAD_REQUEST, responseMessage.OUT_OF_VALUE);
-    } else if (category == null) {
+    if (category == null) {
         // id가 일치하는 카테고리가 없는 경우
         throw createError(statusCode.NOT_FOUND,responseMessage.INVALID_IDENTIFIER);
     }

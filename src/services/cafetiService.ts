@@ -6,7 +6,7 @@ const responseMessage = require("../modules/responseMessage");
 const fetchCafetiResult = async(userId, answers) => {
     const user = await User.findOne({_id: userId});
     if (user == null) {
-        throw createError(statusCode.BAD_REQUEST, responseMessage.READ_USER_FAIL);
+        throw createError(statusCode.NOT_FOUND, responseMessage.READ_USER_FAIL);
     } else if (answers.length != 4) {
         throw createError(statusCode.BAD_REQUEST, responseMessage.INVALID_IDENTIFIER);
     }
