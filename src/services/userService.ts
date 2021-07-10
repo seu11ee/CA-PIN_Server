@@ -77,7 +77,22 @@ const fetchUserInfo = async(userId) => {
     if (!user) {
         throw createError(statusCode.BAD_REQUEST, responseMessage.READ_USER_FAIL);
     }
-
+    
+    // User's Profile Img
+    if (!user.profileImg) {
+        await User.findOneAndUpdate(
+            { 
+                _id: userId 
+            },
+            { 
+                profileImg: user.cafeti.img,
+            },
+            { 
+                new: true,
+                useFindAndModify: false
+            }
+        );
+    }
     // User's Review number
     const reviews = (await Review.find({_id: userId})).length;
 
