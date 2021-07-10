@@ -22,7 +22,7 @@ const responseMessage = require("../modules/responseMessage");
     async(req: Request, res: Response, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()){
-            return next(createError(statusCode.BAD_REQUEST, responseMessage.OUT_OF_VALUE));
+            return next(createError(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE));
         }
 
         const {answers} = req.body;
@@ -33,7 +33,7 @@ const responseMessage = require("../modules/responseMessage");
                 message: responseMessage.CAFETI_TEST_SUCCESS,
             });
         } catch (error) {
-            next(error);
+            return next(error);
         }
     }
 );

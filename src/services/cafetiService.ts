@@ -6,7 +6,7 @@ const responseMessage = require("../modules/responseMessage");
 const fetchCafetiResult = async(userId, answers) => {
     const user = await User.findOne({_id: userId});
     if (user == null) {
-        throw createError(statusCode.BAD_REQUEST, responseMessage.READ_USER_FAIL);
+        throw createError(statusCode.NOT_FOUND, responseMessage.READ_USER_FAIL);
     } else if (answers.length != 4) {
         throw createError(statusCode.BAD_REQUEST, responseMessage.INVALID_IDENTIFIER);
     }
@@ -24,6 +24,8 @@ const fetchCafetiResult = async(userId, answers) => {
                 case 2:
                     result += "X"
                     break;
+                default:
+                    result += "U"
             }
             break;
         case 1:
@@ -38,8 +40,12 @@ const fetchCafetiResult = async(userId, answers) => {
                 case 2:
                     result += "J"
                     break;
+                default:
+                    result += "U"
             }
             break;
+        default:
+            result += "N"
     }
     
     switch (answers[2]) {
@@ -58,6 +64,8 @@ const fetchCafetiResult = async(userId, answers) => {
         case 4:
             result += "C"
             break;
+        default:
+            result += "L"
     }
 
     switch (answers[3]) {
@@ -73,13 +81,22 @@ const fetchCafetiResult = async(userId, answers) => {
         case 3:
             result += "W"
             break;
+        default:
+            result += "L"
     }
 
     const cafeti = await Cafeti.findOne({type: result});
     const cafetiResult = await User.findOneAndUpdate(
-        { _id: userId },
-        { cafeti: cafeti },
-        { new: true }
+        { 
+            _id: userId 
+        },
+        { 
+            cafeti: cafeti,
+        },
+        { 
+            new: true,
+            useFindAndModify: false
+        }
     );
 };
 

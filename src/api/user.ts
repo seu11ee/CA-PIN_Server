@@ -24,7 +24,7 @@ router.post(
     async(req: Request, res: Response, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()){
-            next(createError(statusCode.BAD_REQUEST, responseMessage.OUT_OF_VALUE));
+            return next(createError(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE));
         }
 
         const {email, password} = req.body;
@@ -32,7 +32,7 @@ router.post(
         try {
             const user = await userService.loginUser(email, password);
             const userToken = await userService.generateToken(user._id);
-            res.status(statusCode.OK).json({
+            return res.status(statusCode.OK).json({
                 message: responseMessage.SIGN_IN_SUCCESS,
                 loginData: {
                     nickname: user.nickname,
@@ -40,7 +40,7 @@ router.post(
                 },
             });
         } catch (error) {
-            next(error);
+            return next(error);
         }
     }
 );
@@ -60,7 +60,7 @@ router.post(
     async(req: Request, res: Response, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()){
-            next(createError(statusCode.BAD_REQUEST, responseMessage.OUT_OF_VALUE));
+            return next(createError(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE));
         }
 
         const {nickname, email, password} = req.body;
@@ -73,7 +73,7 @@ router.post(
             });
 
         } catch (error) {
-            next(error);
+            return next(error);
         }
     }
 );
@@ -96,7 +96,7 @@ router.post(
             });
 
         } catch (error) {
-            next(error);
+            return next(error);
         }
     }
 );
@@ -125,7 +125,7 @@ router.post(
                 }
             });
         } catch (error) {
-            next(error);
+            return next(error);
         }
     }
 );

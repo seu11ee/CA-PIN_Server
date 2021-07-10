@@ -75,9 +75,24 @@ const fetchUserInfo = async(userId) => {
     // userInfo
     const user = await User.findOne({_id: userId}).select("_id nickname email cafeti profileImg");
     if (!user) {
-        throw createError(statusCode.BAD_REQUEST, responseMessage.READ_USER_FAIL);
+        throw createError(statusCode.NOT_FOUND, responseMessage.READ_USER_FAIL);
     }
-
+    
+    // User's Profile Img
+    if (!user.profileImg) {
+        await User.findOneAndUpdate(
+            { 
+                _id: userId 
+            },
+            { 
+                profileImg: user.cafeti.img,
+            },
+            { 
+                new: true,
+                useFindAndModify: false
+            }
+        );
+    }
     // User's Review number
     const reviews = (await Review.find({_id: userId})).length;
 
