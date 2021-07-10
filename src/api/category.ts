@@ -117,17 +117,17 @@ router.post(
         const categoryId = req.params.categoryId;
         try {
             if (!mongoose.isValidObjectId(categoryId)){
-                next(createError(statusCode.BAD_REQUEST, responseMessage.INVALID_IDENTIFIER));
+                return next(createError(statusCode.BAD_REQUEST, responseMessage.INVALID_IDENTIFIER));
             }
             console.log(res.locals.tokenValue);
             console.log(res.locals.userId);
             const cafeList = await categoryService.fetchCafesInCategory(categoryId, res.locals.userId);
-            res.status(statusCode.OK).json({
+            return res.status(statusCode.OK).json({
                 message: responseMessage.READ_CATEGORY_CAFE_SUCCESS,
                 cafeDetail: cafeList
             });
         } catch (error) {
-            next(error);
+            return next(error);
         }
     }
 );

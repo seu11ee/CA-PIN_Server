@@ -25,7 +25,8 @@ const CafetiSchema = new mongoose_1.default.Schema({
         required: true
     }
 }, {
-    collection: "cafeti"
+    collection: "cafeti",
+    versionKey: false
 });
 exports.default = mongoose_1.default.model("Cafeti", CafetiSchema);
 //# sourceMappingURL=Cafeti.js.map

@@ -7,10 +7,12 @@ module.exports = {
     INVALID_IDENTIFIER: '유효하지 않은 식별자',
     NO_CONTENT: "데이터가 없습니다.",
     REPEATED_VALUE: "중복된 데이터입니다.",
+    UNAUTHORIZED: "권한이 없습니다",
     // TOKEN
     EXPIRED_TOKEN: '만료된 토큰',
     INVALID_TOKEN: '유효하지 않은 토큰',
     SUCCESS_TOKEN: '토큰 발급 성공',
+    NO_TOKEN: '토큰이 없습니다',
     // SIGNUP, LOGIN
     SIGN_UP_SUCCESS: "회원 가입 및 기본카테고리 생성 성공.",
     SIGN_UP_FAIL: "회원 가입 실패.",
@@ -28,6 +30,8 @@ module.exports = {
     UPDATE_USER_FAIL: "사용자 정보 업데이트 실패",
     DELETE_USER_SUCCESS: "회원 탈퇴 성공",
     DELETE_USER_FAIL: "회원 탈퇴 실패",
+    READ_USERINFO_SUCCESS: "사용자 정보 조회 성공",
+    READ_USERINFO_FAIL: "사용자 정보 조회 실패",
     // CAFETI
     CAFETI_TEST_SUCCESS: "CAFETI 검사 완료",
     CAFETI_TEST_FAIL: "CAFETI 검사 실패",

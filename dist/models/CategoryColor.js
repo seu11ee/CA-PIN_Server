@@ -16,7 +16,8 @@ const CategoryColorSchema = new mongoose_1.default.Schema({
         unique: true
     },
 }, {
-    collection: "category_colors"
+    collection: "category_colors",
+    versionKey: false
 });
 exports.default = mongoose_1.default.model("CategoryColor", CategoryColorSchema);
 //# sourceMappingURL=CategoryColor.js.map

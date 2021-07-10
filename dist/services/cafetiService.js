@@ -14,14 +14,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const User_1 = __importDefault(require("../models/User"));
 const Cafeti_1 = __importDefault(require("../models/Cafeti"));
+const createError = require('http-errors');
+const statusCode = require("../modules/statusCode");
 const responseMessage = require("../modules/responseMessage");
 const fetchCafetiResult = (userId, answers) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield User_1.default.findOne({ _id: userId });
     if (user == null) {
-        throw Error(responseMessage.READ_USER_FAIL);
+        throw createError(statusCode.BAD_REQUEST, responseMessage.READ_USER_FAIL);
     }
     else if (answers.length != 4) {
-        throw Error(responseMessage.INVALID_IDENTIFIER);
+        throw createError(statusCode.BAD_REQUEST, responseMessage.INVALID_IDENTIFIER);
     }
     let result = "";
     switch (answers[0]) {

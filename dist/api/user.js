@@ -16,10 +16,12 @@ const express_1 = __importDefault(require("express"));
 const express_validator_1 = require("express-validator");
 const auth_1 = __importDefault(require("../middleware/auth"));
 const router = express_1.default.Router();
+const createError = require('http-errors');
 const userService = require("../services/userService");
 const categoryService = require("../services/categoryService");
 const statusCode = require("../modules/statusCode");
 const responseMessage = require("../modules/responseMessage");
+const reviewService = require("../services/reviewService");
 /**
  *  @route Post api/user/login
  *  @desc Authenticate user & get token(로그인)
@@ -28,10 +30,10 @@ const responseMessage = require("../modules/responseMessage");
 router.post("/login", [
     express_validator_1.check("email", "Please include a valid email").not().isEmpty(),
     express_validator_1.check("password", "password is required").not().isEmpty(),
-], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+], (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const errors = express_validator_1.validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(statusCode.BAD_REQUEST).json({ errors: errors.array() });
+        next(createError(statusCode.BAD_REQUEST, responseMessage.OUT_OF_VALUE));
     }
     const { email, password } = req.body;
     try {
@@ -46,16 +48,7 @@ router.post("/login", [
         });
     }
     catch (error) {
-        switch (error.message) {
-            case responseMessage.NO_EMAIL:
-                res.status(statusCode.BAD_REQUEST).send({ message: error.message });
-                break;
-            case responseMessage.MISS_MATCH_PW:
-                res.status(statusCode.BAD_REQUEST).send({ message: error.message });
-                break;
-            default:
-                res.status(statusCode.INTERNAL_SERVER_ERROR).send({ message: responseMessage.INTERNAL_SERVER_ERROR });
-        }
+        next(error);
     }
 }));
 /**
@@ -67,10 +60,10 @@ router.post("/signup", [
     express_validator_1.check("nickname", "nickname is required").not().isEmpty(),
     express_validator_1.check("email", "Please include a valid email").isEmail(),
     express_validator_1.check("password", "password is required").not().isEmpty(),
-], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+], (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const errors = express_validator_1.validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(statusCode.BAD_REQUEST).json({ errors: errors.array() });
+        next(createError(statusCode.BAD_REQUEST, responseMessage.OUT_OF_VALUE));
     }
     const { nickname, email, password } = req.body;
     try {
@@ -80,16 +73,7 @@ router.post("/signup", [
         });
     }
     catch (error) {
-        switch (error.message) {
-            case responseMessage.ALREADY_EMAIL:
-                res.status(statusCode.BAD_REQUEST).send({ message: error.message });
-                break;
-            case responseMessage.ALREADY_NICKNAME:
-                res.status(statusCode.BAD_REQUEST).send({ message: error.message });
-                break;
-            default:
-                res.status(statusCode.INTERNAL_SERVER_ERROR).send({ message: responseMessage.INTERNAL_SERVER_ERROR });
-        }
+        next(error);
     }
 }));
 /**
@@ -97,7 +81,7 @@ router.post("/signup", [
  *  @desc fetch my category list(내 카테고리-마이페이지)
  *  @access Private
  */
-router.get("/categoryList", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/categoryList", auth_1.default, (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const myCategoryList = yield categoryService.fetchMyCategory(res.locals.userId);
         return res.status(statusCode.OK).json({
@@ -106,13 +90,50 @@ router.get("/categoryList", auth_1.default, (req, res) => __awaiter(void 0, void
         });
     }
     catch (error) {
-        switch (error.message) {
-            case responseMessage.INVALID_IDENTIFIER:
-                res.status(statusCode.BAD_REQUEST).send({ message: error.message });
-                break;
-            default:
-                res.status(statusCode.INTERNAL_SERVER_ERROR).send({ message: responseMessage.INTERNAL_SERVER_ERROR });
-        }
+        next(error);
+    }
+}));
+/**
+ *  @route Get /user/myInfo
+ *  @desc fetch my category list(내 카테고리-마이페이지)
+ *  @access Private
+ */
+router.get("/myInfo", auth_1.default, (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const userInfo = yield userService.fetchUserInfo(res.locals.userId);
+        return res.status(statusCode.OK).json({
+            message: responseMessage.READ_USERINFO_SUCCESS,
+            myInfo: {
+                cafeti: userInfo.user.cafeti,
+                nickname: userInfo.user.nickname,
+                email: userInfo.user.email,
+                profileImg: userInfo.user.profileImg,
+                reviewNum: userInfo.reviews,
+                pinNum: userInfo.pins
+            }
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+}));
+/**
+ *  @route Get api/user/reviews
+ *  @desc get my review list
+ *  @access Private
+ */
+router.get("/reviews", auth_1.default, (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const myReviewList = yield reviewService.getMyReviews(res.locals.userId);
+        if (!myReviewList)
+            return res.status(statusCode.NO_CONTENT).send();
+        return res.status(statusCode.OK).json({
+            message: responseMessage.READ_MY_REVIEW_SUCCESS,
+            reviews: myReviewList
+        });
+    }
+    catch (error) {
+        return next(error);
     }
 }));
 module.exports = router;

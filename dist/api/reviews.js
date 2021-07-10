@@ -12,16 +12,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const auth_1 = __importDefault(require("../middleware/auth"));
+const http_errors_1 = __importDefault(require("http-errors"));
 const express_1 = __importDefault(require("express"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const router = express_1.default.Router();
 const reviewService = require("../services/reviewService");
-const imgService = require("../services/imgService");
 const statusCode = require("../modules/statusCode");
 const responseMessage = require("../modules/responseMessage");
-const auth_1 = __importDefault(require("../middleware/auth"));
-const http_errors_1 = __importDefault(require("http-errors"));
-const upload_1 = __importDefault(require("../middleware/upload"));
+const { upload } = require("../middleware/upload");
 /**
  *  @route GET reviews/:cafeId
  *  @desc get a cafe review list
@@ -50,42 +49,77 @@ router.get("/", auth_1.default, (req, res, next) => __awaiter(void 0, void 0, vo
         next(error);
     }
 }));
-router.post("/", auth_1.default, (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+router.post("/", auth_1.default, upload.array("imgs", 5), (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const reviewParams = JSON.parse(req.body.review);
     const cafeId = req.query.cafe;
     const userId = res.locals.userId;
-    console.log(userId);
-    const { content, recommend, rating, img0, img1, img2, img3, img4 } = req.body;
+    const { content, recommend, rating } = reviewParams;
     if (recommend && !recommend.isArray(Number))
         next(http_errors_1.default(http_errors_1.default(statusCode.BAD_REQUEST, responseMessage.OUT_OF_VALUE)));
     if (!content || !rating)
         next(http_errors_1.default(http_errors_1.default(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE)));
     if (!cafeId || !mongoose_1.default.isValidObjectId(cafeId)) {
+        return next(http_errors_1.default(statusCode.BAD_REQUEST, responseMessage.INVALID_IDENTIFIER));
+    }
+    try {
+        var urls = [];
+        for (let i = 0; i < req.files.length; i++) {
+            const url = req.files[i].location;
+            urls.push(url);
+        }
+        const isReviewed = yield reviewService.checkIfReviewed(cafeId, userId);
+        if (isReviewed)
+            return next(http_errors_1.default(http_errors_1.default(statusCode.BAD_REQUEST, responseMessage.REPEATED_VALUE)));
+        const review = yield reviewService.createReview(cafeId, userId, content, rating, recommend, urls);
+        return res.status(statusCode.CREATED).json();
+    }
+    catch (error) {
+        return next(error);
+    }
+}));
+router.put("/:reviewId", auth_1.default, upload.array("imgs", 5), (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const reviewParams = JSON.parse(req.body.review);
+    const reviewId = req.params.reviewId;
+    const userId = res.locals.userId;
+    const { content, recommend, rating, isAllDeleted } = reviewParams;
+    if (recommend && !recommend.isArray(Number))
+        next(http_errors_1.default(http_errors_1.default(statusCode.BAD_REQUEST, responseMessage.OUT_OF_VALUE)));
+    if (isAllDeleted === undefined || !content || !rating)
+        next(http_errors_1.default(http_errors_1.default(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE)));
+    if (!reviewId || !mongoose_1.default.isValidObjectId(reviewId)) {
         next(http_errors_1.default(statusCode.BAD_REQUEST, responseMessage.INVALID_IDENTIFIER));
     }
     try {
-        var imgs = [img0, img1, img2, img3, img4];
         var urls = [];
-        console.log(imgs);
-        for (let i = 0; i < imgs.length; i++) {
-            if (imgs[i]) {
-                const url = imgs[i];
-            }
+        for (let i = 0; i < req.files.length; i++) {
+            const url = req.files[i].location;
+            urls.push(url);
         }
-        const isReviewed = yield reviewService.checkIfReviewed(cafeId, userId);
-        console.log(isReviewed);
-        if (isReviewed)
-            next(http_errors_1.default(http_errors_1.default(statusCode.BAD_REQUEST, responseMessage.REPEATED_VALUE)));
-        const review = yield reviewService.createReview(cafeId, userId, content, rating, recommend, imgs);
-        console.log(review);
-        res.status(statusCode.CREATED).json();
+        const review = yield reviewService.modifyReview(reviewId, userId, content, rating, isAllDeleted, recommend, urls);
+        if (!review)
+            res.status(statusCode.NO_CONTENT).send();
+        res.status(statusCode.OK).json({ message: responseMessage.EDIT_REVIEW_SUCCESS });
+    }
+    catch (error) {
+        console.log(error.statusCode, error.message);
+        next(error);
+    }
+}));
+router.delete("/:reviewId", auth_1.default, (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const reviewId = req.params.reviewId;
+    const userId = res.locals.userId;
+    if (!reviewId)
+        next(http_errors_1.default(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE));
+    try {
+        const review = yield reviewService.deleteReview(reviewId, userId);
+        if (!review)
+            res.status(statusCode.NO_CONTENT).send();
+        res.status(statusCode.OK).json({ message: responseMessage.DELETE_REVIEW_SUCCESS });
+        next();
     }
     catch (error) {
         next(error);
     }
-}), router.post("/image", auth_1.default, upload_1.default.array("img", 5), (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const image = yield imgService.uploadS3(res.locals.userId, req.file.buffer);
-    console.log(image);
-    res.json({ image });
-})));
+}));
 module.exports = router;
 //# sourceMappingURL=reviews.js.map

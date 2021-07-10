@@ -28,7 +28,8 @@ const CategorySchema = new mongoose_1.default.Schema({
         required: true
     }
 }, {
-    collection: "category"
+    collection: "category",
+    versionKey: false
 });
 exports.default = mongoose_1.default.model("Category", CategorySchema);
 //# sourceMappingURL=Category.js.map

@@ -13,11 +13,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const Review_1 = __importDefault(require("../models/Review"));
+const mongoose_1 = __importDefault(require("mongoose"));
 const responseMessage = require("../modules/responseMessage");
 const statusCode = require("../modules/statusCode");
 const http_errors_1 = __importDefault(require("http-errors"));
+const koreanDate = require("../modules/dateCalculate");
 const getCafeReviewList = (cafeId) => __awaiter(void 0, void 0, void 0, function* () {
-    const reviews = yield Review_1.default.find().where("cafe").equals(cafeId).populate("user", ["_id", "nickname", "profileImg", "cafeti"]);
+    const reviews = yield Review_1.default.find().where("cafe").equals(cafeId).populate("user", ["_id", "nickname", "profileImg", "cafeti"]).sort({ created_at: -1 });
     let reviewDTOList = [];
     for (let review of reviews) {
         if (!review.user.profileImg) {
@@ -56,10 +58,8 @@ const createReview = (cafeId, userId, content, rating, recommend, imgs) => __awa
             recommend: recommend,
             rating: rating,
             imgs: imgs,
-            created_at: Date.now()
+            created_at: koreanDate.getDate()
         });
-        console.log(Date());
-        console.log(review);
         yield review.save();
         return review;
     }
@@ -68,9 +68,80 @@ const createReview = (cafeId, userId, content, rating, recommend, imgs) => __awa
         throw http_errors_1.default(responseMessage.INTERNAL_SERVER_ERROR);
     }
 });
+const modifyReview = (reviewId, userId, content, rating, isAllDeleted, recommend, imgs) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const review = yield Review_1.default.findById(reviewId);
+        if (!review)
+            return null;
+        if (review.user != userId) {
+            throw http_errors_1.default(statusCode.UNAUTHORIZED, responseMessage.UNAUTHORIZED);
+        }
+        review.content = content;
+        review.rating = rating;
+        review.recommend = recommend;
+        review.updated_at = koreanDate.getDate();
+        if (!isAllDeleted && imgs.length != 0) {
+            review.imgs = imgs;
+        }
+        else if (isAllDeleted) {
+            review.imgs = [];
+        }
+        yield review.save();
+        return review;
+    }
+    catch (error) {
+        console.log(error.message);
+        throw error;
+    }
+});
+const deleteReview = (reviewId, userId) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const review = yield Review_1.default.findById(reviewId);
+        if (!review)
+            return null;
+        if (review.user != userId) {
+            throw http_errors_1.default(statusCode.UNAUTHORIZED, responseMessage.UNAUTHORIZED);
+        }
+        const deletedReview = yield Review_1.default.remove({ _id: reviewId }, function (err) {
+            if (err) {
+                throw err;
+            }
+        });
+        return deletedReview;
+    }
+    catch (error) {
+        throw (error);
+    }
+});
+const getCafeAverageRating = (cafeId) => __awaiter(void 0, void 0, void 0, function* () {
+    const reviews = yield Review_1.default.aggregate([
+        {
+            $match: {
+                cafe: mongoose_1.default.Types.ObjectId(cafeId)
+            }
+        },
+        {
+            $group: {
+                _id: "$cafe",
+                average: { $avg: "$rating" }
+            }
+        }
+    ]);
+    if (reviews.length == 0)
+        return null;
+    return reviews[0].average;
+});
+const getMyReviews = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const myReviews = Review_1.default.find({ user: userId }).sort({ created_at: -1 });
+    return myReviews;
+});
 module.exports = {
     getCafeReviewList,
     checkIfReviewed,
-    createReview
+    createReview,
+    modifyReview,
+    deleteReview,
+    getCafeAverageRating,
+    getMyReviews
 };
 //# sourceMappingURL=reviewService.js.map
