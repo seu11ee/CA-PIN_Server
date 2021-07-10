@@ -41,7 +41,8 @@ router.put(
             
             return res.status(statusCode.OK).json({message:`${cnt}개의 좌표 전환 성공`});
         } catch (error) {
-            console.log(error);
+            if (error.response.status) return next(createError(error.response.status,error.message));
+            return next(createError(error));
         }
     }
 )
