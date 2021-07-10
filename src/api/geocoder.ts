@@ -13,12 +13,21 @@ const responseMessage = require("../modules/responseMessage");
 router.put(
     "/",
     async(req: Request, res: Response, next) => {
+        const cafeId = req.query.cafe;
         try {
-            const cafes = await cafeService.getNoCoordCafes();
+            var cafes = [];
+            //쿼리로 카페 id가 들어오는 경우
+            if (cafeId){
+                const cafe = await cafeService.getCafeDetail(cafeId);
+                cafes.push(cafe);
+            }
+            //전체 카페 데이터에 좌표가 없는 경우를 찾음
+            else{
+                cafes = await cafeService.getNoCoordCafes();
+            }
             //좌표가 없는 카페가 없다.
             var cnt = 0
             if (!cafes) return res.status(204).send();
-            console.log(cafes);
             for (let cafe of cafes){
                 const address = cafe.address;
                 if (!address) return next(createError(400,"카페 주소가 없습니다."));
