@@ -60,10 +60,15 @@ router.post(
             return next(createError(statusCode.BAD_REQUEST,responseMessage.INVALID_IDENTIFIER));
         }
         try{
-            var urls = [];
-            for (let i=0;i<req.files.length;i++){
-                const url = req.files[i].location;
-                urls.push(url);
+            var urls = undefined;
+            if (req.files.length!=0){
+                console.log("ex");
+                urls = []
+                for (let i=0;i<req.files.length;i++){
+                    const url = req.files[i].location;
+                    urls.push(url);
+                }
+
             }
             const isReviewed = await reviewService.checkIfReviewed(cafeId,userId);
             if(isReviewed) return next(createError(createError(statusCode.BAD_REQUEST,responseMessage.REPEATED_VALUE)));

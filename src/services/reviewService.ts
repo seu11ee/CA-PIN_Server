@@ -1,5 +1,5 @@
 import Review from "../models/Review";
-import { IReviewOutputDTO } from "../interfaces/IReview";
+import { IReviewOutputDTO, IWriterDTO } from "../interfaces/IReview";
 import mongoose from "mongoose";
 const responseMessage = require("../modules/responseMessage");
 const statusCode = require("../modules/statusCode");
@@ -15,11 +15,15 @@ const getCafeReviewList = async(cafeId) => {
         if (!review.user.profileImg){
             review.user.profileImg = review.user.cafeti.img;
         }
-
+        let writerDTO: IWriterDTO = {
+            _id: review.user._id,
+            nickname: review.user.nickname,
+            profileImg: review.user.profileImg
+        }
         let reviewDTO: IReviewOutputDTO = {
             _id: review._id,
-            cafe: review.cafe,
-            user: review.user,
+            cafeId: review.cafe,
+            writer: writerDTO,
             rating: review.rating,
             created_at: review.created_at,
             content: review.content
