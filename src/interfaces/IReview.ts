@@ -1,8 +1,9 @@
 import mongoose from "mongoose";
+import { ICafe } from "./ICafe";
 import { IUserReviewDTO, IUser } from "./IUser";
 
 export interface IReview{
-    cafe: mongoose.Types.ObjectId;
+    cafe: ICafe;
     user: IUserReviewDTO & mongoose.Document<any,any>;
     rating: number;
     created_at: Date;
@@ -27,4 +28,15 @@ export interface IWriterDTO{
     _id: string;
     nickname: string;
     profileImg: string;
+}
+
+export interface IReviewMyOutputDTO{
+    _id: string;
+    cafeName: string;
+    cafeId: string;
+    content: string;
+    rating: number;
+    create_at: Date;
+    recommend?: number[];
+    imgs?: string[];
 }

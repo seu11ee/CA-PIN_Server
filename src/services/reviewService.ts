@@ -1,5 +1,5 @@
 import Review from "../models/Review";
-import { IReviewOutputDTO, IWriterDTO } from "../interfaces/IReview";
+import { IReviewOutputDTO, IWriterDTO, IReviewMyOutputDTO } from "../interfaces/IReview";
 import mongoose from "mongoose";
 const responseMessage = require("../modules/responseMessage");
 const statusCode = require("../modules/statusCode");
@@ -141,8 +141,24 @@ const getCafeAverageRating = async(cafeId) => {
 }
 
 const getMyReviews = async (userId) => {
-    const myReviews = Review.find({user:userId}).sort({created_at:-1})
-    return myReviews
+    const myReviews = await Review.find({user:userId}).populate("cafe").sort({created_at:-1})
+    var myReviewsDTO: IReviewMyOutputDTO[] = []
+    for (let review of myReviews){
+        let myReview: IReviewMyOutputDTO = {
+            _id: review._id,
+            cafeName: review.cafe.name,
+            cafeId: review.cafe._id,
+            content: review.content,
+            rating: review.rating,
+            create_at: review.created_at,
+            imgs: review.imgs,
+            recommend: review.recommend
+        }
+        myReviewsDTO.push(myReview);
+        
+    }
+
+    return myReviewsDTO
 }
 
 module.exports = {
