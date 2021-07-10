@@ -84,7 +84,7 @@ const modifyReview = async (reviewId,userId,content,rating,isAllDeleted,recommen
             review.imgs = imgs
         }
         else if (isAllDeleted){
-            review.imgs = [];
+            review.imgs = undefined;
         }
         await review.save();
  
