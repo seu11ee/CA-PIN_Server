@@ -13,6 +13,7 @@ module.exports = {
     EXPIRED_TOKEN: '만료된 토큰',
     INVALID_TOKEN: '유효하지 않은 토큰',
     SUCCESS_TOKEN: '토큰 발급 성공',
+    NO_TOKEN: '토큰이 없습니다',
 
     // SIGNUP, LOGIN
     SIGN_UP_SUCCESS: "회원 가입 및 기본카테고리 생성 성공.",
