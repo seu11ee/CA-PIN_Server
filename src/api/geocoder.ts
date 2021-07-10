@@ -33,7 +33,6 @@ router.put(
                 if (!address) return next(createError(400,"카페 주소가 없습니다."));
                 const coord = await geocoderService.requestGeocoding(address);
                 if (!coord) return next(createError(400,"좌표 변환에 실패했습니다."));
-                console.log(coord);
                 cafe.latitude = coord.y;
                 cafe.longitude = coord.x;
                 await cafeService.saveCoord(cafe);
