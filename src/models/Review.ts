@@ -36,7 +36,8 @@ const ReviewSchema = new mongoose.Schema({
 
 },
 {
-    collection: "reviews"
+    collection: "reviews",
+    versionKey: false
 });
 
 export default mongoose.model<IReview & mongoose.Document>("Review",ReviewSchema);

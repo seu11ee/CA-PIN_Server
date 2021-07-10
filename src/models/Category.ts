@@ -26,7 +26,8 @@ const CategorySchema = new mongoose.Schema ({
     }
 },
 {
-    collection: "category"
+    collection: "category",
+    versionKey: false
 });
 
 

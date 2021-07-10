@@ -23,7 +23,8 @@ const CafetiSchema = new mongoose.Schema ({
     }
 },
 {
-    collection: "cafeti"
+    collection: "cafeti",
+    versionKey: false
 });
 
 

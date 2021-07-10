@@ -50,7 +50,9 @@ const CafeSchema = new mongoose.Schema({
 
 },
 {
-    collection: "cafes"
-});
+    collection: "cafes",
+    versionKey: false
+}
+);
 
 export default mongoose.model<ICafe & mongoose.Document>("Cafe", CafeSchema);

@@ -16,7 +16,8 @@ const TagSchema = new mongoose.Schema({
     }
 },
 {
-    collection: "tags"
+    collection: "tags",
+    versionKey: false
 });
 
 export default mongoose.model<ITag & mongoose.Document>("Tag",TagSchema);
