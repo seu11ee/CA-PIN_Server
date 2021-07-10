@@ -15,7 +15,7 @@ export interface IReview{
 
 export interface IReviewOutputDTO{
     _id: string;
-    cafeId: mongoose.Types.ObjectId;
+    cafeId: string;
     writer: IWriterDTO;
     rating: number;
     created_at: Date;

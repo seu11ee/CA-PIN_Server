@@ -22,7 +22,7 @@ const getCafeReviewList = async(cafeId) => {
         }
         let reviewDTO: IReviewOutputDTO = {
             _id: review._id,
-            cafeId: review.cafe,
+            cafeId: review.cafe._id,
             writer: writerDTO,
             rating: review.rating,
             created_at: review.created_at,
