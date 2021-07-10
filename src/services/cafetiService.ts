@@ -77,9 +77,16 @@ const fetchCafetiResult = async(userId, answers) => {
 
     const cafeti = await Cafeti.findOne({type: result});
     const cafetiResult = await User.findOneAndUpdate(
-        { _id: userId },
-        { cafeti: cafeti },
-        { new: true }
+        { 
+            _id: userId 
+        },
+        { 
+            cafeti: cafeti,
+        },
+        { 
+            new: true,
+            useFindAndModify: false
+        }
     );
 };
 
