@@ -71,7 +71,7 @@ router.post(
             const review = await reviewService.createReview(cafeId,userId,content,rating,recommend,urls);
             return res.status(statusCode.CREATED).json();
         } catch (error) {
-            next(error);
+            return next(error);
         }
 
 

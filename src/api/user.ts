@@ -146,7 +146,7 @@ router.get("/reviews",
                 reviews: myReviewList
             });
         } catch (error) {
-            next(error);
+            return next(error);
         }
     }
 );
