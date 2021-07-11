@@ -51,7 +51,6 @@ router.post(
     "/:categoryId/archive",
     [
         check("cafeIds", "cafe_ids is required").not().isEmpty(),
-        check("categoryId", "category_id is required").not().isEmpty(),
     ],
     authChecker,
     async(req: Request, res: Response, next) => {
@@ -59,6 +58,7 @@ router.post(
         if (!errors.isEmpty()){
             return next(createError(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE));
         }
+
         const categoryId = req.params.categoryId;
         const {cafeIds} = req.body;
 
@@ -84,9 +84,6 @@ router.post(
  */
  router.delete(
     "/:categoryId",
-    [
-        check("categoryId", "categoryId is required").not().isEmpty(),
-    ],
     authChecker,
     async(req: Request, res: Response, next) => {
         const categoryId = req.params.categoryId;
@@ -120,7 +117,7 @@ router.post(
             if (!mongoose.isValidObjectId(categoryId)){
                 return next(createError(statusCode.NOT_FOUND, responseMessage.INVALID_IDENTIFIER));
             }
-            
+
             const cafeList = await categoryService.fetchCafesInCategory(categoryId, res.locals.userId);
             return res.status(statusCode.OK).json({
                 message: responseMessage.READ_CATEGORY_CAFE_SUCCESS,
