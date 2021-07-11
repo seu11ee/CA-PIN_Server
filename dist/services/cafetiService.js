@@ -20,7 +20,7 @@ const responseMessage = require("../modules/responseMessage");
 const fetchCafetiResult = (userId, answers) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield User_1.default.findOne({ _id: userId });
     if (user == null) {
-        throw createError(statusCode.BAD_REQUEST, responseMessage.READ_USER_FAIL);
+        throw createError(statusCode.NOT_FOUND, responseMessage.READ_USER_FAIL);
     }
     else if (answers.length != 4) {
         throw createError(statusCode.BAD_REQUEST, responseMessage.INVALID_IDENTIFIER);
@@ -39,6 +39,8 @@ const fetchCafetiResult = (userId, answers) => __awaiter(void 0, void 0, void 0,
                 case 2:
                     result += "X";
                     break;
+                default:
+                    result += "U";
             }
             break;
         case 1:
@@ -53,8 +55,12 @@ const fetchCafetiResult = (userId, answers) => __awaiter(void 0, void 0, void 0,
                 case 2:
                     result += "J";
                     break;
+                default:
+                    result += "U";
             }
             break;
+        default:
+            result += "N";
     }
     switch (answers[2]) {
         case 0:
@@ -72,6 +78,8 @@ const fetchCafetiResult = (userId, answers) => __awaiter(void 0, void 0, void 0,
         case 4:
             result += "C";
             break;
+        default:
+            result += "L";
     }
     switch (answers[3]) {
         case 0:
@@ -86,9 +94,18 @@ const fetchCafetiResult = (userId, answers) => __awaiter(void 0, void 0, void 0,
         case 3:
             result += "W";
             break;
+        default:
+            result += "L";
     }
     const cafeti = yield Cafeti_1.default.findOne({ type: result });
-    const cafetiResult = yield User_1.default.findOneAndUpdate({ _id: userId }, { cafeti: cafeti }, { new: true });
+    const cafetiResult = yield User_1.default.findOneAndUpdate({
+        _id: userId
+    }, {
+        cafeti: cafeti,
+    }, {
+        new: true,
+        useFindAndModify: false
+    });
 });
 module.exports = {
     fetchCafetiResult

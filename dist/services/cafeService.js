@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Cafe_1 = __importDefault(require("../models/Cafe"));
 const http_errors_1 = __importDefault(require("http-errors"));
 const Tag_1 = __importDefault(require("../models/Tag"));
+const Category_1 = __importDefault(require("../models/Category"));
 const responseMessage = require("../modules/responseMessage");
 const statusCode = require("../modules/statusCode");
 const getCafeLocationList = (tags) => __awaiter(void 0, void 0, void 0, function* () {
@@ -52,6 +53,25 @@ const getCafeLocationList = (tags) => __awaiter(void 0, void 0, void 0, function
     }
     return cafeLocationList;
 });
+const getMyMapCafeList = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const mycafeList = yield Category_1.default.find({ user: userId }).populate('cafes', 'longitude latitude').select("cafes color name");
+    if (!mycafeList) {
+        throw http_errors_1.default(statusCode.NOT_FOUND, responseMessage.INVALID_IDENTIFIER);
+    }
+    let cafeList = [];
+    for (let item of mycafeList) {
+        // 카테고리에 카페가 1개 이상 있을 때만 push
+        if (item.cafes.length > 0) {
+            let info = {
+                cafes: item.cafes,
+                color: item.color,
+                name: item.name
+            };
+            cafeList.push(info);
+        }
+    }
+    return cafeList;
+});
 const getCafeDetail = (cafeId) => __awaiter(void 0, void 0, void 0, function* () {
     const detail = yield Cafe_1.default.findById(cafeId).populate('tags');
     if (!detail) {
@@ -59,8 +79,28 @@ const getCafeDetail = (cafeId) => __awaiter(void 0, void 0, void 0, function* ()
     }
     return detail;
 });
+const getNoCoordCafes = () => __awaiter(void 0, void 0, void 0, function* () {
+    const cafes = yield Cafe_1.default.find().or([{ latitude: { $exists: false } }, { longitude: { $exists: false } }]);
+    if (cafes.length == 0)
+        return null;
+    return cafes;
+});
+const saveCoord = (cafe) => __awaiter(void 0, void 0, void 0, function* () {
+    yield cafe.save();
+    return;
+});
+const isCafeExists = (cafeId) => __awaiter(void 0, void 0, void 0, function* () {
+    const cafe = yield Cafe_1.default.findById(cafeId);
+    if (!cafe)
+        return false;
+    return true;
+});
 module.exports = {
     getCafeLocationList,
-    getCafeDetail
+    getMyMapCafeList,
+    getCafeDetail,
+    getNoCoordCafes,
+    saveCoord,
+    isCafeExists
 };
 //# sourceMappingURL=cafeService.js.map

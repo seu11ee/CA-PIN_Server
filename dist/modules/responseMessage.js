@@ -49,6 +49,8 @@ module.exports = {
     // CAFE
     CAFE_LOCATION_SUCCESS: "카페 위치 목록 조회 성공",
     CAFE_LOCATION_FAIL: "카페 위치 목록 조회 실패",
+    MYMAP_LOCATION_SUCCESS: "마이맵 카페 위치 목록 조회 성공",
+    MYMAP_LOCATION_FAIL: "마이맵 카페 위치 목록 조회 실패",
     CAFE_DETAIL_SUCCESS: "카페 상세 정보 조회 성공",
     // CATEGORY
     CREATE_CATEGORY_SUCCESS: "카테고리 생성 성공",
@@ -57,7 +59,7 @@ module.exports = {
     ADD_PIN_FAIL: "카테고리에 핀 추가 실패",
     DELETE_CATEGORY_SUCCESS: "카테고리 삭제 성공",
     DELETE_CATEGORY_FAIL: "카테고리 삭제 실패",
-    DELETE_DEFAULT_FAIL: "기본 카테고리는 삭제할 수 없습니다. 삭제 실패.",
+    DELETE_DEFAULT_FAIL: "기본 카테고리는 삭제할 수 없습니다.",
     READ_CATEGORY_CAFE_SUCCESS: "카테고리에 포함된 카페 리스트 조회 성공",
     READ_CATEGORY_CAFE_FAIL: "카테고리에 포함된 카페 리스트 조회 성공",
     READ_MY_CATEGORY_SUCCESS: "내 카테고리 목록 조회 성공",

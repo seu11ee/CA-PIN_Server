@@ -18,9 +18,9 @@ const express_validator_1 = require("express-validator");
 const auth_1 = __importDefault(require("../middleware/auth"));
 const router = express_1.default.Router();
 const createError = require('http-errors');
-const categoryService = require("../services/categoryService");
 const statusCode = require("../modules/statusCode");
 const responseMessage = require("../modules/responseMessage");
+const categoryService = require("../services/categoryService");
 /**
  *  @route Post api/category
  *  @desc generate category(카테고리 생성)
@@ -32,7 +32,7 @@ router.post("/", [
 ], auth_1.default, (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const errors = express_validator_1.validationResult(req);
     if (!errors.isEmpty()) {
-        next(createError(statusCode.BAD_REQUEST, responseMessage.OUT_OF_VALUE));
+        next(createError(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE));
     }
     const { colorIdx, categoryName } = req.body;
     try {
@@ -58,19 +58,19 @@ router.post("/pin", [
 ], auth_1.default, (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const errors = express_validator_1.validationResult(req);
     if (!errors.isEmpty()) {
-        next(createError(statusCode.BAD_REQUEST, responseMessage.OUT_OF_VALUE));
+        return next(createError(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE));
     }
     const { cafeIds, categoryId } = req.body;
     try {
         console.log(res.locals.tokenValue);
         console.log(res.locals.userId);
         yield categoryService.addCafe(cafeIds, categoryId);
-        res.status(statusCode.OK).json({
+        return res.status(statusCode.OK).json({
             message: responseMessage.ADD_PIN_SUCCESS
         });
     }
     catch (error) {
-        next(error);
+        return next(error);
     }
 }));
 /**
@@ -84,17 +84,17 @@ router.delete("/:categoryId", [
     const categoryId = req.params.categoryId;
     try {
         if (!mongoose_1.default.isValidObjectId(categoryId)) {
-            next(createError(statusCode.BAD_REQUEST, responseMessage.INVALID_IDENTIFIER));
+            return next(createError(statusCode.NOT_FOUND, responseMessage.INVALID_IDENTIFIER));
         }
         console.log(res.locals.tokenValue);
         console.log(res.locals.userId);
         yield categoryService.deleteCategory(categoryId);
-        res.status(statusCode.OK).json({
+        return res.status(statusCode.OK).json({
             message: responseMessage.DELETE_CATEGORY_SUCCESS
         });
     }
     catch (error) {
-        next(error);
+        return next(error);
     }
 }));
 /**
@@ -106,7 +106,7 @@ router.get("/:categoryId/cafes", auth_1.default, (req, res, next) => __awaiter(v
     const categoryId = req.params.categoryId;
     try {
         if (!mongoose_1.default.isValidObjectId(categoryId)) {
-            return next(createError(statusCode.BAD_REQUEST, responseMessage.INVALID_IDENTIFIER));
+            return next(createError(statusCode.NOT_FOUND, responseMessage.INVALID_IDENTIFIER));
         }
         console.log(res.locals.tokenValue);
         console.log(res.locals.userId);

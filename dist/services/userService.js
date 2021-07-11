@@ -74,7 +74,18 @@ const fetchUserInfo = (userId) => __awaiter(void 0, void 0, void 0, function* ()
     // userInfo
     const user = yield User_1.default.findOne({ _id: userId }).select("_id nickname email cafeti profileImg");
     if (!user) {
-        throw createError(statusCode.BAD_REQUEST, responseMessage.READ_USER_FAIL);
+        throw createError(statusCode.NOT_FOUND, responseMessage.READ_USER_FAIL);
+    }
+    // User's Profile Img
+    if (!user.profileImg) {
+        yield User_1.default.findOneAndUpdate({
+            _id: userId
+        }, {
+            profileImg: user.cafeti.img,
+        }, {
+            new: true,
+            useFindAndModify: false
+        });
     }
     // User's Review number
     const reviews = (yield Review_1.default.find({ _id: userId })).length;
