@@ -55,6 +55,8 @@ module.exports = {
     // CAFE
     CAFE_LOCATION_SUCCESS: "카페 위치 목록 조회 성공",
     CAFE_LOCATION_FAIL: "카페 위치 목록 조회 실패",
+    MYMAP_LOCATION_SUCCESS: "마이맵 카페 위치 목록 조회 성공",
+    MYMAP_LOCATION_FAIL: "마이맵 카페 위치 목록 조회 실패",
     CAFE_DETAIL_SUCCESS: "카페 상세 정보 조회 성공",
 
     // CATEGORY
