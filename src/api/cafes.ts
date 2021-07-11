@@ -2,12 +2,12 @@ import auth from "../middleware/auth";
 import createError from "http-errors";
 import express, { Request, Response } from "express";
 import mongoose from "mongoose";
-const cafeService = require("../services/cafeService");
-const categoryService = require("../services/categoryService");
-const responseMessage = require("../modules/responseMessage");
-const reviewService = require("../services/reviewService");
 const router = express.Router();
 const statusCode = require("../modules/statusCode");
+const responseMessage = require("../modules/responseMessage");
+const cafeService = require("../services/cafeService");
+const categoryService = require("../services/categoryService");
+const reviewService = require("../services/reviewService");
 
 /**
  *  @route GET cafes?tags={tagIndex},..,{}
@@ -37,7 +37,7 @@ router.get(
       
     
     }
-)
+);
 
 /**
  *  @route GET cafes/:cafeId
@@ -45,7 +45,7 @@ router.get(
  *  @access Private
  */
 router.get(
-    "/:cafeId", auth,
+    "/detail/:cafeId", auth,
     async(req: Request, res: Response, next) => {
         const cafeId = req.params.cafeId;
         const userId = res.locals.userId;
@@ -66,8 +66,29 @@ router.get(
         } catch (error) {
             return next(error);
         }
-    })
+    }
+);
 
+/**
+ *  @route GET cafes/myMap
+ *  @desc get a my map cafe location list
+ *  @access Private
+ */
+router.get(
+    "/myMap", auth,
+    async(req: Request, res: Response, next) => {
+        const userId = res.locals.userId;
 
+        try {
+            const myMapList = await cafeService.getMyMapCafeList(userId);
+            return res.status(statusCode.OK).json({
+                message: responseMessage.MYMAP_LOCATION_SUCCESS,
+                myMapLocations: myMapList
+            });
+        } catch (error) {
+            return next(error);
+        }
+    }
+);
 
 module.exports = router;
