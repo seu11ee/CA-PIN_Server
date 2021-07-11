@@ -62,7 +62,7 @@ const getMyMapCafeList = async(userId) => {
             cafeList.push(info);
         }
     }
-    console.log(cafeList);
+
     return cafeList
 }
 

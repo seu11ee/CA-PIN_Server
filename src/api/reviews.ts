@@ -3,11 +3,11 @@ import createError from "http-errors";
 import express, { Request, Response } from "express";
 import mongoose from "mongoose";
 const router = express.Router();
-const cafeService = require("../services/cafeService");
-const reviewService = require("../services/reviewService");
 const statusCode = require("../modules/statusCode");
 const responseMessage = require("../modules/responseMessage");
 const { upload } = require ("../middleware/upload");
+const cafeService = require("../services/cafeService");
+const reviewService = require("../services/reviewService");
 
 /**
  *  @route GET reviews/:cafeId
