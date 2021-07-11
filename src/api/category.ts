@@ -11,7 +11,7 @@ const categoryService = require("../services/categoryService");
 
 
 /**
- *  @route Post api/category
+ *  @route Post category/
  *  @desc generate category(카테고리 생성)
  *  @access Private
  */
@@ -33,7 +33,7 @@ router.post(
         try {
             console.log(res.locals.tokenValue);
             console.log(res.locals.userId);
-            const category = await categoryService.createCategory(res.locals.userId, colorIdx, categoryName, false);  
+            await categoryService.createCategory(res.locals.userId, colorIdx, categoryName, false);  
             res.status(statusCode.CREATED).json({
                 message: responseMessage.CREATE_CATEGORY_SUCCESS
             });
@@ -44,12 +44,12 @@ router.post(
 );
 
 /**
- *  @route Post api/category/pin
+ *  @route Post /category/:categoryId/pin
  *  @desc generate category(카테고리에 카페 추가)
  *  @access Private
  */
  router.post(
-    "/pin",
+    "/:categoryId/archive",
     [
         check("cafeIds", "cafe_ids is required").not().isEmpty(),
         check("categoryId", "category_id is required").not().isEmpty(),
@@ -60,11 +60,13 @@ router.post(
         if (!errors.isEmpty()){
             return next(createError(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE));
         }
-        const {cafeIds, categoryId} = req.body;
+        const categoryId = req.params.categoryId;
+        const {cafeIds} = req.body;
 
         try {
-            console.log(res.locals.tokenValue);
-            console.log(res.locals.userId);
+            if (!mongoose.isValidObjectId(categoryId)){
+                return next(createError(statusCode.BAD_REQUEST,responseMessage.INVALID_IDENTIFIER));
+            }
             await categoryService.addCafe(cafeIds, categoryId);  
             return res.status(statusCode.OK).json({
                 message: responseMessage.ADD_PIN_SUCCESS
@@ -76,8 +78,8 @@ router.post(
 );
 
 /**
- *  @route Delete api/category/
- *  @desc generate category(카테고리에 카페 추가)
+ *  @route Delete category/:categoryId
+ *  @desc delete category(카테고리 삭제)
  *  @access Private
  */
  router.delete(
@@ -105,7 +107,7 @@ router.post(
 );
 
 /**
- *  @route Get api/category/
+ *  @route Get category/:categoryId/cafes
  *  @desc fetch cafes in category(카테고리에 핀된 카페들 모아보기)
  *  @access Private
  */
