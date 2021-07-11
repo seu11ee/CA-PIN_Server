@@ -62,10 +62,17 @@ const saveCoord = async(cafe) => {
     await cafe.save();
     return;
 }
+
+const isCafeExists = async(cafeId) => {
+    const cafe = await Cafe.findById(cafeId)
+    if (!cafe) return false
+    return true
+}
 module.exports = {
     getCafeLocationList,
     getCafeDetail,
     getNoCoordCafes,
-    saveCoord
+    saveCoord,
+    isCafeExists
 }
    

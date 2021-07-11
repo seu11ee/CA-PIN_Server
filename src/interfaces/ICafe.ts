@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 export interface ICafe{
+    _id: string;
     name: string;
     img: string;
     address: string;
