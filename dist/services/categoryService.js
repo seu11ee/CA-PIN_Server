@@ -41,11 +41,7 @@ const createCategory = (userId, colorIdx, categoryName, isDefault) => __awaiter(
 });
 const addCafe = (cafeIds, categoryId) => __awaiter(void 0, void 0, void 0, function* () {
     const category = yield Category_1.default.findOne({ _id: categoryId });
-    if (cafeIds.length == 0) {
-        // 추가하려는 카페가 없이 넘어온 경우
-        throw createError(statusCode.BAD_REQUEST, responseMessage.OUT_OF_VALUE);
-    }
-    else if (category == null) {
+    if (category == null) {
         // id가 일치하는 카테고리가 없는 경우
         throw createError(statusCode.NOT_FOUND, responseMessage.INVALID_IDENTIFIER);
     }

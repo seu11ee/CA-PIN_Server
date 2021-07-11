@@ -27,10 +27,12 @@ const ReviewSchema = new mongoose_1.default.Schema({
         type: Date
     },
     imgs: {
-        type: [String]
+        type: [String],
+        default: undefined
     },
     recommend: {
-        type: [Number]
+        type: [Number],
+        default: undefined
     },
     content: {
         type: String,

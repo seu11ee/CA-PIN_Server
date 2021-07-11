@@ -1,8 +1,10 @@
 import Cafe from "../models/Cafe";
 import createError from "http-errors";
-import { ICafe, ICafeLocationDTO } from "../interfaces/ICafe";
+import { ICafeLocationDTO } from "../interfaces/ICafe";
+import { IMyCafeCategoryDTO } from "../interfaces/ICategory";
 import mongoose from "mongoose";
 import Tag from "../models/Tag";
+import Category from "../models/Category";
 const responseMessage = require("../modules/responseMessage");
 const statusCode = require("../modules/statusCode");
 
@@ -42,6 +44,28 @@ const getCafeLocationList = async (tags) => {
     }
     return cafeLocationList;
 }
+
+const getMyMapCafeList = async(userId) => {
+    const mycafeList = await Category.find({user: userId}).populate('cafes','longitude latitude').select("cafes color name");
+    if (!mycafeList) {
+        throw createError(statusCode.NOT_FOUND,responseMessage.INVALID_IDENTIFIER);
+    }
+    let cafeList: IMyCafeCategoryDTO[] = []
+    for (let item of mycafeList) {
+        // 카테고리에 카페가 1개 이상 있을 때만 push
+        if (item.cafes.length > 0) {
+            let info: IMyCafeCategoryDTO = {
+                cafes: item.cafes,
+                color: item.color,
+                name: item.name
+            }
+            cafeList.push(info);
+        }
+    }
+
+    return cafeList
+}
+
 const getCafeDetail = async(cafeId) => {
     const detail = await Cafe.findById(cafeId).populate('tags');
 
@@ -70,6 +94,7 @@ const isCafeExists = async(cafeId) => {
 }
 module.exports = {
     getCafeLocationList,
+    getMyMapCafeList,
     getCafeDetail,
     getNoCoordCafes,
     saveCoord,

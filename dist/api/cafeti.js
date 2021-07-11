@@ -17,9 +17,9 @@ const express_validator_1 = require("express-validator");
 const auth_1 = __importDefault(require("../middleware/auth"));
 const router = express_1.default.Router();
 const createError = require('http-errors');
-const cafetiService = require("../services/cafetiService");
 const statusCode = require("../modules/statusCode");
 const responseMessage = require("../modules/responseMessage");
+const cafetiService = require("../services/cafetiService");
 /**
  *  @route Post /cafeti/
  *  @desc Do Cafeti test(카페티아이 검사)
@@ -30,7 +30,7 @@ router.post("/", [
 ], auth_1.default, (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const errors = express_validator_1.validationResult(req);
     if (!errors.isEmpty()) {
-        return next(createError(statusCode.BAD_REQUEST, responseMessage.OUT_OF_VALUE));
+        return next(createError(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE));
     }
     const { answers } = req.body;
     try {
@@ -40,7 +40,7 @@ router.post("/", [
         });
     }
     catch (error) {
-        next(error);
+        return next(error);
     }
 }));
 module.exports = router;

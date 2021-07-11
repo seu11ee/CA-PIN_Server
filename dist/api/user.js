@@ -17,10 +17,10 @@ const express_validator_1 = require("express-validator");
 const auth_1 = __importDefault(require("../middleware/auth"));
 const router = express_1.default.Router();
 const createError = require('http-errors');
-const userService = require("../services/userService");
-const categoryService = require("../services/categoryService");
 const statusCode = require("../modules/statusCode");
 const responseMessage = require("../modules/responseMessage");
+const userService = require("../services/userService");
+const categoryService = require("../services/categoryService");
 const reviewService = require("../services/reviewService");
 /**
  *  @route Post api/user/login
@@ -33,13 +33,13 @@ router.post("/login", [
 ], (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const errors = express_validator_1.validationResult(req);
     if (!errors.isEmpty()) {
-        next(createError(statusCode.BAD_REQUEST, responseMessage.OUT_OF_VALUE));
+        return next(createError(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE));
     }
     const { email, password } = req.body;
     try {
         const user = yield userService.loginUser(email, password);
         const userToken = yield userService.generateToken(user._id);
-        res.status(statusCode.OK).json({
+        return res.status(statusCode.OK).json({
             message: responseMessage.SIGN_IN_SUCCESS,
             loginData: {
                 nickname: user.nickname,
@@ -48,7 +48,7 @@ router.post("/login", [
         });
     }
     catch (error) {
-        next(error);
+        return next(error);
     }
 }));
 /**
@@ -63,7 +63,7 @@ router.post("/signup", [
 ], (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const errors = express_validator_1.validationResult(req);
     if (!errors.isEmpty()) {
-        next(createError(statusCode.BAD_REQUEST, responseMessage.OUT_OF_VALUE));
+        return next(createError(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE));
     }
     const { nickname, email, password } = req.body;
     try {
@@ -73,7 +73,7 @@ router.post("/signup", [
         });
     }
     catch (error) {
-        next(error);
+        return next(error);
     }
 }));
 /**
@@ -90,7 +90,7 @@ router.get("/categoryList", auth_1.default, (req, res, next) => __awaiter(void 0
         });
     }
     catch (error) {
-        next(error);
+        return next(error);
     }
 }));
 /**
@@ -114,7 +114,7 @@ router.get("/myInfo", auth_1.default, (req, res, next) => __awaiter(void 0, void
         });
     }
     catch (error) {
-        next(error);
+        return next(error);
     }
 }));
 /**

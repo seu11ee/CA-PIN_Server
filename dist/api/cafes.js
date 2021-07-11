@@ -16,12 +16,12 @@ const auth_1 = __importDefault(require("../middleware/auth"));
 const http_errors_1 = __importDefault(require("http-errors"));
 const express_1 = __importDefault(require("express"));
 const mongoose_1 = __importDefault(require("mongoose"));
-const cafeService = require("../services/cafeService");
-const categoryService = require("../services/categoryService");
-const responseMessage = require("../modules/responseMessage");
-const reviewService = require("../services/reviewService");
 const router = express_1.default.Router();
 const statusCode = require("../modules/statusCode");
+const responseMessage = require("../modules/responseMessage");
+const cafeService = require("../services/cafeService");
+const categoryService = require("../services/categoryService");
+const reviewService = require("../services/reviewService");
 /**
  *  @route GET cafes?tags={tagIndex},..,{}
  *  @desc get a cafe location list
@@ -69,6 +69,24 @@ router.get("/:cafeId", auth_1.default, (req, res, next) => __awaiter(void 0, voi
             average = Number(average.toFixed(1));
             return res.status(statusCode.OK).send({ message: responseMessage.CAFE_DETAIL_SUCCESS, cafeDetail, isSaved, average });
         }
+    }
+    catch (error) {
+        return next(error);
+    }
+}));
+/**
+ *  @route GET cafes/myMap
+ *  @desc get a my map cafe location list
+ *  @access Private
+ */
+router.get("/myMap", auth_1.default, (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = res.locals.userId;
+    try {
+        const myMapList = yield cafeService.getMyMapCafeList(userId);
+        return res.status(statusCode.OK).json({
+            message: responseMessage.MYMAP_LOCATION_SUCCESS,
+            myMap: myMapList
+        });
     }
     catch (error) {
         return next(error);

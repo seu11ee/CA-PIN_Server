@@ -17,10 +17,11 @@ const http_errors_1 = __importDefault(require("http-errors"));
 const express_1 = __importDefault(require("express"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const router = express_1.default.Router();
-const reviewService = require("../services/reviewService");
 const statusCode = require("../modules/statusCode");
 const responseMessage = require("../modules/responseMessage");
 const { upload } = require("../middleware/upload");
+const cafeService = require("../services/cafeService");
+const reviewService = require("../services/reviewService");
 /**
  *  @route GET reviews/:cafeId
  *  @desc get a cafe review list
@@ -62,11 +63,17 @@ router.post("/", auth_1.default, upload.array("imgs", 5), (req, res, next) => __
         return next(http_errors_1.default(statusCode.BAD_REQUEST, responseMessage.INVALID_IDENTIFIER));
     }
     try {
-        var urls = [];
-        for (let i = 0; i < req.files.length; i++) {
-            const url = req.files[i].location;
-            urls.push(url);
+        var urls = undefined;
+        if (req.files.length != 0) {
+            urls = [];
+            for (let i = 0; i < req.files.length; i++) {
+                const url = req.files[i].location;
+                urls.push(url);
+            }
         }
+        const isCafeExists = yield cafeService.isCafeExists(cafeId);
+        if (!isCafeExists)
+            return res.status(statusCode.NO_CONTENT).send();
         const isReviewed = yield reviewService.checkIfReviewed(cafeId, userId);
         if (isReviewed)
             return next(http_errors_1.default(http_errors_1.default(statusCode.BAD_REQUEST, responseMessage.REPEATED_VALUE)));
@@ -81,19 +88,22 @@ router.put("/:reviewId", auth_1.default, upload.array("imgs", 5), (req, res, nex
     const reviewParams = JSON.parse(req.body.review);
     const reviewId = req.params.reviewId;
     const userId = res.locals.userId;
-    const { content, recommend, rating, isAllDeleted } = reviewParams;
-    if (recommend && !recommend.isArray(Number))
-        next(http_errors_1.default(http_errors_1.default(statusCode.BAD_REQUEST, responseMessage.OUT_OF_VALUE)));
+    var { content, recommend, rating, isAllDeleted } = reviewParams;
     if (isAllDeleted === undefined || !content || !rating)
         next(http_errors_1.default(http_errors_1.default(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE)));
     if (!reviewId || !mongoose_1.default.isValidObjectId(reviewId)) {
         next(http_errors_1.default(statusCode.BAD_REQUEST, responseMessage.INVALID_IDENTIFIER));
     }
+    if (recommend && recommend.length == 0)
+        recommend = undefined;
     try {
-        var urls = [];
-        for (let i = 0; i < req.files.length; i++) {
-            const url = req.files[i].location;
-            urls.push(url);
+        var urls = undefined;
+        if (req.files.length != 0 && !isAllDeleted) {
+            urls = [];
+            for (let i = 0; i < req.files.length; i++) {
+                const url = req.files[i].location;
+                urls.push(url);
+            }
         }
         const review = yield reviewService.modifyReview(reviewId, userId, content, rating, isAllDeleted, recommend, urls);
         if (!review)

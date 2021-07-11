@@ -4,11 +4,11 @@ import mongoose from "mongoose";
 import Cafe from "../models/Cafe";
 import express, { Request, Response } from "express";
 import axios from "axios";
-const cafeService = require("../services/cafeService");
-const geocoderService = require("../services/geocoderService");
 const router = express.Router();
 const statusCode = require("../modules/statusCode");
 const responseMessage = require("../modules/responseMessage");
+const cafeService = require("../services/cafeService");
+const geocoderService = require("../services/geocoderService");
 
 router.put(
     "/",

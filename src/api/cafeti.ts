@@ -3,9 +3,9 @@ import { check, validationResult } from "express-validator"
 import authChecker from "../middleware/auth"
 const router = express.Router();
 const createError = require('http-errors');
-const cafetiService = require("../services/cafetiService");
 const statusCode = require("../modules/statusCode");
 const responseMessage = require("../modules/responseMessage");
+const cafetiService = require("../services/cafetiService");
 
 /**
  *  @route Post /cafeti/

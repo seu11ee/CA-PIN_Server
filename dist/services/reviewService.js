@@ -25,10 +25,15 @@ const getCafeReviewList = (cafeId) => __awaiter(void 0, void 0, void 0, function
         if (!review.user.profileImg) {
             review.user.profileImg = review.user.cafeti.img;
         }
+        let writerDTO = {
+            _id: review.user._id,
+            nickname: review.user.nickname,
+            profileImg: review.user.profileImg
+        };
         let reviewDTO = {
             _id: review._id,
-            cafe: review.cafe,
-            user: review.user,
+            cafeId: review.cafe._id,
+            writer: writerDTO,
             rating: review.rating,
             created_at: review.created_at,
             content: review.content
@@ -84,7 +89,7 @@ const modifyReview = (reviewId, userId, content, rating, isAllDeleted, recommend
             review.imgs = imgs;
         }
         else if (isAllDeleted) {
-            review.imgs = [];
+            review.imgs = undefined;
         }
         yield review.save();
         return review;
@@ -132,8 +137,22 @@ const getCafeAverageRating = (cafeId) => __awaiter(void 0, void 0, void 0, funct
     return reviews[0].average;
 });
 const getMyReviews = (userId) => __awaiter(void 0, void 0, void 0, function* () {
-    const myReviews = Review_1.default.find({ user: userId }).sort({ created_at: -1 });
-    return myReviews;
+    const myReviews = yield Review_1.default.find({ user: userId }).populate("cafe").sort({ created_at: -1 });
+    var myReviewsDTO = [];
+    for (let review of myReviews) {
+        let myReview = {
+            _id: review._id,
+            cafeName: review.cafe.name,
+            cafeId: review.cafe._id,
+            content: review.content,
+            rating: review.rating,
+            create_at: review.created_at,
+            imgs: review.imgs,
+            recommend: review.recommend
+        };
+        myReviewsDTO.push(myReview);
+    }
+    return myReviewsDTO;
 });
 module.exports = {
     getCafeReviewList,

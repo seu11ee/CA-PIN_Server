@@ -3,11 +3,10 @@ import { check, validationResult } from "express-validator"
 import authChecker from "../middleware/auth"
 const router = express.Router();
 const createError = require('http-errors');
-
-const userService = require("../services/userService");
-const categoryService = require("../services/categoryService");
 const statusCode = require("../modules/statusCode");
 const responseMessage = require("../modules/responseMessage");
+const userService = require("../services/userService");
+const categoryService = require("../services/categoryService");
 const reviewService = require("../services/reviewService");
 
 /**
