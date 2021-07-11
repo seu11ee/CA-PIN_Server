@@ -20,6 +20,7 @@ const cafetiService = require("../services/cafetiService");
     authChecker
     ,
     async(req: Request, res: Response, next) => {
+        const userId = res.locals.userId
         const errors = validationResult(req);
         if (!errors.isEmpty()){
             return next(createError(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE));
@@ -28,7 +29,7 @@ const cafetiService = require("../services/cafetiService");
         const {answers} = req.body;
 
         try {
-            const result = await cafetiService.fetchCafetiResult(res.locals.userId, answers);
+            const result = await cafetiService.fetchCafetiResult(userId, answers);
             return res.status(statusCode.OK).json({
                 message: responseMessage.CAFETI_TEST_SUCCESS,
             });
