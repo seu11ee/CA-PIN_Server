@@ -10,7 +10,7 @@ const categoryService = require("../services/categoryService");
 const reviewService = require("../services/reviewService");
 
 /**
- *  @route Post api/user/login
+ *  @route Post user/login
  *  @desc Authenticate user & get token(로그인)
  *  @access Public
  */
@@ -45,7 +45,7 @@ router.post(
 );
 
 /**
- *  @route Post api/user/signup
+ *  @route Post user/signup
  *  @desc generate user(회원가입)
  *  @access Public
  */
@@ -78,7 +78,7 @@ router.post(
 );
 
 /**
- *  @route Get api/user/categoryList
+ *  @route Get user/categoryList
  *  @desc fetch my category list(내 카테고리-마이페이지)
  *  @access Private
  */
@@ -87,8 +87,9 @@ router.post(
     authChecker
     ,
     async(req: Request, res: Response, next) => {
+        const userId = res.locals.userId
         try {
-            const myCategoryList = await categoryService.fetchMyCategory(res.locals.userId);
+            const myCategoryList = await categoryService.fetchMyCategory(userId);
             return res.status(statusCode.OK).json({
                 message: responseMessage.READ_MY_CATEGORY_SUCCESS,
                 myCategoryList: myCategoryList
@@ -101,7 +102,7 @@ router.post(
 );
 
 /**
- *  @route Get /user/myInfo
+ *  @route Get user/myInfo
  *  @desc fetch my category list(내 카테고리-마이페이지)
  *  @access Private
  */
@@ -110,8 +111,9 @@ router.post(
     authChecker
     ,
     async(req: Request, res: Response, next) => {
+        const userId = res.locals.userId
         try {
-            const userInfo = await userService.fetchUserInfo(res.locals.userId);
+            const userInfo = await userService.fetchUserInfo(userId);
             return res.status(statusCode.OK).json({
                 message: responseMessage.READ_USERINFO_SUCCESS,
                 myInfo: {
@@ -130,15 +132,16 @@ router.post(
 );
 
 /**
- *  @route Get api/user/reviews
+ *  @route Get user/reviews
  *  @desc get my review list
  *  @access Private
  */
 router.get("/reviews",
     authChecker,
     async(req: Request, res: Response, next) => {
+        const userId = res.locals.userId
         try {
-            const myReviewList = await reviewService.getMyReviews(res.locals.userId);
+            const myReviewList = await reviewService.getMyReviews(userId);
             if (!myReviewList) return res.status(statusCode.NO_CONTENT).send();
             return res.status(statusCode.OK).json({
                 message: responseMessage.READ_MY_REVIEW_SUCCESS,

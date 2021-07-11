@@ -23,22 +23,21 @@ router.post(
     ],
     authChecker,
     async(req: Request, res: Response, next) => {
+        const userId = res.locals.userId
         const errors = validationResult(req);
         if (!errors.isEmpty()){
-            next(createError(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE));
+            return next(createError(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE));
         }
 
         const {colorIdx, categoryName} = req.body;
 
         try {
-            console.log(res.locals.tokenValue);
-            console.log(res.locals.userId);
-            await categoryService.createCategory(res.locals.userId, colorIdx, categoryName, false);  
-            res.status(statusCode.CREATED).json({
+            await categoryService.createCategory(userId, colorIdx, categoryName, false);  
+            return res.status(statusCode.CREATED).json({
                 message: responseMessage.CREATE_CATEGORY_SUCCESS
             });
         } catch (error) {
-            next(error);
+            return next(error);
         }
     }
 );
@@ -67,6 +66,7 @@ router.post(
             if (!mongoose.isValidObjectId(categoryId)){
                 return next(createError(statusCode.BAD_REQUEST,responseMessage.INVALID_IDENTIFIER));
             }
+
             await categoryService.addCafe(cafeIds, categoryId);  
             return res.status(statusCode.OK).json({
                 message: responseMessage.ADD_PIN_SUCCESS
@@ -94,8 +94,7 @@ router.post(
             if (!mongoose.isValidObjectId(categoryId)){
                 return next(createError(statusCode.NOT_FOUND, responseMessage.INVALID_IDENTIFIER));
             }
-            console.log(res.locals.tokenValue);
-            console.log(res.locals.userId);
+            
             await categoryService.deleteCategory(categoryId);
             return res.status(statusCode.OK).json({
                 message: responseMessage.DELETE_CATEGORY_SUCCESS
@@ -121,8 +120,7 @@ router.post(
             if (!mongoose.isValidObjectId(categoryId)){
                 return next(createError(statusCode.NOT_FOUND, responseMessage.INVALID_IDENTIFIER));
             }
-            console.log(res.locals.tokenValue);
-            console.log(res.locals.userId);
+            
             const cafeList = await categoryService.fetchCafesInCategory(categoryId, res.locals.userId);
             return res.status(statusCode.OK).json({
                 message: responseMessage.READ_CATEGORY_CAFE_SUCCESS,
