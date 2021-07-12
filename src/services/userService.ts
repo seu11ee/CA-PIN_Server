@@ -91,11 +91,11 @@ const mailToUser = async(email) => {
 
     const verifyCode = Math.floor(Math.random() * (9999 - 1000)) + 1000;
     await transporter.sendMail({
-        from: `"CA:PIN Team" <${process.env.NODEMAILER_ADMIN}>`,
+        from: `"CA:PIN" <${process.env.NODEMAILER_ADMIN}>`,
         to: user.email,
         subject: 'CA:PIN 비밀번호 인증 메일입니다.',
-        text: `${verifyCode}`,
-        html: `<b>${verifyCode}</b`,
+        text: "앱으로 돌아가서 인증코드를 입력해주세요!",
+        html: `앱으로 돌아가서 인증코드를 입력해주세요!</br> 인증코드: <b>${verifyCode}</b`,
     });
 
     return verifyCode
