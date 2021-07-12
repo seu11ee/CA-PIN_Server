@@ -1,6 +1,7 @@
 import auth from "../middleware/auth";
 import createError from "http-errors";
 import express, { Request, Response } from "express";
+const logger = require("../modules/logger");
 import mongoose from "mongoose";
 const router = express.Router();
 const statusCode = require("../modules/statusCode");
@@ -17,6 +18,7 @@ const reviewService = require("../services/reviewService");
 router.get(
     "/",
     async(req: Request, res: Response, next) => {
+        logger.info("GET /cafes");
         const tagQuery = req.query.tags;
         var tags: number[] = []
         try {
