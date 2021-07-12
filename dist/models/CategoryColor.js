@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 const CategoryColorSchema = new mongoose_1.default.Schema({
-    color_idx: {
+    color_id: {
         type: Number,
         required: true,
         unique: true

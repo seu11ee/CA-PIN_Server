@@ -39,9 +39,47 @@ const createCategory = (userId, colorIdx, categoryName, isDefault) => __awaiter(
     yield category.save();
     return category;
 });
+const editCategoryInfo = (categoryId, color, name) => __awaiter(void 0, void 0, void 0, function* () {
+    const category = yield Category_1.default.findOne({ _id: categoryId });
+    const hexacode = yield CategoryColor_1.default.findOne({ color_id: color });
+    if (!category || !hexacode) {
+        throw createError(statusCode.NOT_FOUND, responseMessage.INVALID_IDENTIFIER);
+    }
+    else if (category.isDefault) {
+        throw createError(statusCode.BAD_REQUEST, responseMessage.EDIT_DEFAULT_FAIL);
+    }
+    yield Category_1.default.findOneAndUpdate({
+        _id: categoryId
+    }, {
+        color: hexacode.color_code,
+        name: name
+    }, {
+        new: true,
+        useFindAndModify: false
+    });
+});
+const deleteCafesinCategory = (categoryId, cafeList) => __awaiter(void 0, void 0, void 0, function* () {
+    const category = yield Category_1.default.findOne({ _id: categoryId });
+    // 찾으려는 카테고리가 없거나 카테고리 내에 삭제하려는 카페가 존재하지 않는 경우
+    if (!category || ((cafeList.length != cafeList.filter(x => category.cafes.includes(x)).length))) {
+        throw createError(statusCode.NOT_FOUND, responseMessage.INVALID_IDENTIFIER);
+    }
+    for (let cafe of cafeList) {
+        if (cafe in category.cafes) {
+            throw createError(statusCode.NOT_FOUND, responseMessage.INVALID_IDENTIFIER);
+        }
+        yield Category_1.default.findOneAndUpdate({
+            _id: categoryId
+        }, {
+            $pull: { cafes: cafe }
+        }, {
+            useFindAndModify: false
+        });
+    }
+});
 const addCafe = (cafeIds, categoryId) => __awaiter(void 0, void 0, void 0, function* () {
     const category = yield Category_1.default.findOne({ _id: categoryId });
-    if (category == null) {
+    if (!category) {
         // id가 일치하는 카테고리가 없는 경우
         throw createError(statusCode.NOT_FOUND, responseMessage.INVALID_IDENTIFIER);
     }
@@ -100,7 +138,9 @@ const checkCafeInCategory = (cafeId, userId) => __awaiter(void 0, void 0, void 0
 });
 module.exports = {
     createCategory,
+    editCategoryInfo,
     addCafe,
+    deleteCafesinCategory,
     deleteCategory,
     fetchMyCategory,
     fetchCafesInCategory,

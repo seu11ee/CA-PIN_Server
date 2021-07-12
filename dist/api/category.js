@@ -47,8 +47,33 @@ router.post("/", [
     }
 }));
 /**
- *  @route Post /category/:categoryId/pin
- *  @desc generate category(카테고리에 카페 추가)
+ *  @route Put category/:categoryId/
+ *  @desc edit category info(카테고리 정보 수정)
+ *  @access Private
+ */
+router.put("/:categoryId/", [
+    express_validator_1.check("colorIdx", "color_id is required").not().isEmpty(),
+    express_validator_1.check("categoryName", "color_name is required").not().isEmpty(),
+], auth_1.default, (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const errors = express_validator_1.validationResult(req);
+    if (!errors.isEmpty()) {
+        return next(createError(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE));
+    }
+    const categoryId = req.params.categoryId;
+    const { colorIdx, categoryName } = req.body;
+    try {
+        yield categoryService.editCategoryInfo(categoryId, colorIdx, categoryName);
+        return res.status(statusCode.OK).json({
+            message: responseMessage.EDIT_CATEGORY_SUCCESS
+        });
+    }
+    catch (error) {
+        return next(error);
+    }
+}));
+/**
+ *  @route Post /category/:categoryId/archive
+ *  @desc pin cafes in category(카테고리에 카페 추가)
  *  @access Private
  */
 router.post("/:categoryId/archive", [
@@ -67,6 +92,33 @@ router.post("/:categoryId/archive", [
         yield categoryService.addCafe(cafeIds, categoryId);
         return res.status(statusCode.OK).json({
             message: responseMessage.ADD_PIN_SUCCESS
+        });
+    }
+    catch (error) {
+        return next(error);
+    }
+}));
+/**
+ *  @route Delete /category/:categoryId/archive
+ *  @desc delete cafes in category(카테고리에 있는 카페 삭제)
+ *  @access Private
+ */
+router.delete("/:categoryId/archive", [
+    express_validator_1.check("cafeList", "cafeList is required").not().isEmpty(),
+], auth_1.default, (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const errors = express_validator_1.validationResult(req);
+    if (!errors.isEmpty()) {
+        return next(createError(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE));
+    }
+    const categoryId = req.params.categoryId;
+    const { cafeList } = req.body;
+    try {
+        if (!mongoose_1.default.isValidObjectId(categoryId)) {
+            return next(createError(statusCode.BAD_REQUEST, responseMessage.INVALID_IDENTIFIER));
+        }
+        yield categoryService.deleteCafesinCategory(categoryId, cafeList);
+        return res.status(statusCode.OK).json({
+            message: responseMessage.DELETE_CAFES_IN_CATEGORY_SUCCESS
         });
     }
     catch (error) {
