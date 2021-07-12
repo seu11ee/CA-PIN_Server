@@ -73,6 +73,7 @@ module.exports = {
     READ_MY_CATEGORY_SUCCESS: "내 카테고리 목록 조회 성공",
     READ_MY_CATEGORY_FAIL: "내 카테고리 목록 조회 실패",
     EDIT_CATEGORY_SUCCESS: "카테고리 이름/색상 수정 성공",
+    DELETE_CAFES_IN_CATEGORY_SUCCESS: "선택된 카페 삭제 성공",
 
     // Server Error
     INTERNAL_SERVER_ERROR: "서버 내부 오류",

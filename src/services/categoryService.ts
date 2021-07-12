@@ -36,9 +36,7 @@ const editCategoryInfo = async(categoryId, color, name) => {
     const category = await Category.findOne({_id: categoryId});
     const hexacode = await CategoryColor.findOne({color_id: color});
     
-    if (!category) {
-        throw createError(statusCode.NOT_FOUND,responseMessage.INVALID_IDENTIFIER);
-    } else if (!hexacode) {
+    if (!category || !hexacode) {
         throw createError(statusCode.NOT_FOUND,responseMessage.INVALID_IDENTIFIER);
     }
 
@@ -55,6 +53,27 @@ const editCategoryInfo = async(categoryId, color, name) => {
             useFindAndModify: false
         }
     );
+}
+
+const deleteCafesinCategory = async(categoryId, cafeList) => {
+    const category = await Category.findOne({_id: categoryId});
+    if (!category) {
+        throw createError(statusCode.NOT_FOUND,responseMessage.INVALID_IDENTIFIER);
+    }
+
+    for (let cafe of cafeList) {
+        await Category.findOneAndUpdate(
+            { 
+                _id: categoryId 
+            },
+            { 
+                $pull: {cafes: cafe}
+            },
+            { 
+                useFindAndModify: false
+            }
+        );
+    }
 }
 
 const addCafe = async(cafeIds, categoryId) => {
@@ -129,6 +148,7 @@ module.exports = {
     createCategory,
     editCategoryInfo,
     addCafe,
+    deleteCafesinCategory,
     deleteCategory,
     fetchMyCategory,
     fetchCafesInCategory,

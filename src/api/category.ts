@@ -75,8 +75,8 @@ router.post(
 );
 
 /**
- *  @route Post /category/:categoryId/pin
- *  @desc generate category(카테고리에 카페 추가)
+ *  @route Post /category/:categoryId/archive
+ *  @desc pin cafes in category(카테고리에 카페 추가)
  *  @access Private
  */
  router.post(
@@ -102,6 +102,41 @@ router.post(
             await categoryService.addCafe(cafeIds, categoryId);  
             return res.status(statusCode.OK).json({
                 message: responseMessage.ADD_PIN_SUCCESS
+            });
+        } catch (error) {
+            return next(error);
+        }
+    }
+);
+
+/**
+ *  @route Delete /category/:categoryId/cafes
+ *  @desc delete cafes in category(카테고리에 있는 카페 삭제)
+ *  @access Private
+ */
+ router.delete(
+    "/:categoryId/cafes",
+    [
+        check("cafeList", "cafeList is required").not().isEmpty(),
+    ],
+    authChecker,
+    async(req: Request, res: Response, next) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()){
+            return next(createError(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE));
+        }
+
+        const categoryId = req.params.categoryId;
+        const {cafeList} = req.body;
+
+        try {
+            if (!mongoose.isValidObjectId(categoryId)){
+                return next(createError(statusCode.BAD_REQUEST,responseMessage.INVALID_IDENTIFIER));
+            }
+
+            await categoryService.deleteCafesinCategory(categoryId, cafeList);  
+            return res.status(statusCode.OK).json({
+                message: responseMessage.DELETE_CAFES_IN_CATEGORY_SUCCESS
             });
         } catch (error) {
             return next(error);
