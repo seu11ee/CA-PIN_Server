@@ -75,7 +75,7 @@ const signupUser = async (nickname, email, password) => {
 const mailToUser = async(email) => {
     const user = await User.findOne({email: email})
     if (!user) {
-        throw createError(statusCode.NOT_FOUND, responseMessage.READ_USER_FAIL)
+        throw createError(statusCode.NOT_FOUND, responseMessage.NO_EMAIL)
     }
 
     let transporter = nodemailer.createTransport({
@@ -104,7 +104,7 @@ const mailToUser = async(email) => {
 const updatePassword = async(email, new_password) => {
     const user = await User.findOne({email: email})
     if (!user) {
-        throw createError(statusCode.NOT_FOUND, responseMessage.READ_USER_FAIL)
+        throw createError(statusCode.NOT_FOUND, responseMessage.NO_EMAIL)
     }
     
     // Encrypt password
