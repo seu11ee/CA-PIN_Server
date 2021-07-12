@@ -21,7 +21,7 @@ app.use("/geocoder", require("./api/geocoder"));
 
 // error handler
 app.use(function (err, req, res, next) {
-  logger.error(err.message);
+  logger.error(err);
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "production" ? err : {};
