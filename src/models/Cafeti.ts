@@ -13,9 +13,12 @@ const CafetiSchema = new mongoose.Schema ({
         required: true,
         unique: true
     },
-    description: {
+    modifier: {
         type: String,
         required: true
+    },
+    modifierDetail: {
+        type: String,
     },
     img: {
         type: String,
