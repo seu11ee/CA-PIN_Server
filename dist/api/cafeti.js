@@ -28,13 +28,14 @@ const cafetiService = require("../services/cafetiService");
 router.post("/", [
     express_validator_1.check("answers", "answers is required").not().isEmpty(),
 ], auth_1.default, (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = res.locals.userId;
     const errors = express_validator_1.validationResult(req);
     if (!errors.isEmpty()) {
         return next(createError(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE));
     }
     const { answers } = req.body;
     try {
-        const result = yield cafetiService.fetchCafetiResult(res.locals.userId, answers);
+        const result = yield cafetiService.fetchCafetiResult(userId, answers);
         return res.status(statusCode.OK).json({
             message: responseMessage.CAFETI_TEST_SUCCESS,
         });
