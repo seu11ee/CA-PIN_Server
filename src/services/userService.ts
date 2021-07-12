@@ -101,6 +101,31 @@ const mailToUser = async(email) => {
     return verifyCode
 }
 
+const updatePassword = async(email, new_password) => {
+    const user = await User.findOne({email: email})
+    if (!user) {
+        throw createError(statusCode.NOT_FOUND, responseMessage.READ_USER_FAIL)
+    }
+    
+    // Encrypt password
+    const salt = await bcrypt.genSalt(10);
+    const newPassword = await bcrypt.hash(new_password, salt);
+    
+    if (user.password)
+    await User.findOneAndUpdate(
+        { 
+            email: email
+        },
+        { 
+            password: newPassword,
+        },
+        { 
+            useFindAndModify: false
+        }
+    );
+
+}
+
 const fetchUserInfo = async(userId) => {
     // userInfo
     const user = await User.findOne({_id: userId}).select("_id nickname email cafeti profileImg");
@@ -140,5 +165,6 @@ module.exports = {
     signupUser,
     generateToken,
     fetchUserInfo,
-    mailToUser
+    mailToUser,
+    updatePassword
 }
