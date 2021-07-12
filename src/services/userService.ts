@@ -9,6 +9,7 @@ const statusCode = require("../modules/statusCode");
 const categoryService = require("../services/categoryService");
 const responseMessage = require("../modules/responseMessage");
 const nd = require("../modules/dateCalculate");
+const nodemailer = require('nodemailer');
 
 const loginUser = async(email, password) => {
     let user = await User.findOne({ email });
@@ -71,6 +72,59 @@ const signupUser = async (nickname, email, password) => {
     return user;
 }
 
+const mailToUser = async(email) => {
+    const user = await User.findOne({email: email})
+    if (!user) {
+        throw createError(statusCode.NOT_FOUND, responseMessage.NO_EMAIL)
+    }
+
+    let transporter = nodemailer.createTransport({
+        service: 'gmail',
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false,
+        auth: {
+            user: process.env.NODEMAILER_ADMIN,
+            pass: process.env.NODEMAILER_PASS
+        },
+    });
+
+    const verifyCode = Math.floor(Math.random() * (9999 - 1000)) + 1000;
+    await transporter.sendMail({
+        from: `"CA:PIN" <${process.env.NODEMAILER_ADMIN}>`,
+        to: user.email,
+        subject: 'CA:PIN 비밀번호 인증 메일입니다.',
+        text: "앱으로 돌아가서 인증코드를 입력해주세요!",
+        html: `앱으로 돌아가서 인증코드를 입력해주세요!</br> 인증코드: <b>${verifyCode}</b`,
+    });
+
+    return verifyCode
+}
+
+const updatePassword = async(email, new_password) => {
+    const user = await User.findOne({email: email})
+    if (!user) {
+        throw createError(statusCode.NOT_FOUND, responseMessage.NO_EMAIL)
+    }
+    
+    // Encrypt password
+    const salt = await bcrypt.genSalt(10);
+    const newPassword = await bcrypt.hash(new_password, salt);
+    
+    await User.findOneAndUpdate(
+        { 
+            email: email
+        },
+        { 
+            password: newPassword,
+        },
+        { 
+            useFindAndModify: false
+        }
+    );
+
+}
+
 const fetchUserInfo = async(userId) => {
     // userInfo
     const user = await User.findOne({_id: userId}).select("_id nickname email cafeti profileImg");
@@ -109,5 +163,7 @@ module.exports = {
     loginUser,
     signupUser,
     generateToken,
-    fetchUserInfo
+    fetchUserInfo,
+    mailToUser,
+    updatePassword
 }

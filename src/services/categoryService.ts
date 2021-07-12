@@ -32,10 +32,60 @@ const createCategory = async(userId, colorIdx, categoryName, isDefault) => {
     return category;
 };
 
+const editCategoryInfo = async(categoryId, color, name) => {
+    const category = await Category.findOne({_id: categoryId});
+    const hexacode = await CategoryColor.findOne({color_id: color});
+    
+    if (!category || !hexacode) {
+        throw createError(statusCode.NOT_FOUND,responseMessage.INVALID_IDENTIFIER);
+    } else if (category.isDefault) {
+        throw createError(statusCode.BAD_REQUEST,responseMessage.EDIT_DEFAULT_FAIL);
+    }
+
+    await Category.findOneAndUpdate(
+        { 
+            _id: categoryId 
+        },
+        { 
+            color: hexacode.color_code,
+            name: name
+        },
+        { 
+            new: true,
+            useFindAndModify: false
+        }
+    );
+}
+
+const deleteCafesinCategory = async(categoryId, cafeList) => {
+    const category = await Category.findOne({_id: categoryId});
+    // 찾으려는 카테고리가 없거나 카테고리 내에 삭제하려는 카페가 존재하지 않는 경우
+    if (!category || ((cafeList.length != cafeList.filter(x => category.cafes.includes(x)).length))) {
+        throw createError(statusCode.NOT_FOUND,responseMessage.INVALID_IDENTIFIER);
+    }
+
+    for (let cafe of cafeList) {
+        if (cafe in category.cafes) {
+            throw createError(statusCode.NOT_FOUND,responseMessage.INVALID_IDENTIFIER)
+        }
+        await Category.findOneAndUpdate(
+            { 
+                _id: categoryId 
+            },
+            { 
+                $pull: {cafes: cafe}
+            },
+            { 
+                useFindAndModify: false
+            }
+        );
+    }
+}
+
 const addCafe = async(cafeIds, categoryId) => {
     const category = await Category.findOne({_id: categoryId});
  
-    if (category == null) {
+    if (!category) {
         // id가 일치하는 카테고리가 없는 경우
         throw createError(statusCode.NOT_FOUND,responseMessage.INVALID_IDENTIFIER);
     }
@@ -102,7 +152,9 @@ const checkCafeInCategory = async(cafeId,userId) => {
 
 module.exports = {
     createCategory,
+    editCategoryInfo,
     addCafe,
+    deleteCafesinCategory,
     deleteCategory,
     fetchMyCategory,
     fetchCafesInCategory,
