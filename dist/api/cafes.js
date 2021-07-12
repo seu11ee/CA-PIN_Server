@@ -51,7 +51,7 @@ router.get("/", (req, res, next) => __awaiter(void 0, void 0, void 0, function* 
  *  @desc get a cafe detail
  *  @access Private
  */
-router.get("/:cafeId", auth_1.default, (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/detail/:cafeId", auth_1.default, (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const cafeId = req.params.cafeId;
     const userId = res.locals.userId;
     try {
@@ -85,7 +85,7 @@ router.get("/myMap", auth_1.default, (req, res, next) => __awaiter(void 0, void 
         const myMapList = yield cafeService.getMyMapCafeList(userId);
         return res.status(statusCode.OK).json({
             message: responseMessage.MYMAP_LOCATION_SUCCESS,
-            myMap: myMapList
+            myMapLocations: myMapList
         });
     }
     catch (error) {

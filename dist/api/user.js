@@ -23,7 +23,7 @@ const userService = require("../services/userService");
 const categoryService = require("../services/categoryService");
 const reviewService = require("../services/reviewService");
 /**
- *  @route Post api/user/login
+ *  @route Post user/login
  *  @desc Authenticate user & get token(로그인)
  *  @access Public
  */
@@ -52,7 +52,7 @@ router.post("/login", [
     }
 }));
 /**
- *  @route Post api/user/signup
+ *  @route Post user/signup
  *  @desc generate user(회원가입)
  *  @access Public
  */
@@ -77,13 +77,64 @@ router.post("/signup", [
     }
 }));
 /**
- *  @route Get api/user/categoryList
+ *  @route Post user/emailAuth
+ *  @desc 비밀번호 변경을 위해 이메일로 인증번호 전송
+ *  @access Public
+ */
+router.post("/emailAuth", [
+    express_validator_1.check("email", "email is required").not().isEmpty(),
+    express_validator_1.check("email", "Please include a valid email").isEmail(),
+], (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const errors = express_validator_1.validationResult(req);
+    if (!errors.isEmpty()) {
+        return next(createError(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE));
+    }
+    const { email } = req.body;
+    try {
+        const authNum = yield userService.mailToUser(email);
+        return res.status(statusCode.OK).json({
+            message: responseMessage.MAIL_SEND_SUCCESS,
+            auth: authNum
+        });
+    }
+    catch (error) {
+        return next(error);
+    }
+}));
+/**
+ *  @route Put user/changePassword
+ *  @desc 비밀번호 변경
+ *  @access Public
+ */
+router.put("/changePassword", [
+    express_validator_1.check("email", "email is required").not().isEmpty(),
+    express_validator_1.check("email", "Please include a valid email").isEmail(),
+    express_validator_1.check("password", "password is required").not().isEmpty(),
+], (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const errors = express_validator_1.validationResult(req);
+    if (!errors.isEmpty()) {
+        return next(createError(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE));
+    }
+    const { email, password } = req.body;
+    try {
+        yield userService.updatePassword(email, password);
+        return res.status(statusCode.OK).json({
+            message: responseMessage.CHANGE_PW_SUCCESS,
+        });
+    }
+    catch (error) {
+        return next(error);
+    }
+}));
+/**
+ *  @route Get user/categoryList
  *  @desc fetch my category list(내 카테고리-마이페이지)
  *  @access Private
  */
 router.get("/categoryList", auth_1.default, (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = res.locals.userId;
     try {
-        const myCategoryList = yield categoryService.fetchMyCategory(res.locals.userId);
+        const myCategoryList = yield categoryService.fetchMyCategory(userId);
         return res.status(statusCode.OK).json({
             message: responseMessage.READ_MY_CATEGORY_SUCCESS,
             myCategoryList: myCategoryList
@@ -94,13 +145,14 @@ router.get("/categoryList", auth_1.default, (req, res, next) => __awaiter(void 0
     }
 }));
 /**
- *  @route Get /user/myInfo
+ *  @route Get user/myInfo
  *  @desc fetch my category list(내 카테고리-마이페이지)
  *  @access Private
  */
 router.get("/myInfo", auth_1.default, (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = res.locals.userId;
     try {
-        const userInfo = yield userService.fetchUserInfo(res.locals.userId);
+        const userInfo = yield userService.fetchUserInfo(userId);
         return res.status(statusCode.OK).json({
             message: responseMessage.READ_USERINFO_SUCCESS,
             myInfo: {
@@ -118,13 +170,14 @@ router.get("/myInfo", auth_1.default, (req, res, next) => __awaiter(void 0, void
     }
 }));
 /**
- *  @route Get api/user/reviews
+ *  @route Get user/reviews
  *  @desc get my review list
  *  @access Private
  */
 router.get("/reviews", auth_1.default, (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = res.locals.userId;
     try {
-        const myReviewList = yield reviewService.getMyReviews(res.locals.userId);
+        const myReviewList = yield reviewService.getMyReviews(userId);
         if (!myReviewList)
             return res.status(statusCode.NO_CONTENT).send();
         return res.status(statusCode.OK).json({

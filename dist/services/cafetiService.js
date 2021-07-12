@@ -97,7 +97,7 @@ const fetchCafetiResult = (userId, answers) => __awaiter(void 0, void 0, void 0,
         default:
             result += "L";
     }
-    const cafeti = yield Cafeti_1.default.findOne({ type: result });
+    const cafeti = yield Cafeti_1.default.findOne({ type: result }, { _id: false });
     const cafetiResult = yield User_1.default.findOneAndUpdate({
         _id: userId
     }, {
@@ -106,6 +106,7 @@ const fetchCafetiResult = (userId, answers) => __awaiter(void 0, void 0, void 0,
         new: true,
         useFindAndModify: false
     });
+    return cafeti;
 });
 module.exports = {
     fetchCafetiResult

@@ -23,6 +23,7 @@ const statusCode = require("../modules/statusCode");
 const categoryService = require("../services/categoryService");
 const responseMessage = require("../modules/responseMessage");
 const nd = require("../modules/dateCalculate");
+const nodemailer = require('nodemailer');
 const loginUser = (email, password) => __awaiter(void 0, void 0, void 0, function* () {
     let user = yield User_1.default.findOne({ email });
     // 없는 유저
@@ -70,6 +71,47 @@ const signupUser = (nickname, email, password) => __awaiter(void 0, void 0, void
     categoryService.createCategory(newbi._id, 0, "기본 카테고리", true);
     return user;
 });
+const mailToUser = (email) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield User_1.default.findOne({ email: email });
+    if (!user) {
+        throw createError(statusCode.NOT_FOUND, responseMessage.NO_EMAIL);
+    }
+    let transporter = nodemailer.createTransport({
+        service: 'gmail',
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false,
+        auth: {
+            user: process.env.NODEMAILER_ADMIN,
+            pass: process.env.NODEMAILER_PASS
+        },
+    });
+    const verifyCode = Math.floor(Math.random() * (9999 - 1000)) + 1000;
+    yield transporter.sendMail({
+        from: `"CA:PIN" <${process.env.NODEMAILER_ADMIN}>`,
+        to: user.email,
+        subject: 'CA:PIN 비밀번호 인증 메일입니다.',
+        text: "앱으로 돌아가서 인증코드를 입력해주세요!",
+        html: `앱으로 돌아가서 인증코드를 입력해주세요!</br> 인증코드: <b>${verifyCode}</b`,
+    });
+    return verifyCode;
+});
+const updatePassword = (email, new_password) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield User_1.default.findOne({ email: email });
+    if (!user) {
+        throw createError(statusCode.NOT_FOUND, responseMessage.NO_EMAIL);
+    }
+    // Encrypt password
+    const salt = yield bcryptjs_1.default.genSalt(10);
+    const newPassword = yield bcryptjs_1.default.hash(new_password, salt);
+    yield User_1.default.findOneAndUpdate({
+        email: email
+    }, {
+        password: newPassword,
+    }, {
+        useFindAndModify: false
+    });
+});
 const fetchUserInfo = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     // userInfo
     const user = yield User_1.default.findOne({ _id: userId }).select("_id nickname email cafeti profileImg");
@@ -100,6 +142,8 @@ module.exports = {
     loginUser,
     signupUser,
     generateToken,
-    fetchUserInfo
+    fetchUserInfo,
+    mailToUser,
+    updatePassword
 };
 //# sourceMappingURL=userService.js.map
