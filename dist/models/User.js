@@ -26,7 +26,10 @@ const UserSchema = new mongoose_1.default.Schema({
         type: {
             type: String
         },
-        description: {
+        modifier: {
+            type: String
+        },
+        modifierDetail: {
             type: String
         },
         img: {
