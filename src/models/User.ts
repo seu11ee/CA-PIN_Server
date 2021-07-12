@@ -23,7 +23,10 @@ const UserSchema = new mongoose.Schema ({
         type: {
             type: String
         },
-        description: {
+        modifier: {
+            type: String
+        },
+        modifierDetail: {
             type: String
         },
         img: {
