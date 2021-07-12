@@ -43,6 +43,38 @@ router.post(
 );
 
 /**
+ *  @route Put category/:categoryId/
+ *  @desc edit category info(카테고리 정보 수정)
+ *  @access Private
+ */
+ router.put(
+    "/:categoryId/",
+    [
+        check("colorIdx", "color_id is required").not().isEmpty(),
+        check("categoryName", "color_name is required").not().isEmpty(),
+    ],
+    authChecker,
+    async(req: Request, res: Response, next) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()){
+            return next(createError(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE));
+        }
+
+        const categoryId = req.params.categoryId;
+        const {colorIdx, categoryName} = req.body;
+
+        try {
+            await categoryService.editCategoryInfo(categoryId, colorIdx, categoryName);  
+            return res.status(statusCode.OK).json({
+                message: responseMessage.EDIT_CATEGORY_SUCCESS
+            });
+        } catch (error) {
+            return next(error);
+        }
+    }
+);
+
+/**
  *  @route Post /category/:categoryId/pin
  *  @desc generate category(카테고리에 카페 추가)
  *  @access Private

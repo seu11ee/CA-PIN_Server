@@ -32,10 +32,35 @@ const createCategory = async(userId, colorIdx, categoryName, isDefault) => {
     return category;
 };
 
+const editCategoryInfo = async(categoryId, color, name) => {
+    const category = await Category.findOne({_id: categoryId});
+    const hexacode = await CategoryColor.findOne({color_id: color});
+    
+    if (!category) {
+        throw createError(statusCode.NOT_FOUND,responseMessage.INVALID_IDENTIFIER);
+    } else if (!hexacode) {
+        throw createError(statusCode.NOT_FOUND,responseMessage.INVALID_IDENTIFIER);
+    }
+
+    await Category.findOneAndUpdate(
+        { 
+            _id: categoryId 
+        },
+        { 
+            color: hexacode.color_code,
+            name: name
+        },
+        { 
+            new: true,
+            useFindAndModify: false
+        }
+    );
+}
+
 const addCafe = async(cafeIds, categoryId) => {
     const category = await Category.findOne({_id: categoryId});
  
-    if (category == null) {
+    if (!category) {
         // id가 일치하는 카테고리가 없는 경우
         throw createError(statusCode.NOT_FOUND,responseMessage.INVALID_IDENTIFIER);
     }
@@ -102,6 +127,7 @@ const checkCafeInCategory = async(cafeId,userId) => {
 
 module.exports = {
     createCategory,
+    editCategoryInfo,
     addCafe,
     deleteCategory,
     fetchMyCategory,
