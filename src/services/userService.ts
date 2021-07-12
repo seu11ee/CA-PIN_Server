@@ -111,7 +111,6 @@ const updatePassword = async(email, new_password) => {
     const salt = await bcrypt.genSalt(10);
     const newPassword = await bcrypt.hash(new_password, salt);
     
-    if (user.password)
     await User.findOneAndUpdate(
         { 
             email: email
