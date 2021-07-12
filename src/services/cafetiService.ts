@@ -10,82 +10,82 @@ const fetchCafetiResult = async(userId, answers) => {
     } else if (answers.length != 4) {
         throw createError(statusCode.BAD_REQUEST, responseMessage.INVALID_IDENTIFIER);
     }
-    let result: string = ""
+    let result: string = "";
     switch (answers[0]) {
         case 0:
-            result += "C"
+            result += "C";
             switch(answers[1]) {
                 case 0:
                     result += "A";
                     break;
                 case 1:
-                    result += "S"
+                    result += "S";
                     break;
                 case 2:
-                    result += "X"
+                    result += "X";
                     break;
                 default:
-                    result += "U"
+                    result += "U";
             }
             break;
         case 1:
-            result += "N"
+            result += "N";
             switch(answers[1]) {
                 case 0:
-                    result += "T"
+                    result += "T";
                     break;
                 case 1:
-                    result += "L"
+                    result += "L";
                     break;
                 case 2:
-                    result += "J"
+                    result += "J";
                     break;
                 default:
-                    result += "U"
+                    result += "U";
             }
             break;
         default:
-            result += "N"
+            result += "N";
     }
     
     switch (answers[2]) {
         case 0:
-            result += "M"
+            result += "M";
             break;
         case 1:
-            result += "V"
+            result += "V";
             break;
         case 2:
-            result += "H"
+            result += "H";
             break;
         case 3:
-            result += "F"
+            result += "F";
             break;
         case 4:
-            result += "C"
+            result += "C";
             break;
         default:
-            result += "L"
+            result += "L";
     }
 
     switch (answers[3]) {
         case 0:
-            result += "D"
+            result += "D";
             break;
         case 1:
-            result += "P"
+            result += "P";
             break;
         case 2:
-            result += "B"
+            result += "B";
             break;
         case 3:
-            result += "W"
+            result += "W";
             break;
         default:
-            result += "L"
+            result += "L";
     }
 
-    const cafeti = await Cafeti.findOne({type: result});
+    const cafeti = await Cafeti.findOne({type: result},{_id: false});
     const cafetiResult = await User.findOneAndUpdate(
         { 
             _id: userId 
@@ -98,6 +98,8 @@ const fetchCafetiResult = async(userId, answers) => {
             useFindAndModify: false
         }
     );
+
+    return cafeti
 };
 
 

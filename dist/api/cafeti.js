@@ -38,6 +38,7 @@ router.post("/", [
         const result = yield cafetiService.fetchCafetiResult(userId, answers);
         return res.status(statusCode.OK).json({
             message: responseMessage.CAFETI_TEST_SUCCESS,
+            result: result
         });
     }
     catch (error) {
