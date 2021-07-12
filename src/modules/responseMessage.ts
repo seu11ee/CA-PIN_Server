@@ -25,6 +25,7 @@ module.exports = {
     ALREADY_EMAIL: "이미 존재하는 이메일 입니다.",
     NO_EMAIL: '존재하지 않는 이메일 입니다.',
     MISS_MATCH_PW: "비밀번호가 일치하지 않습니다",
+    MAIL_SEND_SUCCESS: '이메일 인증번호 전송 성공',
   
     // USER
     READ_USER_SUCCESS: "사용자 조회 성공",

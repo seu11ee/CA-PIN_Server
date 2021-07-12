@@ -78,6 +78,39 @@ router.post(
 );
 
 /**
+ *  @route Post user/emailAuth
+ *  @desc 비밀번호 변경을 위해 이메일로 인증번호 전송
+ *  @access Public
+ */
+ router.post(
+    "/emailAuth",
+    [
+        check("email", "email is required").not().isEmpty(),
+        check("email", "Please include a valid email").isEmail(),
+    ],
+    async(req: Request, res: Response, next) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()){
+            return next(createError(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE));
+        }
+
+        const {email} = req.body;
+
+        try {
+            const authNum = await userService.mailToUser(email);
+
+            return res.status(statusCode.CREATED).json({
+                message: responseMessage.MAIL_SEND_SUCCESS,
+                auth: authNum
+            });
+
+        } catch (error) {
+            return next(error);
+        }
+    }
+);
+
+/**
  *  @route Get user/categoryList
  *  @desc fetch my category list(내 카테고리-마이페이지)
  *  @access Private
