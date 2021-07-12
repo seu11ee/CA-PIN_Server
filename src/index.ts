@@ -2,6 +2,8 @@ import express from "express"; // [1]
 const app = express(); // [2]
 import connectDB from "./loader/db";
 import config from "./config";
+const {logger} = require("./modules/logger");
+import morgan from "morgan";
 
 // Connect Database
 connectDB();
@@ -9,6 +11,7 @@ connectDB();
 app.use(express.json()); // [3]
 
 // Define Routes
+app.use(morgan("dev",{"stream":logger.stream.write}));
 app.use("/cafes", require("./api/cafes")); // [4]
 app.use("/user", require("./api/user"));
 app.use("/reviews", require("./api/reviews"));
@@ -18,6 +21,7 @@ app.use("/geocoder", require("./api/geocoder"));
 
 // error handler
 app.use(function (err, req, res, next) {
+  logger.error(err.message);
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "production" ? err : {};
@@ -39,5 +43,6 @@ app // [5]
   })
   .on("error", (err) => {
     console.error(err);
+
     process.exit(1);
   });

@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const auth_1 = __importDefault(require("../middleware/auth"));
 const http_errors_1 = __importDefault(require("http-errors"));
 const express_1 = __importDefault(require("express"));
+const logger = require("../modules/logger");
 const mongoose_1 = __importDefault(require("mongoose"));
 const router = express_1.default.Router();
 const statusCode = require("../modules/statusCode");
@@ -28,6 +29,7 @@ const reviewService = require("../services/reviewService");
  *  @access Public
  */
 router.get("/", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    logger.info("GET /cafes");
     const tagQuery = req.query.tags;
     var tags = [];
     try {

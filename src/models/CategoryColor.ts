@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { ICategoryColor } from "../interfaces/ICategoryColor";
 
 const CategoryColorSchema = new mongoose.Schema ({
-    color_idx:{
+    color_id:{
         type: Number,
         required: true,
         unique: true

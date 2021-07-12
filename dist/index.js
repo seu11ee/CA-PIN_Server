@@ -7,10 +7,13 @@ const express_1 = __importDefault(require("express")); // [1]
 const app = express_1.default(); // [2]
 const db_1 = __importDefault(require("./loader/db"));
 const config_1 = __importDefault(require("./config"));
+const { logger } = require("./modules/logger");
+const morgan_1 = __importDefault(require("morgan"));
 // Connect Database
 db_1.default();
 app.use(express_1.default.json()); // [3]
 // Define Routes
+app.use(morgan_1.default("dev", { "stream": logger.stream.write }));
 app.use("/cafes", require("./api/cafes")); // [4]
 app.use("/user", require("./api/user"));
 app.use("/reviews", require("./api/reviews"));
@@ -19,6 +22,7 @@ app.use("/cafeti", require("./api/cafeti"));
 app.use("/geocoder", require("./api/geocoder"));
 // error handler
 app.use(function (err, req, res, next) {
+    logger.error(err.message);
     // set locals, only providing error in development
     res.locals.message = err.message;
     res.locals.error = req.app.get("env") === "production" ? err : {};

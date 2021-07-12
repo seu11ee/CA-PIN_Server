@@ -25,6 +25,8 @@ module.exports = {
     ALREADY_EMAIL: "이미 존재하는 이메일 입니다.",
     NO_EMAIL: '존재하지 않는 이메일 입니다.',
     MISS_MATCH_PW: "비밀번호가 일치하지 않습니다",
+    CHANGE_PW_SUCCESS: "비밀번호 변경 성공",
+    MAIL_SEND_SUCCESS: '이메일 인증번호 전송 성공',
   
     // USER
     READ_USER_SUCCESS: "사용자 조회 성공",
@@ -67,10 +69,13 @@ module.exports = {
     DELETE_CATEGORY_SUCCESS: "카테고리 삭제 성공",
     DELETE_CATEGORY_FAIL: "카테고리 삭제 실패",
     DELETE_DEFAULT_FAIL: "기본 카테고리는 삭제할 수 없습니다.",
+    EDIT_DEFAULT_FAIL: "기본 카테고리는 수정할 수 없습니다.",
     READ_CATEGORY_CAFE_SUCCESS: "카테고리에 포함된 카페 리스트 조회 성공",
     READ_CATEGORY_CAFE_FAIL: "카테고리에 포함된 카페 리스트 조회 성공",
     READ_MY_CATEGORY_SUCCESS: "내 카테고리 목록 조회 성공",
     READ_MY_CATEGORY_FAIL: "내 카테고리 목록 조회 실패",
+    EDIT_CATEGORY_SUCCESS: "카테고리 이름/색상 수정 성공",
+    DELETE_CAFES_IN_CATEGORY_SUCCESS: "선택된 카페 삭제 성공",
 
     // Server Error
     INTERNAL_SERVER_ERROR: "서버 내부 오류",
