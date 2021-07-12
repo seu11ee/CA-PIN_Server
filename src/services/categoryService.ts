@@ -38,6 +38,8 @@ const editCategoryInfo = async(categoryId, color, name) => {
     
     if (!category || !hexacode) {
         throw createError(statusCode.NOT_FOUND,responseMessage.INVALID_IDENTIFIER);
+    } else if (category.isDefault) {
+        throw createError(statusCode.BAD_REQUEST,responseMessage.EDIT_DEFAULT_FAIL);
     }
 
     await Category.findOneAndUpdate(
@@ -57,11 +59,15 @@ const editCategoryInfo = async(categoryId, color, name) => {
 
 const deleteCafesinCategory = async(categoryId, cafeList) => {
     const category = await Category.findOne({_id: categoryId});
-    if (!category) {
+    // 찾으려는 카테고리가 없거나 카테고리 내에 삭제하려는 카페가 존재하지 않는 경우
+    if (!category || ((cafeList.length != cafeList.filter(x => category.cafes.includes(x)).length))) {
         throw createError(statusCode.NOT_FOUND,responseMessage.INVALID_IDENTIFIER);
     }
 
     for (let cafe of cafeList) {
+        if (cafe in category.cafes) {
+            throw createError(statusCode.NOT_FOUND,responseMessage.INVALID_IDENTIFIER)
+        }
         await Category.findOneAndUpdate(
             { 
                 _id: categoryId 
