@@ -110,12 +110,12 @@ router.post(
 );
 
 /**
- *  @route Delete /category/:categoryId/cafes
+ *  @route Delete /category/:categoryId/archive
  *  @desc delete cafes in category(카테고리에 있는 카페 삭제)
  *  @access Private
  */
  router.delete(
-    "/:categoryId/cafes",
+    "/:categoryId/archive",
     [
         check("cafeList", "cafeList is required").not().isEmpty(),
     ],
