@@ -24,6 +24,8 @@ router.get(
             if (tagQuery.length == 1) tags = [tagQuery]
             else tags = (tagQuery as string[]).map(x=>+x);
         }
+        else tags = [];
+
         try {
             
             const cafeLocationList = await cafeService.getCafeLocationList(tags);
