@@ -13,7 +13,6 @@ const fileFilter = (req, file, callback) =>{
     const typeArray = file.mimetype.split('/');
 
     const fileType = typeArray[1]; // 이미지 확장자 추출
-    console.log("11",fileType);
     //이미지 확장자 구분 검사
     if(fileType == 'jpg' || fileType == 'jpeg' || fileType == 'png'){
         callback(null, true)
