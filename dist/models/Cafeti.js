@@ -26,6 +26,10 @@ const CafetiSchema = new mongoose_1.default.Schema({
     img: {
         type: String,
         required: true
+    },
+    plainImg: {
+        type: String,
+        required: true
     }
 }, {
     collection: "cafeti",

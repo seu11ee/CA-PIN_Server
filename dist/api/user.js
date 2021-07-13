@@ -59,7 +59,6 @@ router.post("/login", [
  */
 router.post("/signup", [
     express_validator_1.check("nickname", "nickname is required").not().isEmpty(),
-    express_validator_1.check("email", "Please include a valid email").isEmail(),
     express_validator_1.check("password", "password is required").not().isEmpty(),
 ], (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const errors = express_validator_1.validationResult(req);
