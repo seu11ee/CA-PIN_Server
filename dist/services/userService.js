@@ -138,11 +138,28 @@ const fetchUserInfo = (userId) => __awaiter(void 0, void 0, void 0, function* ()
     });
     return { user, reviews, pins };
 });
+const updateUserInfo = (userId, new_Img, new_nickname) => __awaiter(void 0, void 0, void 0, function* () {
+    // userInfo
+    const user = yield User_1.default.findOne({ _id: userId }).select("_id nickname email cafeti profileImg");
+    if (!user) {
+        throw createError(statusCode.NOT_FOUND, responseMessage.READ_USER_FAIL);
+    }
+    // Update User's Info
+    yield User_1.default.findOneAndUpdate({
+        _id: userId
+    }, {
+        profileImg: new_Img.location,
+        nickname: new_nickname
+    }, {
+        useFindAndModify: false
+    });
+});
 module.exports = {
     loginUser,
     signupUser,
     generateToken,
     fetchUserInfo,
+    updateUserInfo,
     mailToUser,
     updatePassword
 };

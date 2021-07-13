@@ -239,7 +239,7 @@ router.get("/reviews",
             return next(createError(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE));
         }
         
-        const url = req.file.location;
+        const url = req.file;
 
         try {
             await userService.updateUserInfo(userId, url, nickname);

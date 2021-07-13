@@ -172,7 +172,7 @@ const updateUserInfo = async(userId, new_Img, new_nickname) => {
             _id: userId 
         },
         { 
-            profileImg: new_Img,
+            profileImg: new_Img.location,
             nickname: new_nickname
         },
         { 
