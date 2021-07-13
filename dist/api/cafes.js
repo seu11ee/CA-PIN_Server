@@ -22,6 +22,7 @@ const responseMessage = require("../modules/responseMessage");
 const cafeService = require("../services/cafeService");
 const categoryService = require("../services/categoryService");
 const reviewService = require("../services/reviewService");
+const menuService = require("../services/menuService");
 /**
  *  @route GET cafes?tags={tagIndex},..,{}
  *  @desc get a cafe location list
@@ -29,11 +30,14 @@ const reviewService = require("../services/reviewService");
  */
 router.get("/", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const tagQuery = req.query.tags;
-    var tags = [];
+    var tags = undefined;
+    if (tagQuery) {
+        if (tagQuery.length == 1)
+            tags = [tagQuery];
+        else
+            tags = tagQuery.map(x => +x);
+    }
     try {
-        if (tagQuery) {
-            tags = tagQuery.split(",").map(x => +x);
-        }
         const cafeLocationList = yield cafeService.getCafeLocationList(tags);
         if (!cafeLocationList)
             res.status(statusCode.NO_CONTENT).send();
@@ -86,6 +90,30 @@ router.get("/myMap", auth_1.default, (req, res, next) => __awaiter(void 0, void 
         return res.status(statusCode.OK).json({
             message: responseMessage.MYMAP_LOCATION_SUCCESS,
             myMapLocations: myMapList
+        });
+    }
+    catch (error) {
+        return next(error);
+    }
+}));
+/**
+ *  @route GET cafes/detail/:cafeId/menus
+ *  @desc get a cafe menu list
+ *  @access public
+ */
+router.get("/:cafeId/menus", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const cafeId = req.params.cafeId;
+    if (!cafeId)
+        return (next(http_errors_1.default(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE)));
+    if (!mongoose_1.default.isValidObjectId(cafeId))
+        return (next(http_errors_1.default(statusCode.BAD_REQUEST, responseMessage.INVALID_IDENTIFIER)));
+    try {
+        const menuList = yield menuService.getCafeMenuList(cafeId);
+        if (!menuList)
+            return res.status(statusCode.NO_CONTENT).send();
+        return res.status(statusCode.OK).json({
+            message: responseMessage.CAFE_MENU_SUCCESS,
+            menus: menuList
         });
     }
     catch (error) {
