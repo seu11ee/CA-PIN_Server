@@ -6,6 +6,7 @@ import Category from "../models/Category";
 import Cafe from "../models/Cafe";
 import Review from "../models/Review";
 import Tag from "../models/Tag";
+import Menu from "../models/Menu";
 
 const connectDB = async () => {
   try {
@@ -40,6 +41,9 @@ const connectDB = async () => {
     Tag.createCollection().then(function(collection){
       console.log("Tag Collection is created!");
     });
+    Menu.createCollection().then(function(collection){
+      console.log("Menu Collection is created!");
+    })
 
   } catch (err) {
     console.error(err.message);

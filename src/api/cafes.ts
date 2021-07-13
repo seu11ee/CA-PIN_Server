@@ -98,14 +98,14 @@ router.get(
  *  @access public
  */
 router.get(
-    "/:cafeId/menu",
+    "/:cafeId/menus",
     async(req: Request,res: Response,next) => {
         const cafeId = req.params.cafeId
         if (!cafeId) return(next(createError(statusCode.BAD_REQUEST,responseMessage.NULL_VALUE)));
         if (!mongoose.isValidObjectId(cafeId)) return (next(createError(statusCode.BAD_REQUEST,responseMessage.INVALID_IDENTIFIER)));
         try {
             const menuList = await menuService.getCafeMenuList(cafeId)
-            if (menuList) return res.status(statusCode.NO_CONTENT).send();
+            if (!menuList) return res.status(statusCode.NO_CONTENT).send();
             return res.status(statusCode.OK).json({
                 message: responseMessage.CAFE_MENU_SUCCESS,
                 menus: menuList

@@ -6,9 +6,7 @@ const responseMessage = require("../modules/responseMessage");
 const statusCode = require("../modules/statusCode");
 
 const getCafeMenuList = async (cafeId) => {
-    const menus = await Menu.find({
-        'cafe': cafeId
-    })
+    const menus = await Menu.find().where("cafe").equals(cafeId);
     if (menus.length == 0){
         return null
     }
