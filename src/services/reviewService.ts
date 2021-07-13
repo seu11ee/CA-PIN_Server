@@ -13,7 +13,7 @@ const getCafeReviewList = async(cafeId) => {
 
     for (let review of reviews){
         if (!review.user.profileImg){
-            review.user.profileImg = review.user.cafeti.img;
+            review.user.profileImg = review.user.cafeti.plainImg;
         }
         let writerDTO: IWriterDTO = {
             _id: review.user._id,
