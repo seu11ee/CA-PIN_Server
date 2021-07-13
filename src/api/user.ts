@@ -54,7 +54,6 @@ router.post(
     "/signup",
     [
         check("nickname", "nickname is required").not().isEmpty(),
-        check("email", "Please include a valid email").isEmail(),
         check("password", "password is required").not().isEmpty(),
     ],
     async(req: Request, res: Response, next) => {
