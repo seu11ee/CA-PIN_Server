@@ -8,6 +8,7 @@ const responseMessage = require("../modules/responseMessage");
 const cafeService = require("../services/cafeService");
 const categoryService = require("../services/categoryService");
 const reviewService = require("../services/reviewService");
+const menuService = require("../services/menuService");
 
 /**
  *  @route GET cafes?tags={tagIndex},..,{}
@@ -90,5 +91,29 @@ router.get(
         }
     }
 );
+
+/**
+ *  @route GET cafes/detail/:cafeId/menus
+ *  @desc get a cafe menu list
+ *  @access public
+ */
+router.get(
+    "/:cafeId/menu",
+    async(req: Request,res: Response,next) => {
+        const cafeId = req.params.cafeId
+        if (!cafeId) return(next(createError(statusCode.BAD_REQUEST,responseMessage.NULL_VALUE)));
+        if (!mongoose.isValidObjectId(cafeId)) return (next(createError(statusCode.BAD_REQUEST,responseMessage.INVALID_IDENTIFIER)));
+        try {
+            const menuList = await menuService.getCafeMenuList(cafeId)
+            if (menuList) return res.status(statusCode.NO_CONTENT).send();
+            return res.status(statusCode.OK).json({
+                message: responseMessage.CAFE_MENU_SUCCESS,
+                menus: menuList
+            });
+        } catch (error) {
+            return next(error);
+        }
+    }
+)
 
 module.exports = router;
