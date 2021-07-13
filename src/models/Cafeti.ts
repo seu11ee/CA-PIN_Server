@@ -23,6 +23,10 @@ const CafetiSchema = new mongoose.Schema ({
     img: {
         type: String,
         required: true
+    },
+    plainImg: {
+        type: String,
+        required: true
     }
 },
 {
