@@ -18,11 +18,13 @@ router.get(
     "/",
     async(req: Request, res: Response, next) => {
         const tagQuery = req.query.tags;
-        var tags: number[] = []
+        var tags = undefined
+        if (tagQuery){
+            if (tagQuery.length == 1) tags = [tagQuery]
+            else tags = (tagQuery as string[]).map(x=>+x);
+        }
         try {
-            if (tagQuery){
-                tags = (tagQuery as string).split(",").map(x=>+x);
-            }
+            
             const cafeLocationList = await cafeService.getCafeLocationList(tags);
 
             if (!cafeLocationList) res.status(statusCode.NO_CONTENT).send();
