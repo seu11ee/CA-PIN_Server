@@ -46,7 +46,7 @@ router.get(
 router.post(
     "/",auth,upload.array("imgs",5),
     async(req: Request, res: Response, next) => {
-        if(!req.body.review) return (next(createError(statusCode.BAD_REQUEST,responseMessage.NULL_VALUE)));
+        if(!req.body || !req.body.review) return (next(createError(statusCode.BAD_REQUEST,responseMessage.NULL_VALUE)));
         const reviewParams = JSON.parse(req.body.review);
         const cafeId = req.query.cafe;
         const userId = res.locals.userId;
@@ -89,7 +89,7 @@ router.post(
 router.put(
     "/:reviewId",auth,upload.array("imgs",5),
     async(req: Request, res: Response, next) => {
-        if(!req.body.review) return (next(createError(statusCode.BAD_REQUEST,responseMessage.NULL_VALUE)));
+        if(!req.body || !req.body.review) return (next(createError(statusCode.BAD_REQUEST,responseMessage.NULL_VALUE)));
         const reviewParams = JSON.parse(req.body.review);
         const reviewId = req.params.reviewId;
         const userId = res.locals.userId;
