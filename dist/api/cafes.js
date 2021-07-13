@@ -37,6 +37,8 @@ router.get("/", (req, res, next) => __awaiter(void 0, void 0, void 0, function* 
         else
             tags = tagQuery.map(x => +x);
     }
+    else
+        tags = [];
     try {
         const cafeLocationList = yield cafeService.getCafeLocationList(tags);
         if (!cafeLocationList)
