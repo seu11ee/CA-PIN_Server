@@ -134,19 +134,19 @@ const updatePassword = async(email, new_password) => {
 
 const fetchUserInfo = async(userId) => {
     // userInfo
-    const user = await User.findOne({_id: userId}).select("_id nickname email cafeti profileImg");
+    let user = await User.findOne({_id: userId}).select("_id nickname email cafeti profileImg");
     if (!user) {
         throw createError(statusCode.NOT_FOUND, responseMessage.READ_USER_FAIL);
     }
     
     // User's Profile Img
     if (!user.profileImg) {
-        await User.findOneAndUpdate(
+        user = await User.findOneAndUpdate(
             { 
                 _id: userId 
             },
             { 
-                profileImg: user.cafeti.img,
+                profileImg: user.cafeti.plainImg,
             },
             { 
                 new: true,
