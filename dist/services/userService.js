@@ -152,6 +152,15 @@ const updateUserInfo = (userId, new_Img, new_nickname) => __awaiter(void 0, void
     if (!user) {
         throw createError(statusCode.NOT_FOUND, responseMessage.READ_USER_FAIL);
     }
+    // 닉네임 중복 확인
+    const alreadyNickname = yield User_1.default.findOne({ nickname: new_nickname });
+    var nicknameReg = /^[\wㄱ-ㅎㅏ-ㅣ가-힣]{2,10}$/;
+    if (alreadyNickname != null) {
+        throw createError(statusCode.BAD_REQUEST, responseMessage.ALREADY_NICKNAME);
+    }
+    else if (!nicknameReg.test(new_nickname)) {
+        throw createError(statusCode.BAD_REQUEST, responseMessage.NOT_VALID_NICKNAME);
+    }
     // Update User's Info
     yield User_1.default.findOneAndUpdate({
         _id: userId
