@@ -166,22 +166,19 @@ const updateUserInfo = async(userId, new_Img, new_nickname) => {
         throw createError(statusCode.NOT_FOUND, responseMessage.READ_USER_FAIL);
     }
 
-    // User's Profile Img
-    if (!user.profileImg) {
-        await User.findOneAndUpdate(
-            { 
-                _id: userId 
-            },
-            { 
-                profileImg: new_Img,
-                nickname: new_nickname
-            },
-            { 
-                new: true,
-                useFindAndModify: false
-            }
-        );
-    }
+    // Update User's Info
+    await User.findOneAndUpdate(
+        { 
+            _id: userId 
+        },
+        { 
+            profileImg: new_Img,
+            nickname: new_nickname
+        },
+        { 
+            useFindAndModify: false
+        }
+    );
 }
 
 module.exports = {

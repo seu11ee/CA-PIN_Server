@@ -5,6 +5,7 @@ const router = express.Router();
 const createError = require('http-errors');
 const statusCode = require("../modules/statusCode");
 const responseMessage = require("../modules/responseMessage");
+const { upload } = require ("../middleware/upload");
 const userService = require("../services/userService");
 const categoryService = require("../services/categoryService");
 const reviewService = require("../services/reviewService");
@@ -225,30 +226,30 @@ router.get("/reviews",
  *  @desc update myInfo
  *  @access Private
  */
- router.put("/myInfo",
- authChecker,
- [
-    check("profileImg", "email is required").not().isEmpty(),
-    check("nickname", "email is required").not().isEmpty(),
- ],
- async(req: Request, res: Response, next) => {
-     const userId = res.locals.userId
-     const errors = validationResult(req);
-     if (!errors.isEmpty()){
-         return next(createError(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE));
-     }
+ router.put(
+     "/updateMyInfo",
+    authChecker,
+    upload.single('profileImg'),
+    async(req: Request, res: Response, next) => {
+        const userId = res.locals.userId;
+        const { nickname } = req.body;
+        const errors = validationResult(req);
 
-     const {profileImg, nickname} = req.body;
+        if (!errors.isEmpty() || !req.file || !nickname){
+            return next(createError(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE));
+        }
+        
+        const url = req.file.location;
 
-     try {
-         await userService.updateUserInfo(userId, profileImg, nickname);
-         return res.status(statusCode.OK).json({
-             message: responseMessage.UPDATE_USER_SUCCESS,
-         });
-     } catch (error) {
-         return next(error);
-     }
- }
+        try {
+            await userService.updateUserInfo(userId, url, nickname);
+            return res.status(statusCode.OK).json({
+                message: responseMessage.UPDATE_USER_SUCCESS,
+            });
+        } catch (error) {
+            return next(error);
+        }
+    }
 );
 
 module.exports = router;
