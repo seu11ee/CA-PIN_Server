@@ -159,11 +159,37 @@ const fetchUserInfo = async(userId) => {
     return {user, reviews, pins};
 }
 
+const updateUserInfo = async(userId, new_Img, new_nickname) => {
+    // userInfo
+    const user = await User.findOne({_id: userId}).select("_id nickname email cafeti profileImg");
+    if (!user) {
+        throw createError(statusCode.NOT_FOUND, responseMessage.READ_USER_FAIL);
+    }
+
+    // User's Profile Img
+    if (!user.profileImg) {
+        await User.findOneAndUpdate(
+            { 
+                _id: userId 
+            },
+            { 
+                profileImg: new_Img,
+                nickname: new_nickname
+            },
+            { 
+                new: true,
+                useFindAndModify: false
+            }
+        );
+    }
+}
+
 module.exports = {
     loginUser,
     signupUser,
     generateToken,
     fetchUserInfo,
+    updateUserInfo,
     mailToUser,
     updatePassword
 }

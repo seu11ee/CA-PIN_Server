@@ -219,4 +219,36 @@ router.get("/reviews",
     }
 );
 
+
+/**
+ *  @route Put user/myInfo
+ *  @desc update myInfo
+ *  @access Private
+ */
+ router.put("/myInfo",
+ authChecker,
+ [
+    check("profileImg", "email is required").not().isEmpty(),
+    check("nickname", "email is required").not().isEmpty(),
+ ],
+ async(req: Request, res: Response, next) => {
+     const userId = res.locals.userId
+     const errors = validationResult(req);
+     if (!errors.isEmpty()){
+         return next(createError(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE));
+     }
+
+     const {profileImg, nickname} = req.body;
+
+     try {
+         await userService.updateUserInfo(userId, profileImg, nickname);
+         return res.status(statusCode.OK).json({
+             message: responseMessage.UPDATE_USER_SUCCESS,
+         });
+     } catch (error) {
+         return next(error);
+     }
+ }
+);
+
 module.exports = router;
