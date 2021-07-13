@@ -172,6 +172,15 @@ const updateUserInfo = async(userId, new_Img, new_nickname) => {
     if (!user) {
         throw createError(statusCode.NOT_FOUND, responseMessage.READ_USER_FAIL);
     }
+    // 닉네임 중복 확인
+    const alreadyNickname = await User.findOne({nickname: new_nickname});
+    var nicknameReg = /^[\wㄱ-ㅎㅏ-ㅣ가-힣]{2,10}$/;
+    
+    if (alreadyNickname != null) {
+        throw createError(statusCode.BAD_REQUEST,responseMessage.ALREADY_NICKNAME);
+    } else if (!nicknameReg.test(new_nickname)) {
+        throw createError(statusCode.BAD_REQUEST,responseMessage.NOT_VALID_NICKNAME);
+    }
 
     // Update User's Info
     await User.findOneAndUpdate(
