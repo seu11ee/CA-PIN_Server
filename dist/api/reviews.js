@@ -51,6 +51,8 @@ router.get("/", auth_1.default, (req, res, next) => __awaiter(void 0, void 0, vo
     }
 }));
 router.post("/", auth_1.default, upload.array("imgs", 5), (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!req.body || !req.body.review)
+        return (next(http_errors_1.default(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE)));
     const reviewParams = JSON.parse(req.body.review);
     const cafeId = req.query.cafe;
     const userId = res.locals.userId;
@@ -85,6 +87,8 @@ router.post("/", auth_1.default, upload.array("imgs", 5), (req, res, next) => __
     }
 }));
 router.put("/:reviewId", auth_1.default, upload.array("imgs", 5), (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!req.body || !req.body.review)
+        return (next(http_errors_1.default(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE)));
     const reviewParams = JSON.parse(req.body.review);
     const reviewId = req.params.reviewId;
     const userId = res.locals.userId;
