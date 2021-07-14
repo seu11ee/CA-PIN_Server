@@ -100,7 +100,7 @@ router.put(
             isAllDeleted
         } = reviewParams;
 
-        if (isAllDeleted === undefined || !content || !rating) next(createError(createError(statusCode.BAD_REQUEST,responseMessage.NULL_VALUE)));
+        if (isAllDeleted === undefined || !content || !rating) return next(createError(createError(statusCode.BAD_REQUEST,responseMessage.NULL_VALUE)));
         if (!reviewId || !mongoose.isValidObjectId(reviewId)){
             next(createError(statusCode.BAD_REQUEST,responseMessage.INVALID_IDENTIFIER));
         }

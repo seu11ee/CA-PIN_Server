@@ -1,4 +1,3 @@
-import request from "request";
 import createError from "http-errors";
 import mongoose from "mongoose";
 import Cafe from "../models/Cafe";
