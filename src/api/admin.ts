@@ -32,6 +32,10 @@ router.put(
 router.put(
     "/geocoder",
     async(req: Request, res: Response, next) => {
+        const adminKey = config.adminSecretKey
+        if (req.header("adminKey") != adminKey){
+            return next(createError(createError(statusCode.UNAUTHORIZED,responseMessage.UNAUTHORIZED)));
+        }
         const cafeId = req.query.cafe;
         try {
             var cafes = [];
