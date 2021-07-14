@@ -92,12 +92,21 @@ const isCafeExists = async(cafeId) => {
     if (!cafe) return false
     return true
 }
+
+const updateCafeImage = async(cafeId,url) => {
+    const cafe = await Cafe.findById(cafeId)
+    if (!cafe) return null
+    cafe.img = url
+    await cafe.save()
+    return cafe
+}
 module.exports = {
     getCafeLocationList,
     getMyMapCafeList,
     getCafeDetail,
     getNoCoordCafes,
     saveCoord,
-    isCafeExists
+    isCafeExists,
+    updateCafeImage
 }
    
