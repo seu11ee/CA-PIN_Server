@@ -29,3 +29,11 @@ export interface ICafeCategoryDTO{
     address: string;
     rating?: number;
 }
+
+export interface ICafeSearchDTO{
+    _id: string;
+    name: string;
+    address: string;
+    latitude?: number;
+    longitude?: number;
+}
