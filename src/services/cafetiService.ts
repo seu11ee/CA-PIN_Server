@@ -87,19 +87,37 @@ const fetchCafetiResult = async(userId, answers) => {
     }
 
     const cafeti = await Cafeti.findOne({type: result},{_id: false});
-    await User.findOneAndUpdate(
-        { 
-            _id: userId 
-        },
-        { 
-            cafeti: cafeti,
-            profileImg: cafeti.plainImg
-        },
-        { 
-            new: true,
-            useFindAndModify: false
-        }
-    );
+    
+    // profileImg가 null이거나 profileImg는 있지만 그게 cafeti 일러스트인 경우(재검사했다면 이럴 수 있음) => 새로운 cafeti일러스트로 변경
+    if ((!user.profileImg) || ((user.profileImg) && (user.profileImg.split('/').includes('cafeti')))) {
+        await User.findOneAndUpdate(
+            { 
+                _id: userId 
+            },
+            { 
+                cafeti: cafeti,
+                profileImg: cafeti.plainImg
+            },
+            { 
+                new: true,
+                useFindAndModify: false
+            }
+        );
+    } else {
+        // profileImg가 null이 아니며 사용자가 지정한 프로필 이미지가 들어있는 경우에는 cafeti만 업데이트
+        await User.findOneAndUpdate(
+            { 
+                _id: userId 
+            },
+            { 
+                cafeti: cafeti
+            },
+            { 
+                new: true,
+                useFindAndModify: false
+            }
+        );
+    }
 
     return cafeti
 };
