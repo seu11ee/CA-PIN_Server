@@ -226,7 +226,7 @@ router.get("/reviews",
  *  @access Private
  */
  router.put(
-     "/updateMyInfo",
+     "/myInfo",
     authChecker,
     upload.single('profileImg'),
     async(req: Request, res: Response, next) => {
