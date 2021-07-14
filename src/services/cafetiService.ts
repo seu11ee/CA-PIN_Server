@@ -93,6 +93,7 @@ const fetchCafetiResult = async(userId, answers) => {
         },
         { 
             cafeti: cafeti,
+            profileImg: cafeti.plainImg
         },
         { 
             new: true,
