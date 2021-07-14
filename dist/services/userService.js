@@ -49,11 +49,19 @@ const signupUser = (nickname, email, password) => __awaiter(void 0, void 0, void
     const alreadyEmail = yield User_1.default.findOne({ email });
     // 닉네임 중복 확인
     const alreadyNickname = yield User_1.default.findOne({ nickname });
-    if (alreadyEmail != null) {
+    var emailReg = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
+    var nicknameReg = /^[\wㄱ-ㅎㅏ-ㅣ가-힣]{2,10}$/;
+    if (alreadyNickname != null) {
+        throw createError(statusCode.BAD_REQUEST, responseMessage.ALREADY_NICKNAME);
+    }
+    else if (alreadyEmail != null) {
         throw createError(statusCode.BAD_REQUEST, responseMessage.ALREADY_EMAIL);
     }
-    else if (alreadyNickname != null) {
-        throw createError(statusCode.BAD_REQUEST, responseMessage.ALREADY_NICKNAME);
+    else if (!nicknameReg.test(nickname)) {
+        throw createError(statusCode.BAD_REQUEST, responseMessage.NOT_VALID_NICKNAME);
+    }
+    else if (!emailReg.test(email)) {
+        throw createError(statusCode.BAD_REQUEST, responseMessage.NOT_VALID_EMAIL);
     }
     let created_at = nd.getDate();
     const user = new User_1.default({
@@ -118,17 +126,6 @@ const fetchUserInfo = (userId) => __awaiter(void 0, void 0, void 0, function* ()
     if (!user) {
         throw createError(statusCode.NOT_FOUND, responseMessage.READ_USER_FAIL);
     }
-    // User's Profile Img
-    if (!user.profileImg) {
-        yield User_1.default.findOneAndUpdate({
-            _id: userId
-        }, {
-            profileImg: user.cafeti.img,
-        }, {
-            new: true,
-            useFindAndModify: false
-        });
-    }
     // User's Review number
     const reviews = (yield Review_1.default.find({ _id: userId })).length;
     // User's Pin number
@@ -138,11 +135,38 @@ const fetchUserInfo = (userId) => __awaiter(void 0, void 0, void 0, function* ()
     });
     return { user, reviews, pins };
 });
+const updateUserInfo = (userId, new_Img, new_nickname) => __awaiter(void 0, void 0, void 0, function* () {
+    // userInfo
+    const user = yield User_1.default.findOne({ _id: userId }).select("_id nickname email cafeti profileImg");
+    if (!user) {
+        throw createError(statusCode.NOT_FOUND, responseMessage.READ_USER_FAIL);
+    }
+    // 닉네임 중복 확인
+    const alreadyNickname = yield User_1.default.findOne({ nickname: new_nickname });
+    var nicknameReg = /^[\wㄱ-ㅎㅏ-ㅣ가-힣]{2,10}$/;
+    if (alreadyNickname != null) {
+        throw createError(statusCode.BAD_REQUEST, responseMessage.ALREADY_NICKNAME);
+    }
+    else if (!nicknameReg.test(new_nickname)) {
+        throw createError(statusCode.BAD_REQUEST, responseMessage.NOT_VALID_NICKNAME);
+    }
+    // Update User's Info
+    yield User_1.default.findOneAndUpdate({
+        _id: userId
+    }, {
+        profileImg: new_Img.location,
+        nickname: new_nickname
+    }, {
+        new: true,
+        useFindAndModify: false
+    });
+});
 module.exports = {
     loginUser,
     signupUser,
     generateToken,
     fetchUserInfo,
+    updateUserInfo,
     mailToUser,
     updatePassword
 };

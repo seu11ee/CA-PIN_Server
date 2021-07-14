@@ -19,6 +19,7 @@ const router = express_1.default.Router();
 const createError = require('http-errors');
 const statusCode = require("../modules/statusCode");
 const responseMessage = require("../modules/responseMessage");
+const { upload } = require("../middleware/upload");
 const userService = require("../services/userService");
 const categoryService = require("../services/categoryService");
 const reviewService = require("../services/reviewService");
@@ -58,7 +59,6 @@ router.post("/login", [
  */
 router.post("/signup", [
     express_validator_1.check("nickname", "nickname is required").not().isEmpty(),
-    express_validator_1.check("email", "Please include a valid email").isEmail(),
     express_validator_1.check("password", "password is required").not().isEmpty(),
 ], (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const errors = express_validator_1.validationResult(req);
@@ -183,6 +183,29 @@ router.get("/reviews", auth_1.default, (req, res, next) => __awaiter(void 0, voi
         return res.status(statusCode.OK).json({
             message: responseMessage.READ_MY_REVIEW_SUCCESS,
             reviews: myReviewList
+        });
+    }
+    catch (error) {
+        return next(error);
+    }
+}));
+/**
+ *  @route Put user/myInfo
+ *  @desc update myInfo
+ *  @access Private
+ */
+router.put("/myInfo", auth_1.default, upload.single('profileImg'), (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = res.locals.userId;
+    const { nickname } = req.body;
+    const errors = express_validator_1.validationResult(req);
+    if (!errors.isEmpty() || !req.file || !nickname) {
+        return next(createError(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE));
+    }
+    const url = req.file;
+    try {
+        yield userService.updateUserInfo(userId, url, nickname);
+        return res.status(statusCode.OK).json({
+            message: responseMessage.UPDATE_USER_SUCCESS,
         });
     }
     catch (error) {

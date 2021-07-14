@@ -5,6 +5,7 @@ const router = express.Router();
 const createError = require('http-errors');
 const statusCode = require("../modules/statusCode");
 const responseMessage = require("../modules/responseMessage");
+const { upload } = require ("../middleware/upload");
 const userService = require("../services/userService");
 const categoryService = require("../services/categoryService");
 const reviewService = require("../services/reviewService");
@@ -53,7 +54,6 @@ router.post(
     "/signup",
     [
         check("nickname", "nickname is required").not().isEmpty(),
-        check("email", "Please include a valid email").isEmail(),
         check("password", "password is required").not().isEmpty(),
     ],
     async(req: Request, res: Response, next) => {
@@ -212,6 +212,38 @@ router.get("/reviews",
             return res.status(statusCode.OK).json({
                 message: responseMessage.READ_MY_REVIEW_SUCCESS,
                 reviews: myReviewList
+            });
+        } catch (error) {
+            return next(error);
+        }
+    }
+);
+
+
+/**
+ *  @route Put user/myInfo
+ *  @desc update myInfo
+ *  @access Private
+ */
+ router.put(
+     "/myInfo",
+    authChecker,
+    upload.single('profileImg'),
+    async(req: Request, res: Response, next) => {
+        const userId = res.locals.userId;
+        const { nickname } = req.body;
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty() || !req.file || !nickname){
+            return next(createError(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE));
+        }
+        
+        const url = req.file;
+
+        try {
+            await userService.updateUserInfo(userId, url, nickname);
+            return res.status(statusCode.OK).json({
+                message: responseMessage.UPDATE_USER_SUCCESS,
             });
         } catch (error) {
             return next(error);

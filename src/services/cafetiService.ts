@@ -3,6 +3,7 @@ import Cafeti from "../models/Cafeti";
 const createError = require('http-errors');
 const statusCode = require("../modules/statusCode");
 const responseMessage = require("../modules/responseMessage");
+
 const fetchCafetiResult = async(userId, answers) => {
     const user = await User.findOne({_id: userId});
     if (user == null) {
@@ -86,12 +87,13 @@ const fetchCafetiResult = async(userId, answers) => {
     }
 
     const cafeti = await Cafeti.findOne({type: result},{_id: false});
-    const cafetiResult = await User.findOneAndUpdate(
+    await User.findOneAndUpdate(
         { 
             _id: userId 
         },
         { 
             cafeti: cafeti,
+            profileImg: cafeti.plainImg
         },
         { 
             new: true,

@@ -23,7 +23,7 @@ const getCafeReviewList = (cafeId) => __awaiter(void 0, void 0, void 0, function
     let reviewDTOList = [];
     for (let review of reviews) {
         if (!review.user.profileImg) {
-            review.user.profileImg = review.user.cafeti.img;
+            review.user.profileImg = review.user.cafeti.plainImg;
         }
         let writerDTO = {
             _id: review.user._id,

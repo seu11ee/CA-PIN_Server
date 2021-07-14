@@ -98,10 +98,11 @@ const fetchCafetiResult = (userId, answers) => __awaiter(void 0, void 0, void 0,
             result += "L";
     }
     const cafeti = yield Cafeti_1.default.findOne({ type: result }, { _id: false });
-    const cafetiResult = yield User_1.default.findOneAndUpdate({
+    yield User_1.default.findOneAndUpdate({
         _id: userId
     }, {
         cafeti: cafeti,
+        profileImg: cafeti.plainImg
     }, {
         new: true,
         useFindAndModify: false

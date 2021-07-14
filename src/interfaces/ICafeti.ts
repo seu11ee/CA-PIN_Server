@@ -4,4 +4,5 @@ export interface ICafeti {
     modifier: string;
     modifierDetail?: string; 
     img: string;
+    plainImg: string;
 }

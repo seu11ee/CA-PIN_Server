@@ -46,10 +46,17 @@ const signupUser = async (nickname, email, password) => {
     // 닉네임 중복 확인
     const alreadyNickname = await User.findOne({nickname});
 
-    if (alreadyEmail != null) {
-        throw createError(statusCode.BAD_REQUEST,responseMessage.ALREADY_EMAIL);
-    } else if (alreadyNickname != null) {
+    var emailReg = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
+    var nicknameReg = /^[\wㄱ-ㅎㅏ-ㅣ가-힣]{2,10}$/;
+    
+    if (alreadyNickname != null) {
         throw createError(statusCode.BAD_REQUEST,responseMessage.ALREADY_NICKNAME);
+    } else if (alreadyEmail != null) {
+        throw createError(statusCode.BAD_REQUEST,responseMessage.ALREADY_EMAIL);
+    } else if (!nicknameReg.test(nickname)) {
+        throw createError(statusCode.BAD_REQUEST,responseMessage.NOT_VALID_NICKNAME);
+    } else if (!emailReg.test(email)) {
+        throw createError(statusCode.BAD_REQUEST,responseMessage.NOT_VALID_EMAIL);
     }
 
     let created_at = nd.getDate();
@@ -132,21 +139,6 @@ const fetchUserInfo = async(userId) => {
         throw createError(statusCode.NOT_FOUND, responseMessage.READ_USER_FAIL);
     }
     
-    // User's Profile Img
-    if (!user.profileImg) {
-        await User.findOneAndUpdate(
-            { 
-                _id: userId 
-            },
-            { 
-                profileImg: user.cafeti.img,
-            },
-            { 
-                new: true,
-                useFindAndModify: false
-            }
-        );
-    }
     // User's Review number
     const reviews = (await Review.find({_id: userId})).length;
 
@@ -159,11 +151,44 @@ const fetchUserInfo = async(userId) => {
     return {user, reviews, pins};
 }
 
+const updateUserInfo = async(userId, new_Img, new_nickname) => {
+    // userInfo
+    const user = await User.findOne({_id: userId}).select("_id nickname email cafeti profileImg");
+    if (!user) {
+        throw createError(statusCode.NOT_FOUND, responseMessage.READ_USER_FAIL);
+    }
+    // 닉네임 중복 확인
+    const alreadyNickname = await User.findOne({nickname: new_nickname});
+    var nicknameReg = /^[\wㄱ-ㅎㅏ-ㅣ가-힣]{2,10}$/;
+    
+    if (alreadyNickname != null) {
+        throw createError(statusCode.BAD_REQUEST,responseMessage.ALREADY_NICKNAME);
+    } else if (!nicknameReg.test(new_nickname)) {
+        throw createError(statusCode.BAD_REQUEST,responseMessage.NOT_VALID_NICKNAME);
+    }
+
+    // Update User's Info
+    await User.findOneAndUpdate(
+        { 
+            _id: userId 
+        },
+        { 
+            profileImg: new_Img.location,
+            nickname: new_nickname
+        },
+        { 
+            new: true,
+            useFindAndModify: false
+        }
+    );
+}
+
 module.exports = {
     loginUser,
     signupUser,
     generateToken,
     fetchUserInfo,
+    updateUserInfo,
     mailToUser,
     updatePassword
 }
