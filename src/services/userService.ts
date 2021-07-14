@@ -177,6 +177,7 @@ const updateUserInfo = async(userId, new_Img, new_nickname) => {
             nickname: new_nickname
         },
         { 
+            new: true,
             useFindAndModify: false
         }
     );
