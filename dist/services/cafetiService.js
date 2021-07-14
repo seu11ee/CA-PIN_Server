@@ -102,6 +102,7 @@ const fetchCafetiResult = (userId, answers) => __awaiter(void 0, void 0, void 0,
         _id: userId
     }, {
         cafeti: cafeti,
+        profileImg: cafeti.plainImg
     }, {
         new: true,
         useFindAndModify: false

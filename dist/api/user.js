@@ -194,7 +194,7 @@ router.get("/reviews", auth_1.default, (req, res, next) => __awaiter(void 0, voi
  *  @desc update myInfo
  *  @access Private
  */
-router.put("/updateMyInfo", auth_1.default, upload.single('profileImg'), (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+router.put("/myInfo", auth_1.default, upload.single('profileImg'), (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = res.locals.userId;
     const { nickname } = req.body;
     const errors = express_validator_1.validationResult(req);

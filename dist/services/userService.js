@@ -122,20 +122,9 @@ const updatePassword = (email, new_password) => __awaiter(void 0, void 0, void 0
 });
 const fetchUserInfo = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     // userInfo
-    let user = yield User_1.default.findOne({ _id: userId }).select("_id nickname email cafeti profileImg");
+    const user = yield User_1.default.findOne({ _id: userId }).select("_id nickname email cafeti profileImg");
     if (!user) {
         throw createError(statusCode.NOT_FOUND, responseMessage.READ_USER_FAIL);
-    }
-    // User's Profile Img
-    if (!user.profileImg) {
-        user = yield User_1.default.findOneAndUpdate({
-            _id: userId
-        }, {
-            profileImg: user.cafeti.plainImg,
-        }, {
-            new: true,
-            useFindAndModify: false
-        });
     }
     // User's Review number
     const reviews = (yield Review_1.default.find({ _id: userId })).length;
@@ -168,6 +157,7 @@ const updateUserInfo = (userId, new_Img, new_nickname) => __awaiter(void 0, void
         profileImg: new_Img.location,
         nickname: new_nickname
     }, {
+        new: true,
         useFindAndModify: false
     });
 });
