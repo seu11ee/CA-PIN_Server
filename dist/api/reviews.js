@@ -94,7 +94,7 @@ router.put("/:reviewId", auth_1.default, upload.array("imgs", 5), (req, res, nex
     const userId = res.locals.userId;
     var { content, recommend, rating, isAllDeleted } = reviewParams;
     if (isAllDeleted === undefined || !content || !rating)
-        next(http_errors_1.default(http_errors_1.default(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE)));
+        return next(http_errors_1.default(http_errors_1.default(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE)));
     if (!reviewId || !mongoose_1.default.isValidObjectId(reviewId)) {
         next(http_errors_1.default(statusCode.BAD_REQUEST, responseMessage.INVALID_IDENTIFIER));
     }

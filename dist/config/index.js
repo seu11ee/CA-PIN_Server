@@ -29,6 +29,7 @@ exports.default = {
     awsS3SecretKey: process.env.S3_SECRET_KEY,
     awsS3Bucket: process.env.S3_BUCKET,
     mapClientId: process.env.X_NCP_APIGW_API_KEY_ID,
-    mapSecretKey: process.env.X_NCP_APIGW_API_KEY
+    mapSecretKey: process.env.X_NCP_APIGW_API_KEY,
+    adminSecretKey: process.env.ADMIN_SECRET_KEY
 };
 //# sourceMappingURL=index.js.map

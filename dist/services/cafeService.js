@@ -95,12 +95,21 @@ const isCafeExists = (cafeId) => __awaiter(void 0, void 0, void 0, function* () 
         return false;
     return true;
 });
+const updateCafeImage = (cafeId, url) => __awaiter(void 0, void 0, void 0, function* () {
+    const cafe = yield Cafe_1.default.findById(cafeId);
+    if (!cafe)
+        return null;
+    cafe.img = url;
+    yield cafe.save();
+    return cafe;
+});
 module.exports = {
     getCafeLocationList,
     getMyMapCafeList,
     getCafeDetail,
     getNoCoordCafes,
     saveCoord,
-    isCafeExists
+    isCafeExists,
+    updateCafeImage
 };
 //# sourceMappingURL=cafeService.js.map

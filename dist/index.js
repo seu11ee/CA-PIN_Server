@@ -20,6 +20,7 @@ app.use("/reviews", require("./api/reviews"));
 app.use("/category", require("./api/category"));
 app.use("/cafeti", require("./api/cafeti"));
 app.use("/geocoder", require("./api/geocoder"));
+app.use("/admin", require("./api/admin"));
 // error handler
 app.use(function (err, req, res, next) {
     logger.error(err);
