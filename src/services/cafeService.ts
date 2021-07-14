@@ -1,6 +1,6 @@
 import Cafe from "../models/Cafe";
 import createError from "http-errors";
-import { ICafeLocationDTO } from "../interfaces/ICafe";
+import { ICafeLocationDTO, ICafeSearchDTO } from "../interfaces/ICafe";
 import { IMyCafeCategoryDTO } from "../interfaces/ICategory";
 import mongoose from "mongoose";
 import Tag from "../models/Tag";
@@ -100,6 +100,24 @@ const updateCafeImage = async(cafeId,url) => {
     await cafe.save()
     return cafe
 }
+
+const getCafeByName = async(query) => {
+    const cafes = await Cafe.find({ name: { $regex: `^${query}`, $options: "i" } });
+    if (cafes.length == 0) return null
+    const cafeSearchDTOs: ICafeSearchDTO[] = []
+    for (let cafe of cafes){
+        const cafeSearchDTO: ICafeSearchDTO = {
+            _id: cafe._id,
+            name: cafe.name,
+            address: cafe.address,
+            latitude: cafe.latitude,
+            longitude: cafe.longitude
+        }
+        cafeSearchDTOs.push(cafeSearchDTO)
+    }
+    return cafeSearchDTOs
+}
+
 module.exports = {
     getCafeLocationList,
     getMyMapCafeList,
@@ -107,6 +125,7 @@ module.exports = {
     getNoCoordCafes,
     saveCoord,
     isCafeExists,
-    updateCafeImage
+    updateCafeImage,
+    getCafeByName
 }
    

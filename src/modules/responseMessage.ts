@@ -80,6 +80,8 @@ module.exports = {
     EDIT_CATEGORY_SUCCESS: "카테고리 이름/색상 수정 성공",
     DELETE_CAFES_IN_CATEGORY_SUCCESS: "선택된 카페 삭제 성공",
 
+    //Search
+    SEARCH_SUCCESS: "카페명으로 카페 검색 성공",
     // Server Error
     INTERNAL_SERVER_ERROR: "서버 내부 오류",
   };
