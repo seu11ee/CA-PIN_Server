@@ -10,11 +10,11 @@ router.get(
     "/cafe",
     async(req: Request, res: Response, next) => {
         const searchQuery = req.query.query;
-        if (searchQuery){
+        if (!searchQuery){
             return res.status(statusCode.NO_CONTENT).send();
         }
         try {
-            const cafes = cafeService.getCafeByName(searchQuery);
+            const cafes = await cafeService.getCafeByName(searchQuery);
             if (!cafes) return res.status(statusCode.NO_CONTENT).send();
             return res.status(statusCode.OK).json({
                 "message" : responseMessage.SEARCH_SUCCESS,
@@ -26,3 +26,5 @@ router.get(
         }
     }
 )
+
+module.exports = router;
