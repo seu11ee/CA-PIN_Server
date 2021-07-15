@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
-import {ICafeLocationDTO} from "../interfaces/ICafe";
+import {ICafeLocationDTO, ICafeAllDTO,ICafe} from "../interfaces/ICafe";
 export interface ICategory {
-    cafes: [mongoose.Types.ObjectId];
+    cafes: [ICafe];
     user: mongoose.Types.ObjectId;
     color: string;
     name: string;
@@ -9,7 +9,13 @@ export interface ICategory {
 }
 
 export interface IMyCafeCategoryDTO {
-    cafes: [mongoose.Types.ObjectId];
+    cafes: [ICafeLocationDTO];
+    color: string;
+    name: string;
+}
+
+export interface IMyCafeCategoryAllDTO {
+    cafes: [ICafeAllDTO];
     color: string;
     name: string;
 }

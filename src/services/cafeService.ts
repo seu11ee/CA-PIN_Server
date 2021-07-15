@@ -177,7 +177,7 @@ const getMyMapCafeAllList = async (userId,tags) => {
         mycafeList = await Category.find({user: userId}).populate({
             path:'cafes',
             match: { tags : { $all : tagList}},
-            select: "longitude latitude name address rating",
+            select: "longitude latitude name address rating img",
             populate:{
                 path: "tags"
             }
@@ -188,16 +188,16 @@ const getMyMapCafeAllList = async (userId,tags) => {
     else{
         mycafeList = await Category.find({user: userId}).populate({
             path:'cafes',
-            select: 'longitude latitude name address rating',
+            select: 'longitude latitude name address rating img',
             populate:{
                 path:"tags"
             }
         }).select("cafes color name");
     }
-    if (!mycafeList) {
-        throw createError(statusCode.NOT_FOUND,responseMessage.INVALID_IDENTIFIER);
+    if (mycafeList.length == 0) {
+        return null;
     }
-    return mycafeList
+
     let cafeList: IMyCafeCategoryDTO[] = []
     for (let item of mycafeList) {
         // 카테고리에 카페가 1개 이상 있을 때만 push
@@ -210,6 +210,7 @@ const getMyMapCafeAllList = async (userId,tags) => {
             cafeList.push(info);
         }
     }
+    return cafeList
 }
 
 module.exports = {
