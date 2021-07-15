@@ -84,9 +84,16 @@ router.get(
     "/myMap", auth,
     async(req: Request, res: Response, next) => {
         const userId = res.locals.userId;
-
+        const tagQuery = req.query.tags;
+        var tags = undefined
+        if (tagQuery){
+            if (tagQuery.length == 1) tags = [tagQuery]
+            else tags = (tagQuery as string[]).map(x=>+x);
+        }
+        else tags = [];
         try {
-            const myMapList = await cafeService.getMyMapCafeList(userId);
+            const myMapList = await cafeService.getMyMapCafeList(userId,tags);
+            if (!myMapList) return res.status(statusCode.NO_CONTENT).send();
             return res.status(statusCode.OK).json({
                 message: responseMessage.MYMAP_LOCATION_SUCCESS,
                 myMapLocations: myMapList

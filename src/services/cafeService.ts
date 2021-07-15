@@ -80,6 +80,7 @@ const getMyMapCafeList = async(userId,tags) => {
     if (!mycafeList) {
         throw createError(statusCode.NOT_FOUND,responseMessage.INVALID_IDENTIFIER);
     }
+    if (mycafeList.length == 0) return null;
     let cafeList: IMyCafeCategoryDTO[] = []
     for (let item of mycafeList) {
         // 카테고리에 카페가 1개 이상 있을 때만 push
