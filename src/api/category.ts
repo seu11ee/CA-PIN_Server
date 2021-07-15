@@ -88,7 +88,7 @@ router.post(
         const { categoryId } = req.body;
         try {
             if (!mongoose.isValidObjectId(cafeId)){
-                return next(createError(statusCode.BAD_REQUEST,responseMessage.INVALID_IDENTIFIER));
+                return next(createError(statusCode.NOT_FOUND,responseMessage.INVALID_IDENTIFIER));
             }
 
             await categoryService.storeCafe(userId, categoryId, cafeId);  
