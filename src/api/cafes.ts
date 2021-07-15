@@ -12,7 +12,7 @@ const reviewService = require("../services/reviewService");
 const menuService = require("../services/menuService");
 
 /**
- *  @route GET cafes?tags={tagIndex},..,{}
+ *  @route GET cafes?tags={tagIdx}
  *  @desc get a cafe location list
  *  @access Public
  */
@@ -48,7 +48,7 @@ router.get(
 /**
  *  @route GET cafes/:cafeId
  *  @desc get a cafe detail
- *  @access Private
+ *  @access Public
  */
 router.get(
     "/detail/:cafeId",
@@ -97,6 +97,11 @@ router.get(
     }
 );
 
+/**
+ *  @route GET cafes/myMap
+ *  @desc get a my map cafe location and detail list
+ *  @access Private
+ */
 router.get(
     "/myMap/all", auth,
     async(req: Request, res: Response, next) => {
@@ -145,6 +150,11 @@ router.get(
         }
     }
 )
+/**
+ *  @route GET cafes?tags={tagIdx}
+ *  @desc get a cafe location and detail list
+ *  @access Public
+ */
 router.get(
     "/all",
     auth,
