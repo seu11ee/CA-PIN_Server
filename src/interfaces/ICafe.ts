@@ -1,20 +1,21 @@
 import mongoose from "mongoose";
+import { ITag } from "./ITag";
 
 export interface ICafe{
     _id: string;
     name: string;
-    img: string;
+    img?: string;
     address: string;
     tags: mongoose.Types.ObjectId;
     latitude: number;
     longitude: number;
-    instagram: string;
+    instagram?: string;
     opentime?: string;
     opentimeHoliday?: string;
     closetime?: string;
     closetimeHoliday?: string;
     offday?: [number];
-    rating?: number;
+    rating: number;
 }
 
 export interface ICafeLocationDTO{
@@ -36,4 +37,16 @@ export interface ICafeSearchDTO{
     address: string;
     latitude?: number;
     longitude?: number;
+}
+
+export interface ICafeAllDTO{
+    _id: string;
+    name: string;
+    img?: string;
+    address: string;
+    latitude: number;
+    longitude: number;
+    tags: ITag;
+    isSaved?: boolean;
+    rating?: number;
 }

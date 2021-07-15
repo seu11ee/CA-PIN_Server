@@ -2,6 +2,7 @@ import auth from "../middleware/auth";
 import createError from "http-errors";
 import express, { Request, Response } from "express";
 import mongoose from "mongoose";
+import { ICafeAllDTO } from "../interfaces/ICafe";
 const router = express.Router();
 const statusCode = require("../modules/statusCode");
 const responseMessage = require("../modules/responseMessage");
@@ -30,7 +31,7 @@ router.get(
             
             const cafeLocationList = await cafeService.getCafeLocationList(tags);
 
-            if (!cafeLocationList) res.status(statusCode.NO_CONTENT).send();
+            if (!cafeLocationList) return res.status(statusCode.NO_CONTENT).send();
             
             return res.status(statusCode.OK).json({
                 message: responseMessage.CAFE_LOCATION_SUCCESS,
@@ -50,10 +51,10 @@ router.get(
  *  @access Private
  */
 router.get(
-    "/detail/:cafeId", auth,
+    "/detail/:cafeId",
     async(req: Request, res: Response, next) => {
         const cafeId = req.params.cafeId;
-        const userId = res.locals.userId;
+        // const userId = res.locals.userId;
 
         try{
             if (!mongoose.isValidObjectId(cafeId)){
@@ -62,11 +63,11 @@ router.get(
             else{
                 const cafeDetail = await cafeService.getCafeDetail(cafeId);
                 if (!cafeDetail) return res.status(statusCode.NO_CONTENT).send();
-                const isSaved = await categoryService.checkCafeInCategory(cafeId,userId);
-                var average: Number = await reviewService.getCafeAverageRating(cafeId);
-                if (!average) return res.status(statusCode.OK).send({message:responseMessage.CAFE_DETAIL_SUCCESS,cafeDetail,isSaved})
-                average = Number(average.toFixed(1))
-                return res.status(statusCode.OK).send({message:responseMessage.CAFE_DETAIL_SUCCESS,cafeDetail,isSaved,average})
+                // const isSaved = await categoryService.checkCafeInCategory(cafeId,userId);
+                // var average: Number = await reviewService.getCafeAverageRating(cafeId);
+                // if (!average) return res.status(statusCode.OK).send({message:responseMessage.CAFE_DETAIL_SUCCESS,cafeDetail,isSaved})
+                // average = Number(average.toFixed(1))
+                return res.status(statusCode.OK).send({message:responseMessage.CAFE_DETAIL_SUCCESS,cafeDetail})
             }
         } catch (error) {
             return next(error);
@@ -119,5 +120,34 @@ router.get(
         }
     }
 )
+router.get(
+    "/all",
+    auth,
+    async(req: Request, res: Response, next) => {
+        const tagQuery = req.query.tags;
+        const userId = res.locals.userId;
+        var tags = undefined
+        if (tagQuery){
+            if (tagQuery.length == 1) tags = [tagQuery]
+            else tags = (tagQuery as string[]).map(x=>+x);
+        }
+        else tags = [];
+
+        try {
+            
+            const cafeLocationList = await cafeService.getCafeAllList(tags);
+            if (!cafeLocationList) return res.status(statusCode.NO_CONTENT).send();
+            
+            return res.status(statusCode.OK).json({
+                message:responseMessage.CAFE_DETAIL_SUCCESS,
+                cafeLocations: cafeLocationList
+            })
+        } catch (error) {
+            next(error);
+        }
+      
+    
+    }
+);
 
 module.exports = router;

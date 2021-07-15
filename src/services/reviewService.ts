@@ -5,7 +5,7 @@ const responseMessage = require("../modules/responseMessage");
 const statusCode = require("../modules/statusCode");
 import createError from "http-errors";
 const koreanDate = require("../modules/dateCalculate");
-
+import Cafe from "../models/Cafe";
 const getCafeReviewList = async(cafeId) => {
 
     const reviews = await Review.find().where("cafe").equals(cafeId).populate("user",["_id", "nickname", "profileImg" ,"cafeti"]).sort({created_at:-1});
@@ -73,9 +73,9 @@ const modifyReview = async (reviewId,userId,content,rating,isAllDeleted,recommen
     try {
         const review = await Review.findById(reviewId);
         if (!review) return null;
-        if (review.user != userId){
-            throw createError(statusCode.UNAUTHORIZED,responseMessage.UNAUTHORIZED);
-        }
+        // if (review.user != userId){
+        //     throw createError(statusCode.UNAUTHORIZED,responseMessage.UNAUTHORIZED);
+        // }
         review.content = content;
         review.rating = rating;
         review.recommend = recommend;
@@ -116,7 +116,7 @@ const deleteReview = async (reviewId,userId) => {
     }
 }
 
-const getCafeAverageRating = async(cafeId) => {
+const updateCafeAverageRating = async(cafeId) => {
     const reviews = await Review.aggregate([
         
         {
@@ -136,8 +136,17 @@ const getCafeAverageRating = async(cafeId) => {
         }
         
     ]);
-    if (reviews.length == 0) return null;
-    return reviews[0].average;
+
+    var cafeRating = undefined;
+    if (reviews.length != 0){
+        cafeRating = reviews[0].average;
+    }
+    await Cafe.findByIdAndUpdate(cafeId,{
+        rating:cafeRating
+    },{ 
+        new: true,
+        useFindAndModify: false
+    })
 }
 
 const getMyReviews = async (userId) => {
@@ -167,6 +176,6 @@ module.exports = {
     createReview,
     modifyReview,
     deleteReview,
-    getCafeAverageRating,
+    updateCafeAverageRating,
     getMyReviews
 }

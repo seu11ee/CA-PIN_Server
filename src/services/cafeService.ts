@@ -1,6 +1,6 @@
 import Cafe from "../models/Cafe";
 import createError from "http-errors";
-import { ICafeLocationDTO, ICafeSearchDTO } from "../interfaces/ICafe";
+import { ICafeAllDTO, ICafeLocationDTO, ICafeSearchDTO } from "../interfaces/ICafe";
 import { IMyCafeCategoryDTO } from "../interfaces/ICategory";
 import mongoose from "mongoose";
 import Tag from "../models/Tag";
@@ -118,6 +118,47 @@ const getCafeByName = async(query) => {
     return cafeSearchDTOs
 }
 
+const getCafeAllList = async (tags) => {
+    const tag_ids = await Tag.find({
+        'tagIdx': { $in: tags
+        }
+    }).select('_id');
+    if (tags.length != tag_ids.length){
+        throw createError(statusCode.BAD_REQUEST,responseMessage.INVALID_IDENTIFIER);
+    }
+    let tagList: mongoose.Types.ObjectId[]= []
+    for (let tag of tag_ids){
+        tagList.push(tag._id);
+    }
+    var cafes;
+    //쿼리에 태그 정보가 없으면 전체 카페 리스트 조회
+    if (tagList.length != 0){
+        cafes = await Cafe.find().where('tags').all(tagList).populate("tags");
+    }
+    //태그로 필터된 카페 리스트 조회
+    else{
+        cafes = await Cafe.find().populate("tags");
+    }
+    let cafeLocationList: ICafeAllDTO[] = []
+
+    for (let cafe of cafes){
+        let location: ICafeAllDTO = {
+            _id: cafe._id,
+            name: cafe.name,
+            latitude: cafe.latitude,
+            longitude: cafe.longitude,
+            address: cafe.address,
+            tags: cafe.tags,
+            rating: cafe.rating
+        }
+        cafeLocationList.push(location)
+    }
+    if (cafeLocationList.length == 0){
+        return null;
+    }
+    return cafeLocationList;
+}
+
 module.exports = {
     getCafeLocationList,
     getMyMapCafeList,
@@ -126,6 +167,7 @@ module.exports = {
     saveCoord,
     isCafeExists,
     updateCafeImage,
-    getCafeByName
+    getCafeByName,
+    getCafeAllList
 }
    

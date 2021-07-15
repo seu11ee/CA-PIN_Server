@@ -18,6 +18,7 @@ const responseMessage = require("../modules/responseMessage");
 const statusCode = require("../modules/statusCode");
 const http_errors_1 = __importDefault(require("http-errors"));
 const koreanDate = require("../modules/dateCalculate");
+const Cafe_1 = __importDefault(require("../models/Cafe"));
 const getCafeReviewList = (cafeId) => __awaiter(void 0, void 0, void 0, function* () {
     const reviews = yield Review_1.default.find().where("cafe").equals(cafeId).populate("user", ["_id", "nickname", "profileImg", "cafeti"]).sort({ created_at: -1 });
     let reviewDTOList = [];
@@ -78,9 +79,9 @@ const modifyReview = (reviewId, userId, content, rating, isAllDeleted, recommend
         const review = yield Review_1.default.findById(reviewId);
         if (!review)
             return null;
-        if (review.user != userId) {
-            throw http_errors_1.default(statusCode.UNAUTHORIZED, responseMessage.UNAUTHORIZED);
-        }
+        // if (review.user != userId){
+        //     throw createError(statusCode.UNAUTHORIZED,responseMessage.UNAUTHORIZED);
+        // }
         review.content = content;
         review.rating = rating;
         review.recommend = recommend;
@@ -118,7 +119,7 @@ const deleteReview = (reviewId, userId) => __awaiter(void 0, void 0, void 0, fun
         throw (error);
     }
 });
-const getCafeAverageRating = (cafeId) => __awaiter(void 0, void 0, void 0, function* () {
+const updateCafeAverageRating = (cafeId) => __awaiter(void 0, void 0, void 0, function* () {
     const reviews = yield Review_1.default.aggregate([
         {
             $match: {
@@ -132,9 +133,16 @@ const getCafeAverageRating = (cafeId) => __awaiter(void 0, void 0, void 0, funct
             }
         }
     ]);
-    if (reviews.length == 0)
-        return null;
-    return reviews[0].average;
+    var cafeRating = undefined;
+    if (reviews.length != 0) {
+        cafeRating = reviews[0].average;
+    }
+    yield Cafe_1.default.findByIdAndUpdate(cafeId, {
+        rating: cafeRating
+    }, {
+        new: true,
+        useFindAndModify: false
+    });
 });
 const getMyReviews = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     const myReviews = yield Review_1.default.find({ user: userId }).populate("cafe").sort({ created_at: -1 });
@@ -160,7 +168,7 @@ module.exports = {
     createReview,
     modifyReview,
     deleteReview,
-    getCafeAverageRating,
+    updateCafeAverageRating,
     getMyReviews
 };
 //# sourceMappingURL=reviewService.js.map
