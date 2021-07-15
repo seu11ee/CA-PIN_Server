@@ -120,6 +120,45 @@ const getCafeByName = (query) => __awaiter(void 0, void 0, void 0, function* () 
     }
     return cafeSearchDTOs;
 });
+const getCafeAllList = (tags) => __awaiter(void 0, void 0, void 0, function* () {
+    const tag_ids = yield Tag_1.default.find({
+        'tagIdx': { $in: tags
+        }
+    }).select('_id');
+    if (tags.length != tag_ids.length) {
+        throw http_errors_1.default(statusCode.BAD_REQUEST, responseMessage.INVALID_IDENTIFIER);
+    }
+    let tagList = [];
+    for (let tag of tag_ids) {
+        tagList.push(tag._id);
+    }
+    var cafes;
+    //쿼리에 태그 정보가 없으면 전체 카페 리스트 조회
+    if (tagList.length != 0) {
+        cafes = yield Cafe_1.default.find().where('tags').all(tagList).populate("tags");
+    }
+    //태그로 필터된 카페 리스트 조회
+    else {
+        cafes = yield Cafe_1.default.find().populate("tags");
+    }
+    let cafeLocationList = [];
+    for (let cafe of cafes) {
+        let location = {
+            _id: cafe._id,
+            name: cafe.name,
+            latitude: cafe.latitude,
+            longitude: cafe.longitude,
+            address: cafe.address,
+            tags: cafe.tags,
+            rating: cafe.rating
+        };
+        cafeLocationList.push(location);
+    }
+    if (cafeLocationList.length == 0) {
+        return null;
+    }
+    return cafeLocationList;
+});
 module.exports = {
     getCafeLocationList,
     getMyMapCafeList,
@@ -128,6 +167,7 @@ module.exports = {
     saveCoord,
     isCafeExists,
     updateCafeImage,
-    getCafeByName
+    getCafeByName,
+    getCafeAllList
 };
 //# sourceMappingURL=cafeService.js.map

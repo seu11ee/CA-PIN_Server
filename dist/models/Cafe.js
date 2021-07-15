@@ -48,6 +48,9 @@ const CafeSchema = new mongoose_1.default.Schema({
     offday: {
         type: [String],
         default: undefined
+    },
+    rating: {
+        type: Number
     }
 }, {
     collection: "cafes",

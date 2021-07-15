@@ -42,7 +42,7 @@ router.get("/", (req, res, next) => __awaiter(void 0, void 0, void 0, function* 
     try {
         const cafeLocationList = yield cafeService.getCafeLocationList(tags);
         if (!cafeLocationList)
-            res.status(statusCode.NO_CONTENT).send();
+            return res.status(statusCode.NO_CONTENT).send();
         return res.status(statusCode.OK).json({
             message: responseMessage.CAFE_LOCATION_SUCCESS,
             cafeLocations: cafeLocationList
@@ -68,12 +68,11 @@ router.get("/detail/:cafeId", auth_1.default, (req, res, next) => __awaiter(void
             const cafeDetail = yield cafeService.getCafeDetail(cafeId);
             if (!cafeDetail)
                 return res.status(statusCode.NO_CONTENT).send();
-            const isSaved = yield categoryService.checkCafeInCategory(cafeId, userId);
-            var average = yield reviewService.getCafeAverageRating(cafeId);
-            if (!average)
-                return res.status(statusCode.OK).send({ message: responseMessage.CAFE_DETAIL_SUCCESS, cafeDetail, isSaved });
-            average = Number(average.toFixed(1));
-            return res.status(statusCode.OK).send({ message: responseMessage.CAFE_DETAIL_SUCCESS, cafeDetail, isSaved, average });
+            // const isSaved = await categoryService.checkCafeInCategory(cafeId,userId);
+            // var average: Number = await reviewService.getCafeAverageRating(cafeId);
+            // if (!average) return res.status(statusCode.OK).send({message:responseMessage.CAFE_DETAIL_SUCCESS,cafeDetail,isSaved})
+            // average = Number(average.toFixed(1))
+            return res.status(statusCode.OK).send({ message: responseMessage.CAFE_DETAIL_SUCCESS, cafeDetail });
         }
     }
     catch (error) {
@@ -120,6 +119,31 @@ router.get("/:cafeId/menus", (req, res, next) => __awaiter(void 0, void 0, void 
     }
     catch (error) {
         return next(error);
+    }
+}));
+router.get("/all", auth_1.default, (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const tagQuery = req.query.tags;
+    const userId = res.locals.userId;
+    var tags = undefined;
+    if (tagQuery) {
+        if (tagQuery.length == 1)
+            tags = [tagQuery];
+        else
+            tags = tagQuery.map(x => +x);
+    }
+    else
+        tags = [];
+    try {
+        const cafeLocationList = yield cafeService.getCafeAllList(tags);
+        if (!cafeLocationList)
+            return res.status(statusCode.NO_CONTENT).send();
+        return res.status(statusCode.OK).json({
+            message: responseMessage.CAFE_DETAIL_SUCCESS,
+            cafeLocations: cafeLocationList
+        });
+    }
+    catch (error) {
+        next(error);
     }
 }));
 module.exports = router;

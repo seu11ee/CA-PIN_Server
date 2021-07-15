@@ -51,8 +51,10 @@ router.get("/", auth_1.default, (req, res, next) => __awaiter(void 0, void 0, vo
     }
 }));
 router.post("/", auth_1.default, upload.array("imgs", 5), (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(req.body);
+    console.log(req);
     if (!req.body || !req.body.review)
-        return (next(http_errors_1.default(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE)));
+        return (next(http_errors_1.default(401, responseMessage.NULL_VALUE)));
     const reviewParams = JSON.parse(req.body.review);
     const cafeId = req.query.cafe;
     const userId = res.locals.userId;
@@ -80,7 +82,8 @@ router.post("/", auth_1.default, upload.array("imgs", 5), (req, res, next) => __
         if (isReviewed)
             return next(http_errors_1.default(http_errors_1.default(statusCode.BAD_REQUEST, responseMessage.REPEATED_VALUE)));
         const review = yield reviewService.createReview(cafeId, userId, content, rating, recommend, urls);
-        return res.status(statusCode.CREATED).json();
+        res.status(statusCode.CREATED).json();
+        return yield reviewService.updateCafeAverageRating(cafeId);
     }
     catch (error) {
         return next(error);
@@ -113,6 +116,7 @@ router.put("/:reviewId", auth_1.default, upload.array("imgs", 5), (req, res, nex
         if (!review)
             res.status(statusCode.NO_CONTENT).send();
         res.status(statusCode.OK).json({ message: responseMessage.EDIT_REVIEW_SUCCESS });
+        return yield reviewService.updateCafeAverageRating(review.cafe);
     }
     catch (error) {
         console.log(error.statusCode, error.message);
@@ -129,7 +133,7 @@ router.delete("/:reviewId", auth_1.default, (req, res, next) => __awaiter(void 0
         if (!review)
             res.status(statusCode.NO_CONTENT).send();
         res.status(statusCode.OK).json({ message: responseMessage.DELETE_REVIEW_SUCCESS });
-        next();
+        return yield reviewService.updateCafeAverageRating(review.cafe);
     }
     catch (error) {
         next(error);
