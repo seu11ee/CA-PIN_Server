@@ -111,6 +111,7 @@ router.get(
 
         try {
             const myMapList = await cafeService.getMyMapCafeAllList(userId,tags);
+            if (!myMapList) return res.status(statusCode.NO_CONTENT).send();
             return res.status(statusCode.OK).json({
                 message: responseMessage.MYMAP_LOCATION_SUCCESS,
                 myMapLocations: myMapList
