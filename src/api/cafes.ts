@@ -97,6 +97,30 @@ router.get(
     }
 );
 
+router.get(
+    "/myMap/all", auth,
+    async(req: Request, res: Response, next) => {
+        const userId = res.locals.userId;
+        const tagQuery = req.query.tags;
+        var tags = undefined
+        if (tagQuery){
+            if (tagQuery.length == 1) tags = [tagQuery]
+            else tags = (tagQuery as string[]).map(x=>+x);
+        }
+        else tags = [];
+
+        try {
+            const myMapList = await cafeService.getMyMapCafeAllList(userId,tags);
+            return res.status(statusCode.OK).json({
+                message: responseMessage.MYMAP_LOCATION_SUCCESS,
+                myMapLocations: myMapList
+            });
+        } catch (error) {
+            return next(error);
+        }
+    }
+);
+
 /**
  *  @route GET cafes/detail/:cafeId/menus
  *  @desc get a cafe menu list
@@ -125,7 +149,6 @@ router.get(
     auth,
     async(req: Request, res: Response, next) => {
         const tagQuery = req.query.tags;
-        const userId = res.locals.userId;
         var tags = undefined
         if (tagQuery){
             if (tagQuery.length == 1) tags = [tagQuery]
@@ -139,7 +162,7 @@ router.get(
             if (!cafeLocationList) return res.status(statusCode.NO_CONTENT).send();
             
             return res.status(statusCode.OK).json({
-                message:responseMessage.CAFE_DETAIL_SUCCESS,
+                message:responseMessage.CAFE_LOCATION_SUCCESS,
                 cafeLocations: cafeLocationList
             })
         } catch (error) {

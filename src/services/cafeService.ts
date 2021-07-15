@@ -21,11 +21,11 @@ const getCafeLocationList = async (tags) => {
         tagList.push(tag._id);
     }
     var cafes;
-    //쿼리에 태그 정보가 없으면 전체 카페 리스트 조회
+    //태그로 필터된 카페 리스트 조회
     if (tagList.length != 0){
         cafes = await Cafe.find().where('tags').all(tagList).select("_id latitude longitude");
     }
-    //태그로 필터된 카페 리스트 조회
+    //쿼리에 태그 정보가 없으면 전체 카페 리스트 조회
     else{
         cafes = await Cafe.find().select("_id latitude longitude");
     }
@@ -131,11 +131,11 @@ const getCafeAllList = async (tags) => {
         tagList.push(tag._id);
     }
     var cafes;
-    //쿼리에 태그 정보가 없으면 전체 카페 리스트 조회
+    //태그로 필터된 카페 리스트 조회
     if (tagList.length != 0){
         cafes = await Cafe.find().where('tags').all(tagList).populate("tags");
     }
-    //태그로 필터된 카페 리스트 조회
+    //쿼리에 태그 정보가 없으면 전체 카페 리스트 조회
     else{
         cafes = await Cafe.find().populate("tags");
     }
@@ -159,6 +159,59 @@ const getCafeAllList = async (tags) => {
     return cafeLocationList;
 }
 
+const getMyMapCafeAllList = async (userId,tags) => {
+    const tag_ids = await Tag.find({
+        'tagIdx': { $in: tags
+        }
+    }).select('_id');
+    if (tags.length != tag_ids.length){
+        throw createError(statusCode.BAD_REQUEST,responseMessage.INVALID_IDENTIFIER);
+    }
+    let tagList: mongoose.Types.ObjectId[]= []
+    for (let tag of tag_ids){
+        tagList.push(tag._id);
+    }
+    var mycafeList = []
+    //쿼리에 태그 정보가 없으면 전체 카페 리스트 조회
+    if (tagList.length != 0){
+        mycafeList = await Category.find({user: userId}).populate({
+            path:'cafes',
+            match: { tags : { $all : tagList}},
+            select: "longitude latitude name address rating",
+            populate:{
+                path: "tags"
+            }
+        }).select("cafes color name");
+
+    }
+    //태그로 필터된 카페 리스트 조회
+    else{
+        mycafeList = await Category.find({user: userId}).populate({
+            path:'cafes',
+            select: 'longitude latitude name address rating',
+            populate:{
+                path:"tags"
+            }
+        }).select("cafes color name");
+    }
+    if (!mycafeList) {
+        throw createError(statusCode.NOT_FOUND,responseMessage.INVALID_IDENTIFIER);
+    }
+    return mycafeList
+    let cafeList: IMyCafeCategoryDTO[] = []
+    for (let item of mycafeList) {
+        // 카테고리에 카페가 1개 이상 있을 때만 push
+        if (item.cafes.length > 0) {
+            let info: IMyCafeCategoryDTO = {
+                cafes: item.cafes,
+                color: item.color,
+                name: item.name
+            }
+            cafeList.push(info);
+        }
+    }
+}
+
 module.exports = {
     getCafeLocationList,
     getMyMapCafeList,
@@ -168,6 +221,7 @@ module.exports = {
     isCafeExists,
     updateCafeImage,
     getCafeByName,
-    getCafeAllList
+    getCafeAllList,
+    getMyMapCafeAllList
 }
    
