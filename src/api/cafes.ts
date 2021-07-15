@@ -63,11 +63,11 @@ router.get(
             else{
                 const cafeDetail = await cafeService.getCafeDetail(cafeId);
                 if (!cafeDetail) return res.status(statusCode.NO_CONTENT).send();
-                const isSaved = await categoryService.checkCafeInCategory(cafeId,userId);
-                var average: Number = await reviewService.getCafeAverageRating(cafeId);
-                if (!average) return res.status(statusCode.OK).send({message:responseMessage.CAFE_DETAIL_SUCCESS,cafeDetail,isSaved})
-                average = Number(average.toFixed(1))
-                return res.status(statusCode.OK).send({message:responseMessage.CAFE_DETAIL_SUCCESS,cafeDetail,isSaved,average})
+                // const isSaved = await categoryService.checkCafeInCategory(cafeId,userId);
+                // var average: Number = await reviewService.getCafeAverageRating(cafeId);
+                // if (!average) return res.status(statusCode.OK).send({message:responseMessage.CAFE_DETAIL_SUCCESS,cafeDetail,isSaved})
+                // average = Number(average.toFixed(1))
+                return res.status(statusCode.OK).send({message:responseMessage.CAFE_DETAIL_SUCCESS,cafeDetail})
             }
         } catch (error) {
             return next(error);

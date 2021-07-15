@@ -47,7 +47,9 @@ router.get(
 router.post(
     "/",auth,upload.array("imgs",5),
     async(req: Request, res: Response, next) => {
-        if(!req.body || !req.body.review) return (next(createError(statusCode.BAD_REQUEST,responseMessage.NULL_VALUE)));
+        console.log(req.body);
+        console.log(req);
+        if(!req.body || !req.body.review) return (next(createError(401,responseMessage.NULL_VALUE)));
         const reviewParams = JSON.parse(req.body.review);
         const cafeId = req.query.cafe;
         const userId = res.locals.userId;
@@ -56,6 +58,7 @@ router.post(
             recommend,
             rating
         } = reviewParams;
+        
         if (!content || !rating) next(createError(createError(statusCode.BAD_REQUEST,responseMessage.NULL_VALUE)));
         if (!cafeId || !mongoose.isValidObjectId(cafeId)){
             return next(createError(statusCode.BAD_REQUEST,responseMessage.INVALID_IDENTIFIER));
@@ -77,7 +80,8 @@ router.post(
             if(isReviewed) return next(createError(createError(statusCode.BAD_REQUEST,responseMessage.REPEATED_VALUE)));
             
             const review = await reviewService.createReview(cafeId,userId,content,rating,recommend,urls);
-            return res.status(statusCode.CREATED).json();
+            res.status(statusCode.CREATED).json();
+            return await reviewService.updateCafeAverageRating(cafeId);
         } catch (error) {
             return next(error);
         }
@@ -119,6 +123,7 @@ router.put(
             if (!review) res.status(statusCode.NO_CONTENT).send();
 
             res.status(statusCode.OK).json({message:responseMessage.EDIT_REVIEW_SUCCESS});
+            return await reviewService.updateCafeAverageRating(review.cafe);
         } catch (error) {
             console.log(error.statusCode,error.message);
             next(error);
@@ -137,7 +142,7 @@ async(req: Request, res: Response, next) => {
         const review = await reviewService.deleteReview(reviewId,userId);
         if (!review) res.status(statusCode.NO_CONTENT).send();
         res.status(statusCode.OK).json({message:responseMessage.DELETE_REVIEW_SUCCESS});
-        next()
+        return await reviewService.updateCafeAverageRating(review.cafe);
 
     } catch (error){
         next(error);

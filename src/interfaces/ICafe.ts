@@ -15,6 +15,7 @@ export interface ICafe{
     closetime?: string;
     closetimeHoliday?: string;
     offday?: [number];
+    rating: number;
 }
 
 export interface ICafeLocationDTO{

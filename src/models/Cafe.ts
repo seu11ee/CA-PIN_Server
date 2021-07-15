@@ -45,6 +45,9 @@ const CafeSchema = new mongoose.Schema({
   offday:{
       type: [String],
       default: undefined
+  },
+  rating: {
+      type: Number
   }
 
 
