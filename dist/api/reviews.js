@@ -57,13 +57,13 @@ router.post("/", auth_1.default, upload.array("imgs", 5), (req, res, next) => __
     const cafeId = req.query.cafe;
     const userId = res.locals.userId;
     const { content, recommend, rating } = reviewParams;
-    if (recommend && !recommend.isArray(Number))
-        next(http_errors_1.default(http_errors_1.default(statusCode.BAD_REQUEST, responseMessage.OUT_OF_VALUE)));
     if (!content || !rating)
         next(http_errors_1.default(http_errors_1.default(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE)));
     if (!cafeId || !mongoose_1.default.isValidObjectId(cafeId)) {
         return next(http_errors_1.default(statusCode.BAD_REQUEST, responseMessage.INVALID_IDENTIFIER));
     }
+    if (recommend && (!Array.isArray(recommend) || !(recommend.includes(0) || recommend.includes(1))))
+        return next(http_errors_1.default(statusCode.BAD_REQUEST, responseMessage.REVIEW_REQUEST_FAIL));
     try {
         var urls = undefined;
         if (req.files.length != 0) {
@@ -92,14 +92,14 @@ router.put("/:reviewId", auth_1.default, upload.array("imgs", 5), (req, res, nex
     const reviewParams = JSON.parse(req.body.review);
     const reviewId = req.params.reviewId;
     const userId = res.locals.userId;
-    var { content, recommend, rating, isAllDeleted } = reviewParams;
+    const { content, recommend, rating, isAllDeleted } = reviewParams;
     if (isAllDeleted === undefined || !content || !rating)
         return next(http_errors_1.default(http_errors_1.default(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE)));
     if (!reviewId || !mongoose_1.default.isValidObjectId(reviewId)) {
         next(http_errors_1.default(statusCode.BAD_REQUEST, responseMessage.INVALID_IDENTIFIER));
     }
-    if (recommend && recommend.length == 0)
-        recommend = undefined;
+    if (recommend && (!Array.isArray(recommend) || !(recommend.includes(0) || recommend.includes(1))))
+        return next(http_errors_1.default(statusCode.BAD_REQUEST, responseMessage.REVIEW_REQUEST_FAIL));
     try {
         var urls = undefined;
         if (req.files.length != 0 && !isAllDeleted) {

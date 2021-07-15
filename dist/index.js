@@ -21,6 +21,7 @@ app.use("/category", require("./api/category"));
 app.use("/cafeti", require("./api/cafeti"));
 app.use("/geocoder", require("./api/geocoder"));
 app.use("/admin", require("./api/admin"));
+app.use("/search", require("./api/search"));
 // error handler
 app.use(function (err, req, res, next) {
     logger.error(err);

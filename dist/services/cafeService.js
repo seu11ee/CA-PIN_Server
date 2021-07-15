@@ -103,6 +103,23 @@ const updateCafeImage = (cafeId, url) => __awaiter(void 0, void 0, void 0, funct
     yield cafe.save();
     return cafe;
 });
+const getCafeByName = (query) => __awaiter(void 0, void 0, void 0, function* () {
+    const cafes = yield Cafe_1.default.find({ name: { $regex: `^${query}`, $options: "i" } });
+    if (cafes.length == 0)
+        return null;
+    const cafeSearchDTOs = [];
+    for (let cafe of cafes) {
+        const cafeSearchDTO = {
+            _id: cafe._id,
+            name: cafe.name,
+            address: cafe.address,
+            latitude: cafe.latitude,
+            longitude: cafe.longitude
+        };
+        cafeSearchDTOs.push(cafeSearchDTO);
+    }
+    return cafeSearchDTOs;
+});
 module.exports = {
     getCafeLocationList,
     getMyMapCafeList,
@@ -110,6 +127,7 @@ module.exports = {
     getNoCoordCafes,
     saveCoord,
     isCafeExists,
-    updateCafeImage
+    updateCafeImage,
+    getCafeByName
 };
 //# sourceMappingURL=cafeService.js.map

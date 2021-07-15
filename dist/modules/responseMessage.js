@@ -50,6 +50,7 @@ module.exports = {
     READ_CAFE_REVIEW_FAIL: "카페 리뷰 목록 조회 실패",
     READ_MY_REVIEW_SUCCESS: "내 리뷰 목록 조회 성공",
     READ_MY_REVIEW_FAIL: "내 리뷰 목록 조회 실패",
+    REVIEW_REQUEST_FAIL: "리뷰 요청에 필요한 값이 잘못되었습니다.",
     // CAFE
     CAFE_LOCATION_SUCCESS: "카페 위치 목록 조회 성공",
     CAFE_LOCATION_FAIL: "카페 위치 목록 조회 실패",
@@ -72,6 +73,8 @@ module.exports = {
     READ_MY_CATEGORY_FAIL: "내 카테고리 목록 조회 실패",
     EDIT_CATEGORY_SUCCESS: "카테고리 이름/색상 수정 성공",
     DELETE_CAFES_IN_CATEGORY_SUCCESS: "선택된 카페 삭제 성공",
+    //Search
+    SEARCH_SUCCESS: "카페명으로 카페 검색 성공",
     // Server Error
     INTERNAL_SERVER_ERROR: "서버 내부 오류",
 };
