@@ -9,7 +9,6 @@ const s3 = new aws.S3({
     secretAccessKey: config.awsS3SecretKey
 });
 const fileFilter = (req, file, callback) =>{
-    console.log(file);
     const typeArray = file.mimetype.split('/');
 
     const fileType = typeArray[1]; // 이미지 확장자 추출
