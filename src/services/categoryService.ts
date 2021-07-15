@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { ICafeCategoryDTO } from "../interfaces/ICafe";
-import { IMyCafeCategoryDTO } from "../interfaces/ICategory";
+import { IMyCategoryListDTO } from "../interfaces/ICategory";
 import Category from "../models/Category";
 import CategoryColor from "../models/CategoryColor";
 import User from "../models/User";
@@ -136,9 +136,9 @@ const fetchMyCategory = async(userId, cafeId) => {
     } else {
         //cafeId가 파라미터로 들어왔을때는 cafeId가 속한 카테고리에 isPin 속성을 true로 하여 반환
         const category = await Category.findOne().where('cafes').all([cafeId])
-        let savedCategoryList: IMyCafeCategoryDTO[] = []
+        let savedCategoryList: IMyCategoryListDTO[] = []
         for (let item of categoryList) {
-            let content: IMyCafeCategoryDTO;
+            let content: IMyCategoryListDTO;
             if (item._id.toString() == category._id.toString()) {
                 content = {
                     cafes: item.cafes,
