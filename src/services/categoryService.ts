@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { ICafeCategoryDTO } from "../interfaces/ICafe";
+import { IMyCafeCategoryDTO } from "../interfaces/ICategory";
 import Category from "../models/Category";
 import CategoryColor from "../models/CategoryColor";
 import User from "../models/User";
@@ -123,12 +124,42 @@ const deleteCategory = async(categoryId) => {
     });
 }
 
-const fetchMyCategory = async(userId) => {
+const fetchMyCategory = async(userId, cafeId) => {
     const categoryList = await Category.find({user: userId}).select("_id cafes color name");
     if (!categoryList) {
         throw createError(statusCode.NOT_FOUND,responseMessage.INVALID_IDENTIFIER);
     }
-    return categoryList
+
+    if (!cafeId) {
+        //cafeId가 파라미터로 안들어왔을때는 그냥 객체 바로 return
+        return categoryList
+    } else {
+        //cafeId가 파라미터로 들어왔을때는 cafeId가 속한 카테고리에 isPin 속성을 true로 하여 반환
+        const category = await Category.findOne().where('cafes').all([cafeId])
+        let savedCategoryList: IMyCafeCategoryDTO[] = []
+        for (let item of categoryList) {
+            let content: IMyCafeCategoryDTO;
+            if (item._id.toString() == category._id.toString()) {
+                content = {
+                    cafes: item.cafes,
+                    _id: item._id,
+                    color: item.color,
+                    name: item.name,
+                    isPin: true
+                }
+            } else {
+                content = {
+                    cafes: item.cafes,
+                    _id: item._id,
+                    color: item.color,
+                    name: item.name,
+                    isPin: false
+                }
+            }
+            savedCategoryList.push(content)
+        }
+        return savedCategoryList
+    }
 }
 
 const fetchCafesInCategory = async(categoryId, userId) => {
