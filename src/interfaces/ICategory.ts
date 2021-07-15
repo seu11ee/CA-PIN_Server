@@ -16,6 +16,8 @@ export interface IMyCafeCategoryDTO {
 
 export interface IMyCafeCategoryAllDTO {
     cafes: [ICafeAllDTO];
+    _id?: mongoose.Types.ObjectId;
     color: string;
     name: string;
+    isPin?: boolean;
 }

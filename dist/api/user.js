@@ -12,6 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const mongoose_1 = __importDefault(require("mongoose"));
 const express_1 = __importDefault(require("express"));
 const express_validator_1 = require("express-validator");
 const auth_1 = __importDefault(require("../middleware/auth"));
@@ -133,8 +134,13 @@ router.put("/changePassword", [
  */
 router.get("/categoryList", auth_1.default, (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = res.locals.userId;
+    const cafeId = req.query.cafe;
+    if (cafeId)
+        if (!mongoose_1.default.isValidObjectId(cafeId)) {
+            return next(createError(statusCode.BAD_REQUEST, responseMessage.INVALID_IDENTIFIER));
+        }
     try {
-        const myCategoryList = yield categoryService.fetchMyCategory(userId);
+        const myCategoryList = yield categoryService.fetchMyCategory(userId, cafeId);
         return res.status(statusCode.OK).json({
             message: responseMessage.READ_MY_CATEGORY_SUCCESS,
             myCategoryList: myCategoryList

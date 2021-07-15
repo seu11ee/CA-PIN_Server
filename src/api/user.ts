@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import express, { Request, Response } from "express";
 import { check, validationResult } from "express-validator"
 import authChecker from "../middleware/auth"
@@ -154,8 +155,15 @@ router.post(
     ,
     async(req: Request, res: Response, next) => {
         const userId = res.locals.userId
+        const cafeId = req.query.cafe;
+        
+        if (cafeId) 
+            if (!mongoose.isValidObjectId(cafeId)){
+            return next(createError(statusCode.BAD_REQUEST,responseMessage.INVALID_IDENTIFIER));
+        }
+
         try {
-            const myCategoryList = await categoryService.fetchMyCategory(userId);
+            const myCategoryList = await categoryService.fetchMyCategory(userId, cafeId);
             return res.status(statusCode.OK).json({
                 message: responseMessage.READ_MY_CATEGORY_SUCCESS,
                 myCategoryList: myCategoryList
