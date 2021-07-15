@@ -31,11 +31,11 @@ const getCafeLocationList = (tags) => __awaiter(void 0, void 0, void 0, function
         tagList.push(tag._id);
     }
     var cafes;
-    //쿼리에 태그 정보가 없으면 전체 카페 리스트 조회
+    //태그로 필터된 카페 리스트 조회
     if (tagList.length != 0) {
         cafes = yield Cafe_1.default.find().where('tags').all(tagList).select("_id latitude longitude");
     }
-    //태그로 필터된 카페 리스트 조회
+    //쿼리에 태그 정보가 없으면 전체 카페 리스트 조회
     else {
         cafes = yield Cafe_1.default.find().select("_id latitude longitude");
     }
@@ -53,8 +53,37 @@ const getCafeLocationList = (tags) => __awaiter(void 0, void 0, void 0, function
     }
     return cafeLocationList;
 });
-const getMyMapCafeList = (userId) => __awaiter(void 0, void 0, void 0, function* () {
-    const mycafeList = yield Category_1.default.find({ user: userId }).populate('cafes', 'longitude latitude').select("cafes color name");
+const getMyMapCafeList = (userId, tags) => __awaiter(void 0, void 0, void 0, function* () {
+    const tag_ids = yield Tag_1.default.find({
+        'tagIdx': { $in: tags
+        }
+    }).select('_id');
+    if (tags.length != tag_ids.length) {
+        throw http_errors_1.default(statusCode.BAD_REQUEST, responseMessage.INVALID_IDENTIFIER);
+    }
+    let tagList = [];
+    for (let tag of tag_ids) {
+        tagList.push(tag._id);
+    }
+    var mycafeList = [];
+    //쿼리에 태그 정보가 없으면 전체 카페 리스트 조회
+    if (tagList.length != 0) {
+        mycafeList = yield Category_1.default.find({ user: userId }).populate({
+            path: 'cafes',
+            match: { tags: { $all: tagList } },
+            select: "longitude latitude"
+        }).select("cafes color name");
+    }
+    //태그로 필터된 카페 리스트 조회
+    else {
+        mycafeList = yield Category_1.default.find({ user: userId }).populate({
+            path: 'cafes',
+            select: 'longitude latitude',
+            populate: {
+                path: "tags"
+            }
+        }).select("cafes color name");
+    }
     if (!mycafeList) {
         throw http_errors_1.default(statusCode.NOT_FOUND, responseMessage.INVALID_IDENTIFIER);
     }
@@ -70,6 +99,8 @@ const getMyMapCafeList = (userId) => __awaiter(void 0, void 0, void 0, function*
             cafeList.push(info);
         }
     }
+    if (cafeList.length == 0)
+        return null;
     return cafeList;
 });
 const getCafeDetail = (cafeId) => __awaiter(void 0, void 0, void 0, function* () {
@@ -133,11 +164,11 @@ const getCafeAllList = (tags) => __awaiter(void 0, void 0, void 0, function* () 
         tagList.push(tag._id);
     }
     var cafes;
-    //쿼리에 태그 정보가 없으면 전체 카페 리스트 조회
+    //태그로 필터된 카페 리스트 조회
     if (tagList.length != 0) {
         cafes = yield Cafe_1.default.find().where('tags').all(tagList).populate("tags");
     }
-    //태그로 필터된 카페 리스트 조회
+    //쿼리에 태그 정보가 없으면 전체 카페 리스트 조회
     else {
         cafes = yield Cafe_1.default.find().populate("tags");
     }
@@ -159,6 +190,56 @@ const getCafeAllList = (tags) => __awaiter(void 0, void 0, void 0, function* () 
     }
     return cafeLocationList;
 });
+const getMyMapCafeAllList = (userId, tags) => __awaiter(void 0, void 0, void 0, function* () {
+    const tag_ids = yield Tag_1.default.find({
+        'tagIdx': { $in: tags
+        }
+    }).select('_id');
+    if (tags.length != tag_ids.length) {
+        throw http_errors_1.default(statusCode.BAD_REQUEST, responseMessage.INVALID_IDENTIFIER);
+    }
+    let tagList = [];
+    for (let tag of tag_ids) {
+        tagList.push(tag._id);
+    }
+    var mycafeList = [];
+    //쿼리에 태그 정보가 없으면 전체 카페 리스트 조회
+    if (tagList.length != 0) {
+        mycafeList = yield Category_1.default.find({ user: userId }).populate({
+            path: 'cafes',
+            match: { tags: { $all: tagList } },
+            select: "longitude latitude name address rating img",
+            populate: {
+                path: "tags"
+            }
+        }).select("cafes color name");
+    }
+    //태그로 필터된 카페 리스트 조회
+    else {
+        mycafeList = yield Category_1.default.find({ user: userId }).populate({
+            path: 'cafes',
+            select: 'longitude latitude name address rating img',
+            populate: {
+                path: "tags"
+            }
+        }).select("cafes color name");
+    }
+    let cafeList = [];
+    for (let item of mycafeList) {
+        // 카테고리에 카페가 1개 이상 있을 때만 push
+        if (item.cafes.length > 0) {
+            let info = {
+                cafes: item.cafes,
+                color: item.color,
+                name: item.name
+            };
+            cafeList.push(info);
+        }
+    }
+    if (cafeList.length == 0)
+        return null;
+    return cafeList;
+});
 module.exports = {
     getCafeLocationList,
     getMyMapCafeList,
@@ -168,6 +249,7 @@ module.exports = {
     isCafeExists,
     updateCafeImage,
     getCafeByName,
-    getCafeAllList
+    getCafeAllList,
+    getMyMapCafeAllList
 };
 //# sourceMappingURL=cafeService.js.map
