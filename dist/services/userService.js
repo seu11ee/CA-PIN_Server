@@ -39,7 +39,7 @@ const loginUser = (email, password) => __awaiter(void 0, void 0, void 0, functio
 });
 const generateToken = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     // Return jsonwebtoken
-    const token = jsonwebtoken_1.default.sign({ sub: userId }, config_1.default.jwtSecret, { expiresIn: 86400 });
+    const token = jsonwebtoken_1.default.sign({ sub: userId }, config_1.default.jwtSecret, { expiresIn: 864000 });
     // console.log(token)
     return token;
 });

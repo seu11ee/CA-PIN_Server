@@ -12,7 +12,7 @@ const reviewService = require("../services/reviewService");
 const menuService = require("../services/menuService");
 
 /**
- *  @route GET cafes?tags={tagIndex},..,{}
+ *  @route GET cafes?tags={tagIdx}
  *  @desc get a cafe location list
  *  @access Public
  */
@@ -48,7 +48,7 @@ router.get(
 /**
  *  @route GET cafes/:cafeId
  *  @desc get a cafe detail
- *  @access Private
+ *  @access Public
  */
 router.get(
     "/detail/:cafeId",
@@ -84,9 +84,46 @@ router.get(
     "/myMap", auth,
     async(req: Request, res: Response, next) => {
         const userId = res.locals.userId;
+        const tagQuery = req.query.tags;
+        var tags = undefined
+        if (tagQuery){
+            if (tagQuery.length == 1) tags = [tagQuery]
+            else tags = (tagQuery as string[]).map(x=>+x);
+        }
+        else tags = [];
+        try {
+            const myMapList = await cafeService.getMyMapCafeList(userId,tags);
+            if (!myMapList) return res.status(statusCode.NO_CONTENT).send();
+            return res.status(statusCode.OK).json({
+                message: responseMessage.MYMAP_LOCATION_SUCCESS,
+                myMapLocations: myMapList
+            });
+        } catch (error) {
+            return next(error);
+        }
+    }
+);
+
+/**
+ *  @route GET cafes/myMap
+ *  @desc get a my map cafe location and detail list
+ *  @access Private
+ */
+router.get(
+    "/myMap/all", auth,
+    async(req: Request, res: Response, next) => {
+        const userId = res.locals.userId;
+        const tagQuery = req.query.tags;
+        var tags = undefined
+        if (tagQuery){
+            if (tagQuery.length == 1) tags = [tagQuery]
+            else tags = (tagQuery as string[]).map(x=>+x);
+        }
+        else tags = [];
 
         try {
-            const myMapList = await cafeService.getMyMapCafeList(userId);
+            const myMapList = await cafeService.getMyMapCafeAllList(userId,tags);
+            if (!myMapList) return res.status(statusCode.NO_CONTENT).send();
             return res.status(statusCode.OK).json({
                 message: responseMessage.MYMAP_LOCATION_SUCCESS,
                 myMapLocations: myMapList
@@ -120,12 +157,16 @@ router.get(
         }
     }
 )
+/**
+ *  @route GET cafes?tags={tagIdx}
+ *  @desc get a cafe location and detail list
+ *  @access Public
+ */
 router.get(
     "/all",
     auth,
     async(req: Request, res: Response, next) => {
         const tagQuery = req.query.tags;
-        const userId = res.locals.userId;
         var tags = undefined
         if (tagQuery){
             if (tagQuery.length == 1) tags = [tagQuery]
@@ -139,7 +180,7 @@ router.get(
             if (!cafeLocationList) return res.status(statusCode.NO_CONTENT).send();
             
             return res.status(statusCode.OK).json({
-                message:responseMessage.CAFE_DETAIL_SUCCESS,
+                message:responseMessage.CAFE_LOCATION_SUCCESS,
                 cafeLocations: cafeLocationList
             })
         } catch (error) {

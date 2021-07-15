@@ -33,7 +33,7 @@ const generateToken = async(userId) => {
     const token = jwt.sign(
         { sub: userId }, 
         config.jwtSecret, 
-        { expiresIn: 86400 });
+        { expiresIn: 864000 });
 
     // console.log(token)
     return token
