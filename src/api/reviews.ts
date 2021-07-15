@@ -2,6 +2,7 @@ import auth from "../middleware/auth";
 import createError from "http-errors";
 import express, { Request, Response } from "express";
 import mongoose from "mongoose";
+import { check, validationResult } from "express-validator";
 const router = express.Router();
 const statusCode = require("../modules/statusCode");
 const responseMessage = require("../modules/responseMessage");
@@ -55,12 +56,11 @@ router.post(
             recommend,
             rating
         } = reviewParams;
-
-        if (recommend && !recommend.isArray(Number)) next(createError(createError(statusCode.BAD_REQUEST,responseMessage.OUT_OF_VALUE)));
         if (!content || !rating) next(createError(createError(statusCode.BAD_REQUEST,responseMessage.NULL_VALUE)));
         if (!cafeId || !mongoose.isValidObjectId(cafeId)){
             return next(createError(statusCode.BAD_REQUEST,responseMessage.INVALID_IDENTIFIER));
         }
+        if (recommend && (!Array.isArray(recommend) || !(recommend.includes(0) || recommend.includes(1))) ) return next(createError(statusCode.BAD_REQUEST,responseMessage.REVIEW_REQUEST_FAIL));
         try{
             var urls = undefined;
             if (req.files.length!=0){
@@ -93,7 +93,7 @@ router.put(
         const reviewParams = JSON.parse(req.body.review);
         const reviewId = req.params.reviewId;
         const userId = res.locals.userId;
-        var {
+        const {
             content,
             recommend,
             rating,
@@ -104,7 +104,7 @@ router.put(
         if (!reviewId || !mongoose.isValidObjectId(reviewId)){
             next(createError(statusCode.BAD_REQUEST,responseMessage.INVALID_IDENTIFIER));
         }
-        if (recommend && recommend.length == 0) recommend = undefined;
+        if (recommend && (!Array.isArray(recommend) || !(recommend.includes(0) || recommend.includes(1))) ) return next(createError(statusCode.BAD_REQUEST,responseMessage.REVIEW_REQUEST_FAIL));
         try{
             var urls = undefined;
             if (req.files.length!=0 && !isAllDeleted){
