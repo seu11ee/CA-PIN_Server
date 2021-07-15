@@ -148,7 +148,8 @@ const getCafeAllList = async (tags) => {
             latitude: cafe.latitude,
             longitude: cafe.longitude,
             address: cafe.address,
-            tags: cafe.tags
+            tags: cafe.tags,
+            rating: cafe.rating
         }
         cafeLocationList.push(location)
     }
