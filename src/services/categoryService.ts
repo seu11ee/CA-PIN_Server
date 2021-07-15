@@ -96,7 +96,7 @@ const storeCafe = async(userId, categoryId, cafeId) => {
     
     //기존에 포함된 카테고리가 있었다면 제거
     for (let exist of existList) {
-        deleteCafesinCategory(exist._id, [cafeId]);
+        await deleteCafesinCategory(exist._id, [cafeId]);
     }
 
     if (categoryId) {
@@ -104,7 +104,7 @@ const storeCafe = async(userId, categoryId, cafeId) => {
             _id: categoryId
           },
           {
-            $addToSet: {cafes: cafeId}
+            $addToSet: {cafes: [cafe._id]}
           }); 
     }
 };

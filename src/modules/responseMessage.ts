@@ -68,7 +68,7 @@ module.exports = {
     // CATEGORY
     CREATE_CATEGORY_SUCCESS: "카테고리 생성 성공",
     CREATE_CATEGORY_FAIL: "카테고리 생성 실패",
-    ADD_PIN_SUCCESS: "카테고리에 핀 추가 성공",
+    ADD_PIN_SUCCESS: "카테고리에 핀 추가/해제 성공",
     ADD_PIN_FAIL: "카테고리에 핀 추가 실패",
     DELETE_CATEGORY_SUCCESS: "카테고리 삭제 성공",
     DELETE_CATEGORY_FAIL: "카테고리 삭제 실패",
