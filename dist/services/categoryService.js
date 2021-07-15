@@ -77,26 +77,25 @@ const deleteCafesinCategory = (categoryId, cafeList) => __awaiter(void 0, void 0
         });
     }
 });
-const addCafe = (cafeIds, categoryId) => __awaiter(void 0, void 0, void 0, function* () {
-    const category = yield Category_1.default.findOne({ _id: categoryId });
-    if (!category) {
+const storeCafe = (userId, categoryId, cafeId) => __awaiter(void 0, void 0, void 0, function* () {
+    const cafe = yield Cafe_1.default.findOne({ _id: cafeId });
+    if (!cafe) {
         // id가 일치하는 카테고리가 없는 경우
         throw createError(statusCode.NOT_FOUND, responseMessage.INVALID_IDENTIFIER);
     }
-    const cafeList = [];
-    for (let id of cafeIds) {
-        const cafe = yield Cafe_1.default.findOne({ _id: id });
-        if (cafe == null) {
-            // id가 일치하는 카페가 없는 경우
-            throw createError(statusCode.NOT_FOUND, responseMessage.INVALID_IDENTIFIER);
-        }
-        cafeList.push(cafe._id);
+    // 요청한 카페가 포함된 유저의 카테고리 리스트
+    const existList = yield Category_1.default.find({ user: userId }).where('cafes').all([cafeId]);
+    //기존에 포함된 카테고리가 있었다면 제거
+    for (let exist of existList) {
+        yield deleteCafesinCategory(exist._id, [cafeId]);
     }
-    yield Category_1.default.updateOne({
-        _id: category._id
-    }, {
-        $addToSet: { cafes: cafeList }
-    });
+    if (categoryId) {
+        yield Category_1.default.updateOne({
+            _id: categoryId
+        }, {
+            $addToSet: { cafes: [cafe._id] }
+        });
+    }
 });
 const deleteCategory = (categoryId) => __awaiter(void 0, void 0, void 0, function* () {
     const category = yield Category_1.default.findOne({ _id: categoryId });
@@ -112,12 +111,43 @@ const deleteCategory = (categoryId) => __awaiter(void 0, void 0, void 0, functio
         }
     });
 });
-const fetchMyCategory = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+const fetchMyCategory = (userId, cafeId) => __awaiter(void 0, void 0, void 0, function* () {
     const categoryList = yield Category_1.default.find({ user: userId }).select("_id cafes color name");
     if (!categoryList) {
         throw createError(statusCode.NOT_FOUND, responseMessage.INVALID_IDENTIFIER);
     }
-    return categoryList;
+    if (!cafeId) {
+        //cafeId가 파라미터로 안들어왔을때는 그냥 객체 바로 return
+        return categoryList;
+    }
+    else {
+        //cafeId가 파라미터로 들어왔을때는 cafeId가 속한 카테고리에 isPin 속성을 true로 하여 반환
+        const category = yield Category_1.default.findOne().where('cafes').all([cafeId]);
+        let savedCategoryList = [];
+        for (let item of categoryList) {
+            let content;
+            if (item._id.toString() == category._id.toString()) {
+                content = {
+                    cafes: item.cafes,
+                    _id: item._id,
+                    color: item.color,
+                    name: item.name,
+                    isPin: true
+                };
+            }
+            else {
+                content = {
+                    cafes: item.cafes,
+                    _id: item._id,
+                    color: item.color,
+                    name: item.name,
+                    isPin: false
+                };
+            }
+            savedCategoryList.push(content);
+        }
+        return savedCategoryList;
+    }
 });
 const fetchCafesInCategory = (categoryId, userId) => __awaiter(void 0, void 0, void 0, function* () {
     const whatCategory = yield Category_1.default.findOne({ _id: categoryId, user: userId }).select("cafes");
@@ -139,7 +169,7 @@ const checkCafeInCategory = (cafeId, userId) => __awaiter(void 0, void 0, void 0
 module.exports = {
     createCategory,
     editCategoryInfo,
-    addCafe,
+    storeCafe,
     deleteCafesinCategory,
     deleteCategory,
     fetchMyCategory,
