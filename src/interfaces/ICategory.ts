@@ -9,7 +9,9 @@ export interface ICategory {
 }
 
 export interface IMyCafeCategoryDTO {
+    _id?: mongoose.Types.ObjectId;
     cafes: [mongoose.Types.ObjectId];
     color: string;
     name: string;
+    isPin?: boolean;
 }

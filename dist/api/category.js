@@ -72,24 +72,19 @@ router.put("/:categoryId/", [
     }
 }));
 /**
- *  @route Post /category/:categoryId/archive
- *  @desc pin cafes in category(카테고리에 카페 추가)
+ *  @route Post /category/:cafeId/archive
+ *  @desc pin,unpin cafes in category(카테고리에 카페 넣기,빼기,변경하기)
  *  @access Private
  */
-router.post("/:categoryId/archive", [
-    express_validator_1.check("cafeIds", "cafe_ids is required").not().isEmpty(),
-], auth_1.default, (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const errors = express_validator_1.validationResult(req);
-    if (!errors.isEmpty()) {
-        return next(createError(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE));
-    }
-    const categoryId = req.params.categoryId;
-    const { cafeIds } = req.body;
+router.post("/:cafeId/archive", auth_1.default, (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = res.locals.userId;
+    const cafeId = req.params.cafeId;
+    const { categoryId } = req.body;
     try {
-        if (!mongoose_1.default.isValidObjectId(categoryId)) {
-            return next(createError(statusCode.BAD_REQUEST, responseMessage.INVALID_IDENTIFIER));
+        if (!mongoose_1.default.isValidObjectId(cafeId)) {
+            return next(createError(statusCode.NOT_FOUND, responseMessage.INVALID_IDENTIFIER));
         }
-        yield categoryService.addCafe(cafeIds, categoryId);
+        yield categoryService.storeCafe(userId, categoryId, cafeId);
         return res.status(statusCode.OK).json({
             message: responseMessage.ADD_PIN_SUCCESS
         });

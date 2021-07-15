@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { ICafeCategoryDTO } from "../interfaces/ICafe";
+import { IMyCafeCategoryDTO } from "../interfaces/ICategory";
 import Category from "../models/Category";
 import CategoryColor from "../models/CategoryColor";
 import User from "../models/User";
@@ -82,30 +83,30 @@ const deleteCafesinCategory = async(categoryId, cafeList) => {
     }
 }
 
-const addCafe = async(cafeIds, categoryId) => {
-    const category = await Category.findOne({_id: categoryId});
- 
-    if (!category) {
+const storeCafe = async(userId, categoryId, cafeId) => {
+    const cafe = await Cafe.findOne({_id: cafeId});
+
+    if (!cafe) {
         // id가 일치하는 카테고리가 없는 경우
         throw createError(statusCode.NOT_FOUND,responseMessage.INVALID_IDENTIFIER);
     }
-
-    const cafeList: mongoose.Types.ObjectId[]= []
-    for (let id of cafeIds) {
-        const cafe = await Cafe.findOne({_id: id});
-        if (cafe == null) {
-            // id가 일치하는 카페가 없는 경우
-            throw createError(statusCode.NOT_FOUND,responseMessage.INVALID_IDENTIFIER);
-        }
-        cafeList.push(cafe._id);
-    }
     
-    await Category.updateOne({
-        _id: category._id
-      },
-      {
-        $addToSet: {cafes: cafeList}
-      });
+    // 요청한 카페가 포함된 유저의 카테고리 리스트
+    const existList = await Category.find({user: userId}).where('cafes').all([cafeId]);
+    
+    //기존에 포함된 카테고리가 있었다면 제거
+    for (let exist of existList) {
+        await deleteCafesinCategory(exist._id, [cafeId]);
+    }
+
+    if (categoryId) {
+        await Category.updateOne({
+            _id: categoryId
+          },
+          {
+            $addToSet: {cafes: [cafe._id]}
+          }); 
+    }
 };
 
 const deleteCategory = async(categoryId) => {
@@ -123,12 +124,42 @@ const deleteCategory = async(categoryId) => {
     });
 }
 
-const fetchMyCategory = async(userId) => {
+const fetchMyCategory = async(userId, cafeId) => {
     const categoryList = await Category.find({user: userId}).select("_id cafes color name");
     if (!categoryList) {
         throw createError(statusCode.NOT_FOUND,responseMessage.INVALID_IDENTIFIER);
     }
-    return categoryList
+
+    if (!cafeId) {
+        //cafeId가 파라미터로 안들어왔을때는 그냥 객체 바로 return
+        return categoryList
+    } else {
+        //cafeId가 파라미터로 들어왔을때는 cafeId가 속한 카테고리에 isPin 속성을 true로 하여 반환
+        const category = await Category.findOne().where('cafes').all([cafeId])
+        let savedCategoryList: IMyCafeCategoryDTO[] = []
+        for (let item of categoryList) {
+            let content: IMyCafeCategoryDTO;
+            if (item._id.toString() == category._id.toString()) {
+                content = {
+                    cafes: item.cafes,
+                    _id: item._id,
+                    color: item.color,
+                    name: item.name,
+                    isPin: true
+                }
+            } else {
+                content = {
+                    cafes: item.cafes,
+                    _id: item._id,
+                    color: item.color,
+                    name: item.name,
+                    isPin: false
+                }
+            }
+            savedCategoryList.push(content)
+        }
+        return savedCategoryList
+    }
 }
 
 const fetchCafesInCategory = async(categoryId, userId) => {
@@ -153,7 +184,7 @@ const checkCafeInCategory = async(cafeId,userId) => {
 module.exports = {
     createCategory,
     editCategoryInfo,
-    addCafe,
+    storeCafe,
     deleteCafesinCategory,
     deleteCategory,
     fetchMyCategory,
