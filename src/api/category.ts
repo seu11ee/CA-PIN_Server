@@ -75,31 +75,23 @@ router.post(
 );
 
 /**
- *  @route Post /category/:categoryId/archive
- *  @desc pin cafes in category(카테고리에 카페 추가)
+ *  @route Post /category/:cafeId/archive
+ *  @desc pin,unpin cafes in category(카테고리에 카페 넣기,빼기,변경하기)
  *  @access Private
  */
  router.post(
-    "/:categoryId/archive",
-    [
-        check("cafeIds", "cafe_ids is required").not().isEmpty(),
-    ],
+    "/:cafeId/archive",
     authChecker,
     async(req: Request, res: Response, next) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()){
-            return next(createError(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE));
-        }
-
-        const categoryId = req.params.categoryId;
-        const {cafeIds} = req.body;
-
+        const userId = res.locals.userId;
+        const cafeId = req.params.cafeId;
+        const { categoryId } = req.body;
         try {
-            if (!mongoose.isValidObjectId(categoryId)){
+            if (!mongoose.isValidObjectId(cafeId)){
                 return next(createError(statusCode.BAD_REQUEST,responseMessage.INVALID_IDENTIFIER));
             }
 
-            await categoryService.addCafe(cafeIds, categoryId);  
+            await categoryService.storeCafe(userId, categoryId, cafeId);  
             return res.status(statusCode.OK).json({
                 message: responseMessage.ADD_PIN_SUCCESS
             });

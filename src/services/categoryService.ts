@@ -82,30 +82,30 @@ const deleteCafesinCategory = async(categoryId, cafeList) => {
     }
 }
 
-const addCafe = async(cafeIds, categoryId) => {
-    const category = await Category.findOne({_id: categoryId});
- 
-    if (!category) {
+const storeCafe = async(userId, categoryId, cafeId) => {
+    const cafe = await Cafe.findOne({_id: cafeId});
+
+    if (!cafe) {
         // id가 일치하는 카테고리가 없는 경우
         throw createError(statusCode.NOT_FOUND,responseMessage.INVALID_IDENTIFIER);
     }
-
-    const cafeList: mongoose.Types.ObjectId[]= []
-    for (let id of cafeIds) {
-        const cafe = await Cafe.findOne({_id: id});
-        if (cafe == null) {
-            // id가 일치하는 카페가 없는 경우
-            throw createError(statusCode.NOT_FOUND,responseMessage.INVALID_IDENTIFIER);
-        }
-        cafeList.push(cafe._id);
-    }
     
-    await Category.updateOne({
-        _id: category._id
-      },
-      {
-        $addToSet: {cafes: cafeList}
-      });
+    // 요청한 카페가 포함된 유저의 카테고리 리스트
+    const existList = await Category.find({user: userId}).where('cafes').all([cafeId]);
+    
+    //기존에 포함된 카테고리가 있었다면 제거
+    for (let exist of existList) {
+        deleteCafesinCategory(exist._id, [cafeId]);
+    }
+
+    if (categoryId) {
+        await Category.updateOne({
+            _id: categoryId
+          },
+          {
+            $addToSet: {cafes: cafeId}
+          }); 
+    }
 };
 
 const deleteCategory = async(categoryId) => {
@@ -153,7 +153,7 @@ const checkCafeInCategory = async(cafeId,userId) => {
 module.exports = {
     createCategory,
     editCategoryInfo,
-    addCafe,
+    storeCafe,
     deleteCafesinCategory,
     deleteCategory,
     fetchMyCategory,
