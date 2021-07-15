@@ -57,9 +57,9 @@ router.get("/", (req, res, next) => __awaiter(void 0, void 0, void 0, function* 
  *  @desc get a cafe detail
  *  @access Private
  */
-router.get("/detail/:cafeId", auth_1.default, (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/detail/:cafeId", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const cafeId = req.params.cafeId;
-    const userId = res.locals.userId;
+    // const userId = res.locals.userId;
     try {
         if (!mongoose_1.default.isValidObjectId(cafeId)) {
             return next(http_errors_1.default(statusCode.BAD_REQUEST, responseMessage.INVALID_IDENTIFIER));

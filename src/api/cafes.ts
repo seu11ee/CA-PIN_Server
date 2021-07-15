@@ -51,10 +51,10 @@ router.get(
  *  @access Private
  */
 router.get(
-    "/detail/:cafeId", auth,
+    "/detail/:cafeId",
     async(req: Request, res: Response, next) => {
         const cafeId = req.params.cafeId;
-        const userId = res.locals.userId;
+        // const userId = res.locals.userId;
 
         try{
             if (!mongoose.isValidObjectId(cafeId)){
