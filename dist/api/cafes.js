@@ -168,7 +168,7 @@ router.get("/:cafeId/menus", (req, res, next) => __awaiter(void 0, void 0, void 
  *  @desc get a cafe location and detail list
  *  @access Public
  */
-router.get("/all", auth_1.default, (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/all", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const tagQuery = req.query.tags;
     var tags = undefined;
     if (tagQuery) {
