@@ -140,7 +140,7 @@ const fetchUserInfo = async(userId) => {
     }
     
     // User's Review number
-    const reviews = (await Review.find({_id: userId})).length;
+    const reviews = (await Review.find({user: userId})).length;
 
     // User's Pin number
     let pins: number = 0;
