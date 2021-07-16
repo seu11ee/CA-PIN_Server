@@ -164,7 +164,6 @@ router.get(
  */
 router.get(
     "/all",
-    auth,
     async(req: Request, res: Response, next) => {
         const tagQuery = req.query.tags;
         var tags = undefined
