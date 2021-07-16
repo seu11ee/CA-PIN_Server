@@ -3,7 +3,7 @@
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 <p align="center">
-<img width="100%" alt="CAPIN2" src="https://user-images.githubusercontent.com/42789819/124277615-3071e700-db80-11eb-8626-d7e9e8659762.png">
+<img width="100%" alt="CAPIN-ppt" src="https://user-images.githubusercontent.com/42789819/125911405-77e66383-5733-4bc3-847c-0b951ba8ed56.png">
 </p>
 
 <br>
@@ -16,15 +16,15 @@
 
 <br>
 
-###  CA:PIN Server Developers
+###  **CA:PIN** Server Developers / Our CAFETI
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
 <table>
   <tr>
-    <td align="center"><a href="https://github.com/seu11ee"><img src="https://avatars.githubusercontent.com/u/42545818?v=4" width="100px;" alt=""/><br /><sub><b>seu11ee</b></sub></a><br /><a href="https://github.com/teamCA-PIN/CA-PIN_Server/commits?author=seu11ee" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/snowedev"><img src="https://avatars.githubusercontent.com/u/42789819?v=4" width="100px;" alt=""/><br /><sub><b>snowedev</b></sub></a><br /><a href="https://github.com/teamCA-PIN/CA-PIN_Server/commits?author=snowedev" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/seu11ee"><img src="https://capin.s3.ap-northeast-2.amazonaws.com/cafeti/giraffe_coffee%402x.png" width="200px;" alt=""/><br />CXVB</br><sub><b>seu11ee</b></sub></a></br><a href="https://github.com/teamCA-PIN/CA-PIN_Server/commits?author=seu11ee" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/snowedev"><img src="https://user-images.githubusercontent.com/42789819/125914896-cb895905-4552-4306-b297-2af84bfb3765.png" width="200px;" alt=""/><br />NJMB</br><sub><b>snowedev</b></sub></a><br /><a href="https://github.com/teamCA-PIN/CA-PIN_Server/commits?author=snowedev" title="Code">💻</a></td>
   </tr>
 </table>
 
@@ -68,12 +68,12 @@
 <br>
 
 ###  Server Architecture
-<img width=100% src=https://user-images.githubusercontent.com/42789819/124343113-0d891680-dc04-11eb-9f21-d3ff8a772a35.png>
+<img width=100% src=https://user-images.githubusercontent.com/42789819/125916983-65289f69-13f4-4cc5-98d0-b442c853898a.png>  
 
 <br>
 
-###  API doc
-[CA:PIN API Documents](https://www.notion.so/793451f945b0494fa8c4117d5e3c34e8?v=c2b16a0f8c044bab80ff9ce509af21cd)
+###  API doc / Task
+> **[CA:PIN API Documents](https://www.notion.so/793451f945b0494fa8c4117d5e3c34e8?v=c2b16a0f8c044bab80ff9ce509af21cd)**
 
 <br>
 
@@ -84,6 +84,8 @@
  <details>
  <summary> <kbd>🗂 폴더구조</kbd> </summary>
  <div markdown="1">  
+
+---
 
 ```bash
 src
@@ -152,7 +154,6 @@ src
  <summary> <kbd>🏷 주석</kbd> </summary>
  <div markdown="1">       
  
- 
  ---
 
 한줄은 //로 적고, 그 이상은 /** */로 적는다.
@@ -198,7 +199,7 @@ src
 
 ### Commit Messge Rules
 <details>
-<summary> <kbd>✉️ CA:PIN  Git Commit Message Rules</kbd> </summary>
+<summary> <kbd>✉️ CA:PIN Server Git Commit Message Rules</kbd> </summary>
 <div markdown="1">       
 
 ---
@@ -232,7 +233,7 @@ src
 ### Github mangement
 
 <details>
-<summary> <kbd>💻 CA:PIN Branch Strategy</kbd> </summary>
+<summary> <kbd>💻 CA:PIN Server Branch Strategy</kbd> </summary>
 <div markdown="1">       
 
 ---
@@ -263,11 +264,4 @@ src
 </div>
 </details>
   
-<br>
-
-### Task 
-| 기능 | 개발 여부 | 담당자 |
-|:----------|:----------:|:----:|
-| - | - | - |
-
 <br>
