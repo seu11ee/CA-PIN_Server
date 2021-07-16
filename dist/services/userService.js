@@ -127,7 +127,7 @@ const fetchUserInfo = (userId) => __awaiter(void 0, void 0, void 0, function* ()
         throw createError(statusCode.NOT_FOUND, responseMessage.READ_USER_FAIL);
     }
     // User's Review number
-    const reviews = (yield Review_1.default.find({ _id: userId })).length;
+    const reviews = (yield Review_1.default.find({ user: userId })).length;
     // User's Pin number
     let pins = 0;
     const categories = (yield Category_1.default.find({ user: userId })).forEach(category => {
