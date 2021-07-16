@@ -141,6 +141,7 @@ const updateCafeAverageRating = async(cafeId) => {
     if (reviews.length != 0){
         cafeRating = reviews[0].average;
     }
+    cafeRating = Number(cafeRating.toFixed(1));
     await Cafe.findByIdAndUpdate(cafeId,{
         rating:cafeRating
     },{ 
