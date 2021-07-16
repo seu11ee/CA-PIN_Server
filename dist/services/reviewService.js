@@ -137,6 +137,7 @@ const updateCafeAverageRating = (cafeId) => __awaiter(void 0, void 0, void 0, fu
     if (reviews.length != 0) {
         cafeRating = reviews[0].average;
     }
+    cafeRating = Number(cafeRating.toFixed(1));
     yield Cafe_1.default.findByIdAndUpdate(cafeId, {
         rating: cafeRating
     }, {
