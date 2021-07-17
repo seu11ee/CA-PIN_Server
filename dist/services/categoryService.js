@@ -150,15 +150,18 @@ const fetchMyCategory = (userId, cafeId) => __awaiter(void 0, void 0, void 0, fu
     }
 });
 const fetchCafesInCategory = (categoryId, userId) => __awaiter(void 0, void 0, void 0, function* () {
-    const whatCategory = yield Category_1.default.findOne({ _id: categoryId, user: userId }).select("cafes");
+    const whatCategory = yield Category_1.default.findById({
+        _id: categoryId,
+        user: userId
+    }).populate({
+        path: 'cafes',
+        populate: { path: 'tags', select: 'name' },
+        select: '_id tags name address rating'
+    });
     if (!whatCategory) {
         throw createError(statusCode.NOT_FOUND, responseMessage.INVALID_IDENTIFIER);
     }
-    const cafes = [];
-    for (let cafe of whatCategory.cafes) {
-        cafes.push(yield Cafe_1.default.findById(cafe).populate('tags', 'name').select("tags _id name address rating"));
-    }
-    return cafes;
+    return whatCategory.cafes;
 });
 const checkCafeInCategory = (cafeId, userId) => __awaiter(void 0, void 0, void 0, function* () {
     const category = yield Category_1.default.findOne({ cafe: cafeId, user: userId });
