@@ -163,16 +163,21 @@ const fetchMyCategory = async(userId, cafeId) => {
 }
 
 const fetchCafesInCategory = async(categoryId, userId) => {
-    const whatCategory = await Category.findOne({_id: categoryId, user: userId}).select("cafes")
+    const whatCategory = await Category.findById({
+        _id: categoryId,
+        user: userId
+    }).populate({
+        path : 'cafes', 
+        populate : {path : 'tags', select: 'name'},
+        select: '_id tags name address rating'
+    });
+
     if (!whatCategory) {
-        throw createError(statusCode.NOT_FOUND,responseMessage.INVALID_IDENTIFIER);
-    }
-    const cafes: ICafeCategoryDTO[] = []
-    for (let cafe of whatCategory.cafes) {
-        cafes.push(await Cafe.findById(cafe).populate('tags','name').select("tags _id name address rating"));
+        throw createError(statusCode.NOT_FOUND, responseMessage.INVALID_IDENTIFIER);
     }
 
-    return cafes
+
+    return whatCategory.cafes
 }
 
 const checkCafeInCategory = async(cafeId,userId) => {
