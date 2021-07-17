@@ -140,8 +140,9 @@ const updateCafeAverageRating = async(cafeId) => {
     var cafeRating = undefined;
     if (reviews.length != 0){
         cafeRating = reviews[0].average;
+        cafeRating = Number(cafeRating.toFixed(1));
     }
-    cafeRating = Number(cafeRating.toFixed(1));
+    
     await Cafe.findByIdAndUpdate(cafeId,{
         rating:cafeRating
     },{ 
@@ -152,6 +153,7 @@ const updateCafeAverageRating = async(cafeId) => {
 
 const getMyReviews = async (userId) => {
     const myReviews = await Review.find({user:userId}).populate("cafe").sort({created_at:-1})
+    if (myReviews.length == 0) return null
     var myReviewsDTO: IReviewMyOutputDTO[] = []
     for (let review of myReviews){
         let myReview: IReviewMyOutputDTO = {
