@@ -136,8 +136,8 @@ const updateCafeAverageRating = (cafeId) => __awaiter(void 0, void 0, void 0, fu
     var cafeRating = undefined;
     if (reviews.length != 0) {
         cafeRating = reviews[0].average;
+        cafeRating = Number(cafeRating.toFixed(1));
     }
-    cafeRating = Number(cafeRating.toFixed(1));
     yield Cafe_1.default.findByIdAndUpdate(cafeId, {
         rating: cafeRating
     }, {
@@ -147,6 +147,8 @@ const updateCafeAverageRating = (cafeId) => __awaiter(void 0, void 0, void 0, fu
 });
 const getMyReviews = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     const myReviews = yield Review_1.default.find({ user: userId }).populate("cafe").sort({ created_at: -1 });
+    if (myReviews.length == 0)
+        return null;
     var myReviewsDTO = [];
     for (let review of myReviews) {
         let myReview = {
